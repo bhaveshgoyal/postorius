@@ -184,6 +184,12 @@ class Domain(MailmanRestModel):
     objects = MailmanRestManager('domain', 'domains')
 
 
+class Task(MailmanRestModel):
+    """User Tasks model class.
+    """
+    objects = MailmanRestManager('task', 'tasks')
+
+
 class List(MailmanRestModel):
     """List model class.
     """
