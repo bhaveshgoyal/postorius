@@ -340,9 +340,9 @@ class AdminTasks(models.Model):
     made_on = models.DateTimeField()
     user_email = models.EmailField()
     list_id = models.CharField(max_length=50)
-    
+    priority = models.IntegerField(default=-2)
     objects = AdminTasksManager()
 
     def __unicode__(self):
-        return u'Pending {0.task_type} Request for {0.user_email}'.format(self)
+        return u'{0.task_type} Request Pending for {0.user_email}'.format(self)
 

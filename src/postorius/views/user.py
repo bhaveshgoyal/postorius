@@ -332,26 +332,26 @@ class AdminTasksView(MailmanUserView):
         mod_req = sorted(mod_req, key=itemgetter('hold_date'), reverse=False)
         sub_req = [each_req for each_list in Lists for each_req in each_list.requests]
         sub_req = sorted(sub_req, key=itemgetter('request_date'), reverse=False)
-        mod_sync = AdminTasks.objects.get_count('moderation')
-        sub_sync = AdminTasks.objects.get_count('subscription')
+        mod_sync = AdminTasks.objects.get_count('Moderation')
+        sub_sync = AdminTasks.objects.get_count('Subscription')
         for mod in mod_req[mod_sync:]:
             admin_task = AdminTasks.objects.create_task(
                 task_id = mod['request_id'],
-                task_type = 'moderation',
+                task_type = 'Moderation',
                 stamp = mod['hold_date'],
                 list_id = mod['list_id'],
                 user_email = mod['sender']) 
         for sub in sub_req[sub_sync:]:
             admin_req = AdminTasks.objects.create_task(
                 task_id = sub['token'],
-                task_type = 'subscription',
+                task_type = 'Subscription',
                 stamp = sub['request_date'],
                 list_id = sub['list_id'],
                 user_email = sub['email'])
         user_tasks = AdminTasks.objects.all()
         user_tasks = [each for each in user_tasks if mm_email in List.objects.get(fqdn_listname=each.list_id).owners]
         return render_to_response('postorius/user_dashboard.html',
-                                  {'tasks': user_tasks},
+                                  {'tasks': user_tasks, 'lists': Lists},
                                   context_instance=RequestContext(request))
 
 
