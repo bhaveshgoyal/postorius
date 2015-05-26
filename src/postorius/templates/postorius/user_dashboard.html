@@ -1,0 +1,22 @@
+{% extends postorius_base_template %}
+{% load url from future %}
+{% load i18n %}
+
+{% block subtitle %}
+{% trans "To Do" as page_title %}{{ page_title }}
+{% endblock %}
+
+{% block main %}
+<section class="tasks">
+<header class="tasks-header">
+<h2 class="tasks-title">To Do List</h2>
+</header>
+<fieldset class="tasks-list">
+{% for task in tasks %}
+<label class="tasks-list-item">
+{{ task }}
+</label>
+{% endfor %}
+</fieldset>
+</section>
+{% endblock main %}
