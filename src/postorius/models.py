@@ -186,12 +186,6 @@ class Domain(MailmanRestModel):
     objects = MailmanRestManager('domain', 'domains')
 
 
-class Task(MailmanRestModel):
-    """User Tasks model class.
-    """
-    objects = MailmanRestManager('task', 'tasks')
-
-
 class List(MailmanRestModel):
     """List model class.
     """
@@ -320,3 +314,35 @@ class AddressConfirmationProfile(models.Model):
                   get_template(template_path).render(template_context),
                   sender_address,
                   [self.email])
+
+class AdminTasksManager(models.Manager):
+    """
+    Manager Class for Admin Tasks.
+    """
+    
+    def create_task(self, task_id, task_type, stamp, user_email, list_id):
+        task = self.create(task_id=task_id,
+                           task_type=task_type,
+                           made_on=stamp,
+                           user_email=user_email,
+                           list_id=list_id)
+        return task
+
+    def get_count(self, task_type):
+        return len(self.filter(task_type=task_type))
+
+class AdminTasks(models.Model):
+    """
+    Tasks Model for Storing list of pending Admin Tasks.
+    """
+    task_id = models.CharField(max_length=50)
+    task_type = models.CharField(max_length=20)
+    made_on = models.DateTimeField()
+    user_email = models.EmailField()
+    list_id = models.CharField(max_length=50)
+    
+    objects = AdminTasksManager()
+
+    def __unicode__(self):
+        return u'Pending {0.task_type} Request for {0.user_email}'.format(self)
+
