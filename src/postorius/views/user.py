@@ -32,11 +32,11 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from django.views.generic import TemplateView
 from urllib2 import HTTPError
-
+from operator import itemgetter
 from postorius import utils
 from postorius.models import (
     MailmanUser, MailmanConnectionError, MailmanApiError, Mailman404Error,
-    AddressConfirmationProfile)
+    AddressConfirmationProfile, AdminTasks, List)
 from postorius.forms import *
 from postorius.auth.decorators import *
 from postorius.views.generic import MailmanUserView
@@ -320,10 +320,37 @@ def user_profile(request, user_email=None):
                               context_instance=RequestContext(request))
 
 
-@login_required
-def user_tasks(request):
-    return render_to_response('postorius/user_tasks.html',
-                              context_instance=RequestContext(request))
+class AdminTasksView(MailmanUserView):
+    
+    @method_decorator(login_required)
+    def get(self, request):
+        mm_email = request.user.email
+        Lists = List.objects.all()
+        mod_req = [dict(each_mod,list_id=each_list.fqdn_listname) for each_list in Lists for each_mod in each_list.held]
+        mod_req = sorted(mod_req, key=itemgetter('hold_date'), reverse=False)
+        sub_req = [each_req for each_list in Lists for each_req in each_list.requests]
+        sub_req = sorted(sub_req, key=itemgetter('request_date'), reverse=False)
+        mod_sync = AdminTasks.objects.get_count('moderation')
+        sub_sync = AdminTasks.objects.get_count('subscription')
+        for mod in mod_req[mod_sync:]:
+            admin_task = AdminTasks.objects.create_task(
+                task_id = mod['request_id'],
+                task_type = 'moderation',
+                stamp = mod['hold_date'],
+                list_id = mod['list_id'],
+                user_email = mod['sender']) 
+        for sub in sub_req[sub_sync:]:
+            admin_req = AdminTasks.objects.create_task(
+                task_id = sub['token'],
+                task_type = 'subscription',
+                stamp = sub['request_date'],
+                list_id = sub['list_id'],
+                user_email = sub['email'])
+        user_tasks = AdminTasks.objects.all()
+        user_tasks = [each for each in user_tasks if mm_email in List.objects.get(fqdn_listname=each.list_id).owners]
+        return render_to_response('postorius/user_dashboard.html',
+                                  {'tasks': user_tasks},
+                                  context_instance=RequestContext(request))
 
 
 @user_passes_test(lambda u: u.is_superuser)
