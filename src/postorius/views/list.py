@@ -33,7 +33,7 @@ from django.utils.translation import gettext as _
 from urllib2 import HTTPError
 
 from postorius import utils
-from postorius.models import (Domain, List, MailmanApiError)
+from postorius.models import (Domain, List, MailmanApiError, AdminTasks)
 from postorius.forms import *
 from postorius.auth.decorators import *
 from postorius.views.generic import MailingListView
@@ -943,3 +943,51 @@ def list_archival_options(request, list_id):
                                'form': form,
                                'archivers': archivers},
                               context_instance=RequestContext(request))
+
+def task_delete(task_id):
+        the_task = AdminTasks.objects.get(task_id=task_id)
+        the_task.delete()
+
+@list_moderator_required
+def handle_mod_task(request, list_id, msg_id, action):
+    """Handle Moderation Tasks On Dashboard.
+    """
+
+    response_messages = {
+        'accept': _('The message has been accepted.'),
+        'reject': _('The message has been rejected.'),
+        'discard': _('The message has been discarded.'),
+        'defer': _('The message has been deferred.'),
+    }
+    try:
+        the_list = List.objects.get_or_404(fqdn_listname=list_id)
+        method = 'the_list.' + action + '_message(msg_id)'
+        eval(method)
+        task_delete(msg_id)
+        messages.success(request, response_messages[action])
+    except MailmanApiError:
+        return utils.render_api_error(request)
+    except HTTPError, e:
+        messages.error(request, e.msg)
+    return redirect('user_dashboard')
+
+@list_moderator_required
+def handle_sub_task(request, list_id, sub_id, action):
+    """Handle Subscription Request Tasks on Dashboard.
+    """
+    
+    response_messages = {
+        'accept': _('The request has been accepted.'),
+        'reject': _('The request has been rejected.'),
+        'discard': _('The request has been discarded.'),
+    }
+    try:
+        m_list = utils.get_client().get_list(list_id)
+        m_list.moderate_request(sub_id, action)
+        task_delete(sub_id)
+        messages.success(request, response_messages[action])
+    except MailmanApiError:
+        return utils.render_api_error(request)
+    except HTTPError as e:
+        messages.error(request, e.msg)
+    return redirect('user_dashboard')
