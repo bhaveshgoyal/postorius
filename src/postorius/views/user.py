@@ -19,7 +19,7 @@
 
 import logging
 
-
+from datetime import datetime, timedelta
 from django.forms.formsets import formset_factory
 from django.contrib import messages
 from django.contrib.auth import logout, authenticate, login
@@ -324,6 +324,30 @@ def user_profile(request, user_email=None):
 
 class AdminTasksView(MailmanUserView):
     
+    def get_timediff(self, admin_task):
+        time_now = datetime.now()
+        diff = time_now - admin_task.made_on
+        if diff.days < 0:
+            return ''
+        elif diff.days == 0:
+            if diff.seconds < 10:
+                return "Just Now"
+            if diff.seconds < 60:
+                return str(diff.seconds) + " seconds ago"
+            if diff.seconds < 120:
+               return "a minute ago"
+            if diff.seconds < 3600:
+               return str(diff.seconds / 60) + " minutes ago"
+            if diff.seconds < 7200:
+               return "an hour ago"
+            if diff.seconds < 86400:
+               return str(diff.seconds / 3600) + " hours ago"
+        if diff.days == 1:
+            return "Yesterday"
+        if diff.days < 7:
+            return str(diff.days) + " days ago"
+        return str(diff.days / 7) + " weeks ago"
+
     @method_decorator(login_required)
     def get(self, request):
         mm_email = request.user.email
@@ -349,7 +373,9 @@ class AdminTasksView(MailmanUserView):
                 list_id = sub['list_id'],
                 user_email = sub['email'])
         user_tasks = AdminTasks.objects.all()
-        user_tasks = [each for each in user_tasks if mm_email in List.objects.get(fqdn_listname=each.list_id).owners]
+        user_tasks = [each for each in user_tasks if mm_email in List.objects.get(fqdn_listname=each.list_id).owners] 
+        for each in user_tasks:
+            each.made_on = self.get_timediff(each)
         return render_to_response('postorius/user_dashboard.html',
                                   {'tasks': user_tasks, 'lists': Lists},
                                   context_instance=RequestContext(request))

@@ -105,9 +105,6 @@ urlpatterns = patterns(
         {"template_name": "postorius/login.html"}, name='user_login'),
     url(r'^accounts/logout/$', 'user_logout', name='user_logout'),
     url(r'^accounts/profile/$', 'user_profile', name='user_profile'),
-    url(r'^user_dashboard/$',
-        AdminTasksView.as_view(),
-        name='user_dashboard'),
     url(r'^accounts/subscriptions/$', UserSubscriptionsView.as_view(),
         name='user_subscriptions'),
     url(r'^accounts/per-address-preferences/$',
@@ -118,6 +115,16 @@ urlpatterns = patterns(
     url(r'^accounts/mailmansettings/$',
         UserMailmanSettingsView.as_view(),
         name='user_mailmansettings'),
+    #/dashboard/
+    url(r'^user_dashboard/$',
+        AdminTasksView.as_view(),
+        name='user_dashboard'),
+    url(r'^user_dashboard/(?P<list_id>[^/]+)/(?P<msg_id>[\d+]+)/(?P<action>[accept|reject|discard|defer]+)$',
+        'handle_mod_task'
+        , name='handle_mod_task'),
+    url(r'^user_dashboard/(?P<list_id>[^/]+)/(?P<sub_id>[^/]+)/(?P<action>[accept|reject|discard]+)$',
+        'handle_sub_task'
+        , name='handle_sub_task'),
     # /settings/
     url(r'^settings/$', 'site_settings', name="site_settings"),
     url(r'^domains/$', 'domain_index', name='domain_index'),
