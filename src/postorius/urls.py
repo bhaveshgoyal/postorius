@@ -120,11 +120,14 @@ urlpatterns = patterns(
         AdminTasksView.as_view(),
         name='user_dashboard'),
     url(r'^user_dashboard/(?P<list_id>[^/]+)/(?P<msg_id>[\d+]+)/(?P<action>[accept|reject|discard|defer]+)$',
-        'handle_mod_task'
-        , name='handle_mod_task'),
+        'handle_mod_task',
+        name='handle_mod_task'),
     url(r'^user_dashboard/(?P<list_id>[^/]+)/(?P<sub_id>[^/]+)/(?P<action>[accept|reject|discard]+)$',
-        'handle_sub_task'
-        , name='handle_sub_task'),
+        'handle_sub_task',
+        name='handle_sub_task'),
+    url(r'^user_dashboard/(?P<task_id>[^/]+)/(?P<priority>[^/]+)$',
+        'set_task_priority',
+        name='set_task_priority'),
     # /settings/
     url(r'^settings/$', 'site_settings', name="site_settings"),
     url(r'^domains/$', 'domain_index', name='domain_index'),
