@@ -372,14 +372,24 @@ class AdminTasksView(MailmanUserView):
                 stamp = sub['request_date'],
                 list_id = sub['list_id'],
                 user_email = sub['email'])
-        user_tasks = AdminTasks.objects.all()
+        user_tasks = AdminTasks.objects.all().order_by('priority').reverse()
         user_tasks = [each for each in user_tasks if mm_email in List.objects.get(fqdn_listname=each.list_id).owners] 
         for each in user_tasks:
             each.made_on = self.get_timediff(each)
         return render_to_response('postorius/user_dashboard.html',
                                   {'tasks': user_tasks, 'lists': Lists},
                                   context_instance=RequestContext(request))
-
+@login_required
+def set_task_priority(request, task_id, priority):
+    """Set Priority for a Task."""
+    try:
+        the_task = AdminTasks.objects.get(task_id=task_id)
+        the_task.priority = priority
+        the_task.save()
+        return redirect('user_dashboard')
+    except MailmanApiError:
+        return utils.render_api_error(request)
+	return redirect('user_dashboard')
 
 @user_passes_test(lambda u: u.is_superuser)
 def user_delete(request, user_id,
