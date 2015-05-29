@@ -28,6 +28,7 @@ border-radius: 4px;
 margin: 0px 0 4px 4px;
 display: inline-block;
 width: 30%;
+      height: 30%;
        box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.52);
 }
 .dialog:after,
@@ -98,8 +99,19 @@ width: 12px;
 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
 	background-color: #777;
 }
+i:before {
+	    background:white;
+	    padding: 5px;
+border: 1px solid;
+color:#FFC107;
+}
+.panel {
+border-radius:0px;
+border:1px solid;
+}
 
 </style>
+
      <div class="mm_main mm_canvas">
          {% if messages %}
              <ul class="mm_messages">
@@ -111,7 +123,7 @@ width: 12px;
          {% block main %}{% endblock main %}
      </div>
 
-<div class="container" style="width:40%;">
+<div class="container" style="width:40%;margin-top:8%;border:1px solid;">
 
 
 	<h3 class="text-center">To-Do List</h3>
@@ -120,8 +132,8 @@ width: 12px;
 		<li><a id="list-view" href="#">List Basis</a></li>
 	</ul>
 
-	<div id="task-container">
-		<div class="well" id="task-view">
+	<div id="container">
+		<div style="margin-bottom:0px;border-radius:0px" class="well" id="task-container">
 
 			{% for task in tasks %}
 			<div class="panel panel-default">
@@ -135,41 +147,52 @@ width: 12px;
 				<div class="panel-body">
 				{% endif %}
 					<span style="float:left;" class="fa-lg">
-					{% if task.task_type == 'Subscription'%} 
-						<i class="fa fa-user fa-border fa-fw"></i></span>
-						<ul style="list-style-type:none;"><li>{{ task }}</li><br />
-					<li>{{ task.made_on }}
-					<div style="float:right;" class="btn-group btn-group-sm" role="group">
-						<a href="{% url 'handle_sub_task' task.list_id task.task_id 'accept' %}" class="btn btn-default">{% trans 'Accept' %}</a>
-						<a href="{% url 'handle_sub_task' task.list_id task.task_id 'reject' %}" class="btn btn-default">{% trans 'Reject' %}</a>
-		                	        <a href="{% url 'handle_sub_task' task.list_id task.task_id 'discard' %}" class="btn btn-default">{% trans 'Discard' %}</a>
-					</div></li><ul>
+					{% if task.task_type == 'subscription'%} 
+						<i style="margin-top:25%;" class="fa fa-user"></i></span>
+						<ul style="list-style-type:none;">
+							<li>{{ task }}</li><br />
+							<li>{{ task.made_on }}
+							<div class="btn-group set-priority">
+								<span class="fa fa-lg fa-gear dropdown-toggle" data-toggle="dropdown" area-expanded="false" ></span>
+								<span class="sr-only">Toggle Priority</span>
+								</button>
+								<ul class="dropdown-menu" role="menu">
+									<li role="presentation" class="dropdown-header">Task Priority Level</li>
+									<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 1 %}">High Priority</a></li>
+									<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 0 %}">Medium Priority</a></li>
+									<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id -1 %}">Low Priority</a></li>
+								</ul>
+							</div>			
+								<div style="float:right;" class="btn-group btn-group-sm" role="group">
+									<a href="{% url 'handle_sub_task' task.list_id task.task_id 'accept' %}" class="btn btn-default">{% trans 'Accept' %}</a>
+									<a href="{% url 'handle_sub_task' task.list_id task.task_id 'reject' %}" class="btn btn-default">{% trans 'Reject' %}</a>
+			                			        <a href="{% url 'handle_sub_task' task.list_id task.task_id 'discard' %}" class="btn btn-default">{% trans 'Discard' %}</a>
+								</div>
+							</li>
+						<ul>
 					{% else %} 
-						<i class="fa fa-envelope fa-border"></i></span>
-					<ul style="list-style-type:none;"><li>{{ task }}</li><br />
-						<li>{{task.made_on}}&nbsp;&nbsp;
-						<div class="btn-group set-priority">
-						<span class="fa fa-lg fa-gear dropdown-toggle" data-toggle="dropdown" area-expanded="false" ></span>
-						<span class="sr-only">Toggle Dropdown</span>
-						</button>
-						<ul class="dropdown-menu" role="menu">
-						 <li role="presentation" class="dropdown-header">Set Priority Level</li>
-						<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 1 %}">High Priority</a></li>
-						<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 0 %}">Medium Priority</a></li>
-						<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id -1 %}">Low Priority</a></li>
+						<i style="margin-top:25%;" class="fa fa-envelope-o "></i></span>
+						<ul style="list-style-type:none;">
+							<li>{{ task }}</li><br />
+							<li>{{task.made_on}}&nbsp;&nbsp;
+							<div class="btn-group set-priority">
+								<span class="fa fa-lg fa-gear dropdown-toggle" data-toggle="dropdown" area-expanded="false" ></span>
+								<span class="sr-only">Toggle Priority</span>
+								<ul class="dropdown-menu" role="menu">
+									<li role="presentation" class="dropdown-header">Set Priority Level</li>
+									<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 1 %}">High Priority</a></li>
+									<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 0 %}">Medium Priority</a></li>
+									<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id -1 %}">Low Priority</a></li>
+								</ul>
+							</div>			
+							<div style="float:right;"class="btn-group btn-group-sm" role="group" >
+								<a href="{% url 'handle_mod_task' task.list_id task.task_id 'accept'%}" class="btn btn-default">{% trans 'Accept' %}</a>
+								<a href="{% url 'handle_mod_task' task.list_id task.task_id 'defer' %}" class="btn btn-default">{% trans 'Defer' %}</a>
+								<a href="{% url 'handle_mod_task' task.list_id task.task_id 'reject' %}" class="btn btn-default">{% trans 'Reject' %}</a>
+								<a href="{% url 'handle_mod_task' task.list_id task.task_id 'discard' %}" class="btn btn-default">{% trans 'Discard' %}</a>
+							</div>
+							</li>
 						</ul>
-						</div>
-					
-					
-					
-					
-					
-					<div style="float:right;"class="btn-group btn-group-sm" role="group" >
-						<a href="{% url 'handle_mod_task' task.list_id task.task_id 'accept'%}" class="btn btn-default">{% trans 'Accept' %}</a>
-						<a href="{% url 'handle_mod_task' task.list_id task.task_id 'defer' %}" class="btn btn-default">{% trans 'Defer' %}</a>
-						<a href="{% url 'handle_mod_task' task.list_id task.task_id 'reject' %}" class="btn btn-default">{% trans 'Reject' %}</a>
-						<a href="{% url 'handle_mod_task' task.list_id task.task_id 'discard' %}" class="btn btn-default">{% trans 'Discard' %}</a>
-					</div></li></ul>
 					{% endif %}
 				</div>
 			</div>
@@ -177,48 +200,90 @@ width: 12px;
 		</div>
 	</div><!-- Task container -->
 	
-	<div id="list-container">
-	
+	<div id="list-container">	
 		<ul class="nav nav-pills nav-justified">
 	 		<li class="active"><a href="#both">Both</a></li>
 			<li><a href="#mod">Moderations</a></li>
 			<li><a href="#sub">Subscriptions</a></li>
-	</ul>
-		
+		</ul>	
 		<div class="well" id="list-view">
-			{%for list in lists %}
+			{% regroup tasks|dictsort:"list_id" by list_id as listed_tasks %}
+			{%for listed_object in listed_tasks %}
 				<div class="panel panel-default">
 					<div class="panel-body panel_lists">
-						{{ list.fqdn_listname.capitalize }}<span style="background-color:#1976D2;float:right;"class="badge">42</span>
+						{{ listed_object.grouper|capfirst }}<span style="background-color:#1976D2;float:right;"class="badge">{{listed_object.list|length}}</span>
+					</div>	
+					<div id="per-list-container-{{listed_object.grouper}}" class="dialog container" style="z-index:1;display:none;">
+						<ul id="perlist-switcher-{{listed_object.grouper}}" class="nav nav-pills nav-justified per-list-nav">
+							<li id="list-mod" class="active"><a href="#">Moderations</a></li>
+							<li id="list-sub"><a href="#">Subscriptions</a></li>
+						</ul>
+						<table id="list-moderations" class="table table-hover"> <thead></thead>
+							<tbody>
+							{% for each in listed_object.list%}{% if each.task_type == 'moderation' %}
+			 				{% if each.priority == -1 %}
+							<tr bgcolor="#EFFAFE">
+						 	{% elif each.priority == 0 %}
+							<tr bgcolor="#DBE7FD">
+						 	{% elif each.priority == 1 %}
+							<tr bgcolor="#9F84ED">
+						 	{% else %}
+							<tr>
+							{% endif %}
+							<td>
+								<span style="float:left">{{each.user_email|capfirst}}</span>
+								<div style="float:right;"class="btn-group btn-group-sm" role="group" >
+									<a href="{% url 'handle_mod_task' listed_object.grouper each.task_id 'accept'%}" class="btn btn-default">{% trans 'Accept' %}</a>
+									<a href="{% url 'handle_mod_task' listed_object.grouper each.task_id 'defer' %}" class="btn btn-default">{% trans 'Defer' %}</a>
+									<a href="{% url 'handle_mod_task' listed_object.grouper each.task_id 'reject' %}" class="btn btn-default">{% trans 'Reject' %}</a>
+									<a href="{% url 'handle_mod_task' listed_object.grouper each.task_id 'discard' %}" class="btn btn-default">{% trans 'Discard' %}</a>
+								</div>
+							</td>
+							</tr>
+							{% endif %}{% endfor %}
+							</tbody>
+						</table>
+						<table id="list-subscriptions" style="display:none;" class="table table-hover"> <thead></thead>
+							<tbody>	
+							{% for each in listed_object.list%}{% if each.task_type == 'subscription' %}
+			 				{% if each.priority == -1 %}
+								<tr bgcolor="#EFFAFE">
+						 	{% elif each.priority == 0 %}
+								<tr bgcolor="#DBE7FD">
+						 	{% elif each.priority == 1 %}
+								<tr bgcolor="#9F84ED">
+						 	{% else %}
+								<tr>
+							{% endif %}
+							<td>
+								<span style="float:left">{{each.user_email|capfirst}}</span>
+								<div style="float:right;" class="btn-group btn-group-sm" role="group">
+									<a href="{% url 'handle_sub_task' listed_object.grouper each.task_id 'accept' %}" class="btn btn-default">{% trans 'Accept' %}</a>
+									<a href="{% url 'handle_sub_task' listed_object.grouper each.task_id 'reject' %}" class="btn btn-default">{% trans 'Reject' %}</a>
+			                			        <a href="{% url 'handle_sub_task' listed_object.grouper each.task_id 'discard' %}" class="btn btn-default">{% trans 'Discard' %}</a>
+								</div>
+							</td>
+							</tr>
+							{% endif %}{% endfor %}
+							</tbody>
+						</table>
 					</div>
 				</div>
 			{% endfor %}
-				<div class="dialog container" style="display:none;">
-					<ul id="perlist-switcher" class="nav nav-pills nav-justified">
-						<li><a id="list-mod" class="active" href="#">Moderations</a></li>
-						<li><a id="list-sub" href="#">Subscriptions</a></li>
-					</ul>
-						{% regroup tasks by task_type as grouped_tasks %}
-						{% for each in grouped_tasks %}
-						{% if each.grouper == 'Moderation' %}
-						<table id="list-moderations" class="table table-hover"> <thead></thead><tbody>
-							{% for each_mod in each.list %}
-							<tr><td>{{each_mod}}</td></tr>	
-						{% empty %}<tr><td>No Pending Moderation found in the list</td></tr> 
-						{% endfor %}{% endif %}
-						</tbody>
-						</table>
-						{% if each.grouper == 'Subscription'%}
-						<table id="list-subscriptions" style="display:none;" class="table table-hover"> <thead></thead><tbody>
-						{% for each_sub in each.list %} 
-							<tr><td>{{each_sub}}</td></tr>
-						{% if each.list|length_is:"0" %}<tr><td>No Subscription Request found in the list</td></tr> {% endif %}
-						{% endfor %}{% endif %}</tbody>
-						</table>{% endfor %}	
-				</div>
 		</div>
 	</div><!-- list container -->
-
+	<div class="col-xs-4" style="width:100%;height:3.2em;padding-top:1em;"><span >Reorder</span>
+		<div style="float:right;" class="btn-group">
+			<span class="fa fa-lg fa-bars dropdown-toggle" data-toggle="dropdown" area-expanded="false" ></span>
+			<span class="sr-only">Reorder Tasks</span>
+			<ul class="dropdown-menu" role="menu">
+				<li role="presentation" class="dropdown-header">Reorder By</li>
+				<li role="presentation" ><a class="menuitem" href="{% url 'reorder_tasks_by' 'priority' %}">Priority</a></li>
+				<li role="presentation" ><a class="menuitem" href="{% url 'reorder_tasks_by' 'task_type' %}">Task Type</a></li>
+				<li role="presentation" ><a class="menuitem" href="{% url 'reorder_tasks_by' 'made_on' %}">Date Added</a></li>
+			</ul>
+		</div>			
+	</div>
 
 
 </div>
@@ -242,31 +307,33 @@ $("#switcher a").on("click", function(){
 		$("#task-container").show("fast");
 	}
 });
-$("#perlist-switcher a").on("click", function(){
-	$("#perlist-switcher").find(".active").removeClass("active");
-	$(this).parent().addClass("active");
-	var id = $("#perlist-switcher").find(".active").children().attr("id");
+$(".per-list-nav a").on("click", function(){
+	var parent_ul = $(this).parents('ul.per-list-nav').children('.active').removeClass("active");
+	$(this).parents('li').addClass("active");
+	var id = $(this).parents('ul.per-list-nav').children('.active').attr("id");
+	var par = $(this).parents('.dialog');
 	if (id == 'list-mod'){
-		$("#list-subscriptions").hide("fast");
-		$("#list-moderations").show("fast");
+		$(par).children('#list-subscriptions').hide("fast");
+		$(par).children('#list-moderations').show("fast");
 	}
 	else if (id == 'list-sub'){
-		$("#list-moderations").hide("fast");
-		$("#list-subscriptions").show("fast");
+		$(par).children('#list-subscriptions').show("fast");
+		$(par).children('#list-moderations').hide("fast");
 	}
 });
 $(".panel_lists").on("click", function(){
-if ($(this).hasClass('active')){
-    $('.dialog').fadeOut(200);
-        $(this).removeClass('active');
+	var d_id = $(this).parent().children('.dialog').attr("id")
+	var all_boxes = $('.dialog');
+	the_box = $.grep(all_boxes, function(e){ return e.id==d_id})[0];
+	if ($(this).hasClass('active')){
+    		$(the_box).fadeOut(200);
+        	$(this).removeClass('active');
 	  } else {
-	      $('.dialog').fadeIn(200);
-	  	$('.dialog').css({"display":"block","top":$(this).parent().position().top + $(this).parent().height(),"right":$(this).parent().width()/1.3})
+	      	$(the_box).fadeIn(200);
+	  	$(the_box).css({"display":"block","top":$(this).parent().position().top + $(this).parent().height(),"right":$(this).parent().width()/1.3})
 	          $(this).addClass('active');
-		    }
-	
-	
-	}		
+		 }
+}		
 		
 		
 		

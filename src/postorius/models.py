@@ -353,5 +353,5 @@ class AdminTasks(models.Model):
     objects = AdminTasksManager()
 
     def __unicode__(self):
-        return u'{0.task_type} Request Pending for {0.user_email}'.format(self)
+        return u'{0} Request Pending for {1} in {2}'.format(self.task_type.capitalize(), self.user_email.split('@')[0].capitalize(), self.list_id.split('.')[0].capitalize())
 
