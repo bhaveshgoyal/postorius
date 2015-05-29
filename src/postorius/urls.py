@@ -128,6 +128,10 @@ urlpatterns = patterns(
     url(r'^user_dashboard/(?P<task_id>[^/]+)/(?P<priority>[^/]+)$',
         'set_task_priority',
         name='set_task_priority'),
+    url(r'^user_dashboard/(?P<reorder_param>[^/]+)$',
+        'reorder_tasks_by',
+        name='reorder_tasks_by'),
+    
     # /settings/
     url(r'^settings/$', 'site_settings', name="site_settings"),
     url(r'^domains/$', 'domain_index', name='domain_index'),

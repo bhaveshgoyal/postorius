@@ -356,19 +356,19 @@ class AdminTasksView(MailmanUserView):
         mod_req = sorted(mod_req, key=itemgetter('hold_date'), reverse=False)
         sub_req = [each_req for each_list in Lists for each_req in each_list.requests]
         sub_req = sorted(sub_req, key=itemgetter('request_date'), reverse=False)
-        mod_sync = AdminTasks.objects.get_count('Moderation')
-        sub_sync = AdminTasks.objects.get_count('Subscription')
+        mod_sync = AdminTasks.objects.get_count('moderation')
+        sub_sync = AdminTasks.objects.get_count('subscription')
         for mod in mod_req[mod_sync:]:
             admin_task = AdminTasks.objects.create_task(
                 task_id = mod['request_id'],
-                task_type = 'Moderation',
+                task_type = 'moderation',
                 stamp = mod['hold_date'],
-                list_id = mod['list_id'],
+                list_id = '.'.join(mod['list_id'].split('@')),
                 user_email = mod['sender']) 
         for sub in sub_req[sub_sync:]:
             admin_req = AdminTasks.objects.create_task(
                 task_id = sub['token'],
-                task_type = 'Subscription',
+                task_type = 'subscription',
                 stamp = sub['request_date'],
                 list_id = sub['list_id'],
                 user_email = sub['email'])
@@ -386,10 +386,24 @@ def set_task_priority(request, task_id, priority):
         the_task = AdminTasks.objects.get(task_id=task_id)
         the_task.priority = priority
         the_task.save()
-        return redirect('user_dashboard')
+        return redirect ('user_dashboard')
     except MailmanApiError:
         return utils.render_api_error(request)
-	return redirect('user_dashboard')
+    return redirect ('user_dashboard')
+
+@login_required
+def reorder_tasks_by(request, reorder_param):
+    """Reorder Dashboard Tasks by specified parameter."""
+    try:
+        user_tasks = AdminTasks.objects.all().order_by(reorder_param).reverse()
+        if reorder_param != 'made_on':
+			for each in user_tasks:
+				each.made_on = AdminTasksView().get_timediff(each)
+        Lists = List.objects.all()
+        return render_to_response('postorius/user_dashboard.html',{'tasks': user_tasks, 'lists': Lists},context_instance=RequestContext(request))
+    except MailmanApiError:
+        return utils.render_api_error(request)
+    return render_to_response('postorius/user_dashboard.html',{'tasks': user_tasks, 'lists': Lists},context_instance=RequestContext(request))
 
 @user_passes_test(lambda u: u.is_superuser)
 def user_delete(request, user_id,
