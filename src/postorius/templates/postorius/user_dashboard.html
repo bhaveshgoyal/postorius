@@ -79,7 +79,6 @@ width: 100%;
 #list-container {
 	display:none;
 }
-
 ::-webkit-scrollbar-track
 {
 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
@@ -123,7 +122,7 @@ border:1px solid;
          {% block main %}{% endblock main %}
      </div>
 
-<div class="container" style="width:40%;margin-top:8%;border:1px solid;">
+<div class="container" style="width:35%;margin-top:8%;display:inline-block;border:1px solid;margin-left:27%;">
 
 
 	<h3 class="text-center">To-Do List</h3>
@@ -201,17 +200,25 @@ border:1px solid;
 	</div><!-- Task container -->
 	
 	<div id="list-container">	
-		<ul class="nav nav-pills nav-justified">
-	 		<li class="active"><a href="#both">Both</a></li>
-			<li><a href="#mod">Moderations</a></li>
-			<li><a href="#sub">Subscriptions</a></li>
+		<ul id="parent-per-list" class="parent-list-nav nav nav-pills nav-justified">
+	 		<li id="both" class="parent-active"><a href="#">Both</a></li>
+			<li id="modr"><a href="#">Moderations</a></li>
+			<li id="subr"><a href="#">Subscriptions</a></li>
 		</ul>	
 		<div class="well" id="list-view">
 			{% regroup tasks|dictsort:"list_id" by list_id as listed_tasks %}
 			{%for listed_object in listed_tasks %}
 				<div class="panel panel-default">
 					<div class="panel-body panel_lists">
-						{{ listed_object.grouper|capfirst }}<span style="background-color:#1976D2;float:right;"class="badge">{{listed_object.list|length}}</span>
+						{{ listed_object.grouper|capfirst }}
+						<span style="background-color:#1976D2;float:right;" class="both-badge per-list-badge badge">{{listed_object.list|length}}</span>
+						<span style="background-color:#1976D2;float:right;display:none;" class=" mod-badge per-list-badge badge">
+							{% for each in lists%}{% if each.list_id == listed_object.grouper %}
+							{{each.held|length}}
+						</span>
+						<span style="background-color:#1976D2;float:right;display:none;" class="sub-badge per-list-badge badge">
+							{{each.requests|length}}{% endif %}{% endfor %}
+						</span>
 					</div>	
 					<div id="per-list-container-{{listed_object.grouper}}" class="dialog container" style="z-index:1;display:none;">
 						<ul id="perlist-switcher-{{listed_object.grouper}}" class="nav nav-pills nav-justified per-list-nav">
@@ -288,7 +295,31 @@ border:1px solid;
 
 </div>
 
-
+<div style="width:28%;float:right;display:inline-block;margin-top:8%; border:1px solid;margin-right:3%;" class="widget container">
+	<table class="table table-striped">
+		<div style="text-align:center;" colspan="2">
+			<h3 style="display:inline-block;">List Index</h3>
+			<div style="margin-top:3%;float:right;width:40%;margin-right:5%;" class="input-group">
+	             		<span class="input-group-btn"><button class="btn btn-default fa fa-search" type="button"></button></span>
+				<input type="text" placeholder="Search" class="form-control" id="index-search"/>
+			</div>
+		</div>
+	<thead></thead>
+	<tbody>
+		{% for list in lists %}
+		<tr>
+			<td>{{list.display_name}}</td>
+			<td style="text-align:center;">
+				<div class="btn-group btn-group-sm" role="group">
+					<a href="{% url 'list_summary' list.list_id %}" class="btn btn-default">{% trans 'Actions' %}</a>
+					<a href="{% url 'list_settings' list.list_id %}" class="btn btn-default">{% trans 'Configure' %}</a>
+				</div>
+			</td>
+		<tr>
+		{% endfor %}
+	</tbody>
+	</table>
+</div>
 
 
 
@@ -306,6 +337,33 @@ $("#switcher a").on("click", function(){
 		$("#list-container").hide("fast");
 		$("#task-container").show("fast");
 	}
+});
+$("#parent-per-list a").on("click", function(){
+	$(".parent-list-nav").find(".parent-active").removeClass("parent-active");
+	$(this).parent().addClass("parent-active");
+	var mod_badges = $(".mod-badge");
+	var sub_badges = $(".sub-badge");
+	var both_badges = $(".both-badge");
+
+	$(".panel_lists").hide();
+	var badge_id = $("#parent-per-list").find(".parent-active").attr("id");
+	if (badge_id == 'both'){
+	mod_badges.each(function(){$(this).hide();});
+	sub_badges.each(function(){$(this).hide();});
+	both_badges.each(function(){$(this).show();});
+	}
+	else if (badge_id == 'modr'){
+	mod_badges.each(function(){$(this).show();});
+	sub_badges.each(function(){$(this).hide();});
+	both_badges.each(function(){$(this).hide();});
+
+	}
+	if (badge_id == 'subr'){
+	mod_badges.each(function(){$(this).hide();});
+	sub_badges.each(function(){$(this).show();});
+	both_badges.each(function(){$(this).hide();});
+	}
+	$(".panel_lists").fadeIn();
 });
 $(".per-list-nav a").on("click", function(){
 	var parent_ul = $(this).parents('ul.per-list-nav').children('.active').removeClass("active");
@@ -329,6 +387,24 @@ $(".panel_lists").on("click", function(){
     		$(the_box).fadeOut(200);
         	$(this).removeClass('active');
 	  } else {
+	  var id = $("#parent-per-list").find(".parent-active").attr("id");
+	  if (id == 'modr'){
+	  $(the_box).find(".per-list-nav").hide();
+	  $(the_box).find("#list-subscriptions").hide();
+	  $(the_box).find("#list-moderations").show();
+	  }
+	  else if (id == 'subr'){
+
+	  $(the_box).find(".per-list-nav").hide();
+	  $(the_box).find("#list-subscriptions").show();
+	  $(the_box).find("#list-moderations").hide();
+	  }
+	  else {
+	  $(the_box).find(".per-list-nav").show();
+	  $(the_box).find("#list-subscriptions").hide();
+	  $(the_box).find("#list-moderations").show();
+	  
+	  }
 	      	$(the_box).fadeIn(200);
 	  	$(the_box).css({"display":"block","top":$(this).parent().position().top + $(this).parent().height(),"right":$(this).parent().width()/1.3})
 	          $(this).addClass('active');
