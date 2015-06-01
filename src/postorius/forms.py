@@ -91,6 +91,16 @@ class NewModeratorForm(forms.Form):
             'required': _('Please enter an email adddress.'),
             'invalid': _('Please enter a valid email adddress.')})
 
+class TaskSearchForm(forms.Form):
+
+    """Search For Tasks on Dashboard."""
+    search_tasks = forms.CharField(
+        label=_('Search Tasks'),
+        required=True,
+        widget=forms.TextInput(attrs={'class': "form-control", 'placeholder' : "Filter Tasks"}),
+        error_messages={
+            'required': _('Search Field Can\'t be empty'),
+            'invalid': _('Search Query Not valid')})
 
 class ListNew(FieldsetForm):
 
