@@ -373,12 +373,57 @@ class AdminTasksView(MailmanUserView):
                 list_id = sub['list_id'],
                 user_email = sub['email'])
         user_tasks = AdminTasks.objects.all().order_by('priority').reverse()
-        user_tasks = [each for each in user_tasks if mm_email in List.objects.get(fqdn_listname=each.list_id).owners] 
+        if not request.user.is_superuser:
+            user_sub_tasks = [each for each in user_tasks if mm_email in List.objects.get(fqdn_listname=each.list_id).owners and each.task_type == 'subscription'] 
+            user_mod_tasks = [each for each in user_tasks if (mm_email in List.objects.get(fqdn_listname=each.list_id).moderators or mm_email in List.objects.get(fqdn_listname=each.list_id).owners) and each.task_type == 'moderation']
+            user_tasks = user_sub_tasks + user_mod_tasks
+            lists = [each for each in Lists if mm_email in each.owners or mm_email in each.moderators]  
         for each in user_tasks:
             each.made_on = self.get_timediff(each)
+        search_form = TaskSearchForm()
         return render_to_response('postorius/user_dashboard.html',
-                                  {'tasks': user_tasks, 'lists': Lists},
+                                  {'tasks': user_tasks, 'lists': Lists, 'search_form': search_form},
                                   context_instance=RequestContext(request))
+    def post(self, request):
+        tasks = AdminTasks.objects.all()
+        lists = List().objects.all()
+        mm_email = request.user.email
+        if not request.user.is_superuser:
+            user_sub_tasks = [each for each in tasks if mm_email in List.objects.get(fqdn_listname=each.list_id).owners and each.task_type == 'subscription'] 
+            user_mod_tasks = [each for each in tasks if (mm_email in List.objects.get(fqdn_listname=each.list_id).moderators or mm_email in List.objects.get(fqdn_listname=each.list_id).owners) and each.task_type == 'moderation']
+            tasks = user_sub_tasks + user_mod_tasks
+            lists = [each for each in lists if mm_email in each.owners or mm_email in each.moderators]  
+
+        if 'search_tasks' in request.POST:
+            print dir(tasks)
+            search_form = TaskSearchForm(request.POST)
+            if search_form.is_valid():
+                query = request.POST['search_tasks'].lower()
+                if query.find("moderation") != -1:
+                        res = [each_task for each_task in tasks if each_task.task_type == 'moderation']
+                elif query.find("subscription") != -1:
+                        res = [each_task for each_task in tasks if each_task.priority == 'subscription']
+                elif query.find("priority") != -1:
+                    if query.find("high") != -1:
+                        res = [each_task for each_task in tasks if each_task.priority == 1]
+                    elif query.find("medium") != -1:
+                        res = [each_task for each_task in tasks if each_task.priority == 0]
+                    elif query.find("low") != -1:
+                        res = [each_task for each_task in tasks if each_task.priority == -1]
+                    else:
+                        res = [each_task for each_task in tasks if each_task.priority == -2]
+                else:
+                    res = [each_task for each_task in tasks if each_task.user_email.find(query) != -1]
+        search_form = TaskSearchForm()
+        try:
+            res
+        except UnboundLocalError as e:
+            res = tasks
+        return render_to_response('postorius/user_dashboard.html',
+                                  {'tasks': res, 'lists': lists, 'search_form': search_form},
+                                  context_instance=RequestContext(request))
+        
+
 @login_required
 def set_task_priority(request, task_id, priority):
     """Set Priority for a Task."""

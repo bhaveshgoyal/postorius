@@ -321,11 +321,24 @@ class AdminTasksManager(models.Manager):
     """
     
     def create_task(self, task_id, task_type, stamp, user_email, list_id):
-        task = self.create(task_id=task_id,
-                           task_type=task_type,
-                           made_on=stamp,
-                           user_email=user_email,
-                           list_id=list_id)
+        if task_type == 'moderation':
+            lists = List().objects.all()
+            msg = [ each_msg for each_list in lists for each_msg in each_list.held if each_msg['request_id'] == task_id][0]
+            msg_subject = msg['subject']
+            msg_data = msg['msg']
+            task = self.create(task_id=task_id,
+                               task_type=task_type,
+                               made_on=stamp,
+                               user_email=user_email,
+                               list_id=list_id,
+                               msg_subject=msg_subject,
+                               msg_data=msg_data)
+        else:    
+            task = self.create(task_id=task_id,
+                               task_type=task_type,
+                               made_on=stamp,
+                               user_email=user_email,
+                               list_id=list_id)
         return task
 
     def get_count(self, task_type):
@@ -341,6 +354,9 @@ class AdminTasks(models.Model):
     user_email = models.EmailField()
     list_id = models.CharField(max_length=50)
     priority = models.IntegerField(default=-2)
+    msg_subject = models.CharField(max_length=100, default=-1)
+    msg_data = models.CharField(max_length=10000, default=-1)
+    
     objects = AdminTasksManager()
 
     def __unicode__(self):
