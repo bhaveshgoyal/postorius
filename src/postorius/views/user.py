@@ -348,11 +348,11 @@ class AdminTasksView(MailmanUserView):
 
     @method_decorator(login_required)
     def get(self, request):
-        mm_email = request.user.email
-        Lists = List.objects.all()
-        mod_req = [dict(each_mod,list_id=each_list.fqdn_listname) for each_list in Lists for each_mod in each_list.held]
+        email = request.user.email
+        lists = List.objects.all()
+        mod_req = [dict(each_mod,list_id=each_list.fqdn_listname) for each_list in lists for each_mod in each_list.held]
         mod_req = sorted(mod_req, key=itemgetter('hold_date'), reverse=False)
-        sub_req = [each_req for each_list in Lists for each_req in each_list.requests]
+        sub_req = [each_req for each_list in lists for each_req in each_list.requests]
         sub_req = sorted(sub_req, key=itemgetter('request_date'), reverse=False)
         mod_sync = AdminTasks.objects.get_count('moderation')
         sub_sync = AdminTasks.objects.get_count('subscription')
@@ -370,27 +370,21 @@ class AdminTasksView(MailmanUserView):
                 stamp = sub['request_date'],
                 list_id = sub['list_id'],
                 user_email = sub['email'])
-        user_tasks = AdminTasks.objects.all().order_by('priority').reverse()
+        tasks = AdminTasks.objects.all().order_by('priority').reverse()
         if not request.user.is_superuser:
-            user_sub_tasks = [each for each in user_tasks if mm_email in List.objects.get(fqdn_listname=each.list_id).owners and each.task_type == 'subscription'] 
-            user_mod_tasks = [each for each in user_tasks if (mm_email in List.objects.get(fqdn_listname=each.list_id).moderators or mm_email in List.objects.get(fqdn_listname=each.list_id).owners) and each.task_type == 'moderation']
-            user_tasks = user_sub_tasks + user_mod_tasks
-            lists = [each for each in Lists if mm_email in each.owners or mm_email in each.moderators]  
-        for each in user_tasks:
+            tasks, lists = filter_by_role(email, tasks, lists)  
+        for each in tasks:
             each.made_on = self.get_timediff(each)
         search_form = TaskSearchForm()
         return render_to_response('postorius/user_dashboard.html',
-                                  {'tasks': user_tasks, 'lists': Lists, 'search_form': search_form},
+                                  {'tasks': tasks, 'lists': lists, 'search_form': search_form},
                                   context_instance=RequestContext(request))
     def post(self, request):
         tasks = AdminTasks.objects.all()
         lists = List().objects.all()
-        mm_email = request.user.email
+        email = request.user.email
         if not request.user.is_superuser:
-            user_sub_tasks = [each for each in tasks if mm_email in List.objects.get(fqdn_listname=each.list_id).owners and each.task_type == 'subscription'] 
-            user_mod_tasks = [each for each in tasks if (mm_email in List.objects.get(fqdn_listname=each.list_id).moderators or mm_email in List.objects.get(fqdn_listname=each.list_id).owners) and each.task_type == 'moderation']
-            tasks = user_sub_tasks + user_mod_tasks
-            lists = [each for each in lists if mm_email in each.owners or mm_email in each.moderators]  
+            tasks, lists = filter_by_role(email, tasks, lists)  
 
         if 'search_tasks' in request.POST:
             print dir(tasks)
@@ -434,19 +428,31 @@ def set_task_priority(request, task_id, priority):
         return utils.render_api_error(request)
     return redirect ('user_dashboard')
 
+def filter_by_role(email, tasks, lists):
+    user_sub_tasks = [each for each in tasks if email in List.objects.get(fqdn_listname=each.list_id).owners and each.task_type == 'subscription'] 
+    user_mod_tasks = [each for each in tasks if (email in List.objects.get(fqdn_listname=each.list_id).moderators or email in List.objects.get(fqdn_listname=each.list_id).owners) and each.task_type == 'moderation']
+    tasks = user_sub_tasks + user_mod_tasks
+    lists = [each for each in lists if email in each.owners or email in each.moderators]  
+    return tasks, lists
+       
 @login_required
 def reorder_tasks_by(request, reorder_param):
     """Reorder Dashboard Tasks by specified parameter."""
     try:
-        user_tasks = AdminTasks.objects.all().order_by(reorder_param).reverse()
+        tasks = AdminTasks.objects.all().order_by(reorder_param).reverse()
+        email = request.user.email
+        lists = List.objects.all()
+        search_form = TaskSearchForm()
+        if not request.user.is_superuser:
+            tasks, lists = filter_by_role(email, tasks, lists)  
+        
         if reorder_param != 'made_on':
-			for each in user_tasks:
+			for each in tasks:
 				each.made_on = AdminTasksView().get_timediff(each)
-        Lists = List.objects.all()
-        return render_to_response('postorius/user_dashboard.html',{'tasks': user_tasks, 'lists': Lists},context_instance=RequestContext(request))
+        return render_to_response('postorius/user_dashboard.html',{'tasks': tasks, 'lists': lists, 'search_form': search_form},context_instance=RequestContext(request))
     except MailmanApiError:
         return utils.render_api_error(request)
-    return render_to_response('postorius/user_dashboard.html',{'tasks': user_tasks, 'lists': Lists},context_instance=RequestContext(request))
+    return render_to_response('postorius/user_dashboard.html',{'tasks': tasks, 'lists': lists, 'search_form': search_form},context_instance=RequestContext(request))
 
 @user_passes_test(lambda u: u.is_superuser)
 def user_delete(request, user_id,
