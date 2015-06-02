@@ -456,6 +456,33 @@ def reorder_tasks_by(request, reorder_param):
         return utils.render_api_error(request)
     return render_to_response('postorius/user_dashboard.html',{'tasks': tasks, 'lists': lists, 'search_form': search_form},context_instance=RequestContext(request))
 
+@login_required
+def remove_role_tasks(request, list_id, role, email):
+    """Remove Role from Lists, Redirect to dashboard."""
+    try:
+        the_list = List.objects.get_or_404(fqdn_listname=list_id)
+        print the_list.members
+        if role == 'owner':
+            if email not in the_list.owners:
+                messages.error(request,
+                              _('The user {} is not an owner'.format(email)))
+                return redirect('user_dashboard')
+            the_list.remove_role(role, email)
+        elif role == 'moderator':
+            if email not in the_list.moderators:
+                messages.error(request,
+                              _('The user {} is not a moderator'.format(email)))
+                return redirect('user_dashboard')
+            the_list.remove_role(role, email)
+        elif role == 'subscriber':
+            the_list.unsubscribe(email)
+    except MailmanApiError:
+        return utils.render_api_error(request)
+    except HTTPError as e:
+        messages.error(request, _('The {0} could not be removed:'
+                                ' {1}'.format(role, e.msg)))
+    return redirect('user_dashboard')
+
 @user_passes_test(lambda u: u.is_superuser)
 def user_delete(request, user_id,
                 template='postorius/users/user_confirm_delete.html'):

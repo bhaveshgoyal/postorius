@@ -73,6 +73,7 @@ width: 100%;
 	overflow-y: auto; 
 	overflow-x: visible;
 }
+
 #list-container {
 	display:none;
 }
@@ -352,22 +353,75 @@ border:1px solid;
 	<thead></thead>
 	<tbody>
 		{% for list in lists %}
-		<tr>
+		<tr class="members-expand">
 			<td>{{list.display_name}}</td>
 			<td style="text-align:center;">
 				<div class="btn-group btn-group-sm" role="group">
 					<a href="{% url 'list_summary' list.list_id %}" class="btn btn-default">{% trans 'Actions' %}</a>
 					<a href="{% url 'list_settings' list.list_id %}" class="btn btn-default">{% trans 'Configure' %}</a>
 				</div>
+
+						<div id="members_{{list.list_id}}" class="members-box dialog container" style="display:none;z-index:1;width:27%;height:25%">
+						<ul style="border-radius:0px;" id="role-switcher-{{list.list_id}}" class="nav nav-pills nav-justified role-nav">
+							<li style="background-color:#FF5D56;" id="role-owners"><a style="border-radius:0px;color:#000;" href="#">Owners</a></li>
+							
+							<li style="background-color:#FFF67F" id="role-moderators"><a style="color:#000;border-radius:0px;" href="#">Moderators</a></li>
+							
+							<li id="role-subscribers" class="active"><a style="border-radius:0px;" href="#">Subscribers</a></li>
+						</ul>
+						<table style="display:none;" id="list-owners" class="table table-hover"> <thead></thead>
+							<tbody>
+							{% for each_owner in list.owners %}
+							<tr>
+							<td>
+								<span style="float:left">{{each_owner|capfirst}}</span>
+								<div style="float:right;"class="btn-group btn-group-sm remove-role" role="group" >
+									<a href="{% url 'remove_role_tasks' list.list_id 'owner' each_owner %}" class="btn btn-default remove">{% trans 'Remove' %}</a>
+								</div>
+							</td>
+							</tr>
+							{% endfor %}
+							</tbody>
+						</table>
+						<table style="display:none;" id="list-moderators" class="table table-hover"> <thead></thead>
+							<tbody>
+							{% for each_mod in list.moderators %}
+							<tr>
+							<td>
+								<span style="float:left">{{each_mod|capfirst}}</span>
+								<div style="float:right;" class="btn-group btn-group-sm remove-role" role="group" >
+									<a href="{% url 'remove_role_tasks' list.list_id 'moderator' each_mod %}" class="btn btn-default remove">{% trans 'Remove' %}</a>
+								</div>
+							</td>
+							</tr>
+							{% endfor %}
+							</tbody>
+						</table>
+						<table id="list-subscribers" class="table table-hover"> <thead></thead>
+							<tbody>
+							{% for each_member in list.members %}
+							{% for each_mod in list.moderators %}{% if each_member.email == each_mod %}
+							<tr bgcolor="#FFF67F">{% else %}<tr>{% endif %}{% endfor %}
+							{% for each_own in list.owners %}{% if each_member.email == each_own %}
+							<tr bgcolor="#FF5D56">{% endif %}{% endfor %}
+							<td>
+								<span style="float:left">{{each_member.email|capfirst}}</span>
+								<div style="float:right;"class="btn-group btn-group-sm remove-role" role="group" >
+									<a href="{% url 'list_member_options' list.fqdn_listname each_member.email %}" class="btn btn-default">{% trans 'View' %}</a>
+									<a href="{% url 'remove_role_tasks' list.list_id 'subscriber' each_member.email %}" class="btn btn-default remove">{% trans 'Remove' %}</a>
+								</div>
+							</td>
+							</tr>
+							{% endfor %}
+							</tbody>
+						</table>
+						</div>
 			</td>
-		<tr>
+		</tr>
 		{% endfor %}
 	</tbody>
 	</table>
 </div>
-
-
-
 
 <script>
 $("#switcher a").on("click", function(){
@@ -424,6 +478,27 @@ $(".per-list-nav a").on("click", function(){
 		$(par).children('#list-moderations').hide("fast");
 	}
 });
+$(".role-nav a").on("click", function(){
+	var parent_ul = $(this).parents('ul.role-nav').children('.active').removeClass("active");
+	$(this).parents('li').addClass("active");
+	var id = $(this).parents('ul.role-nav').children('.active').attr("id");
+	var par = $(this).parents('.dialog');
+	if (id == 'role-moderators'){
+		$(par).children('#list-owners').hide("fast");
+		$(par).children('#list-subscribers').hide("fast");
+		$(par).children('#list-moderators').show("fast");
+	}
+	else if (id == 'role-owners'){
+		$(par).children('#list-moderators').hide("fast");
+		$(par).children('#list-owners').show("fast");
+		$(par).children('#list-subscribers').hide("fast");
+	}
+	else if (id == 'role-subscribers'){
+		$(par).children('#list-owners').hide("fast");
+		$(par).children('#list-subscribers').show("fast");
+		$(par).children('#list-moderators').hide("fast");
+	}
+});
 $(".panel_lists").on("click", function(){
 	var d_id = $(this).parent().children('.dialog').attr("id")
 	var all_boxes = $('.dialog');
@@ -473,5 +548,31 @@ $(".panel_tasks").on("click", function(e){
 		  }
 		  }
 	});
+$(".members-expand").on("click", function(e){
+	var target = e.target;
+	var class_name = $(target).parent().attr("class");
+	if (!class_name || class_name.includes('members-expand')){
+	var d_id = $(this).find(".dialog").attr("id");
+	var all_boxes = $('.dialog');
+	the_box = $.grep(all_boxes, function(e){ return e.id==d_id})[0];
+	if ($(this).hasClass('active')){
+    		$(the_box).fadeOut(200);
+        	$(this).removeClass('active');
+	  } else {
+	      	$(the_box).fadeIn(200);
+	  	$(the_box).css({"display":"block","top":$(this).position().top + $(this).height(),"left": $(this).position().left + $(this).width()/12})
+	          $(this).addClass('active');
+		  
+		  }
+		  }
+	});
+$('.remove-role .remove').click(function(){
+	return false;
+});
+
+$('.remove-role .remove').dblclick(function(){
+	var href = $(this).attr("href");
+	window.location = href;
+});
 </script>
 {# endblock main #}
