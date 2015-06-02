@@ -131,6 +131,9 @@ urlpatterns = patterns(
     url(r'^user_dashboard/(?P<reorder_param>[^/]+)$',
         'reorder_tasks_by',
         name='reorder_tasks_by'),
+    url(r'^user_dashboard/(?P<list_id>[^/]+)/(?P<role>[^/]+)/(?P<email>[^/]+)$',
+        'remove_role_tasks',
+        name='remove_role_tasks'),
     
     # /settings/
     url(r'^settings/$', 'site_settings', name="site_settings"),
