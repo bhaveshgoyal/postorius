@@ -19,7 +19,7 @@
 
 import logging
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from django.forms.formsets import formset_factory
 from django.contrib import messages
 from django.contrib.auth import logout, authenticate, login
@@ -36,7 +36,7 @@ from operator import itemgetter
 from postorius import utils
 from postorius.models import (
     MailmanUser, MailmanConnectionError, MailmanApiError, Mailman404Error,
-    AddressConfirmationProfile, AdminTasks, List)
+    AddressConfirmationProfile, AdminTasks, List, EventTracker)
 from postorius.forms import *
 from postorius.auth.decorators import *
 from postorius.views.generic import MailmanUserView
@@ -376,8 +376,12 @@ class AdminTasksView(MailmanUserView):
         for each in tasks:
             each.made_on = self.get_timediff(each)
         search_form = TaskSearchForm()
+        events = EventTracker.objects.all()
+        for each in events:
+            each.made_on = self.get_timediff(each)
+            each.event_on = each.event_on.date()
         return render_to_response('postorius/user_dashboard.html',
-                                  {'tasks': tasks, 'lists': lists, 'search_form': search_form},
+                                  {'tasks': tasks, 'lists': lists, 'search_form': search_form, 'events': events},
                                   context_instance=RequestContext(request))
     def post(self, request):
         tasks = AdminTasks.objects.all()
@@ -385,7 +389,8 @@ class AdminTasksView(MailmanUserView):
         email = request.user.email
         if not request.user.is_superuser:
             tasks, lists = filter_by_role(email, tasks, lists)  
-
+        for each in tasks:
+            each.made_on = self.get_timediff(each)
         if 'search_tasks' in request.POST:
             print dir(tasks)
             search_form = TaskSearchForm(request.POST)
@@ -407,12 +412,16 @@ class AdminTasksView(MailmanUserView):
                 else:
                     res = [each_task for each_task in tasks if each_task.user_email.find(query) != -1]
         search_form = TaskSearchForm()
+        events = EventTracker.objects.all()
+        for each in events:
+            each.made_on = self.get_timediff(each)
+            each.event_on = each.event_on.date()
         try:
             res
         except UnboundLocalError as e:
             res = tasks
         return render_to_response('postorius/user_dashboard.html',
-                                  {'tasks': res, 'lists': lists, 'search_form': search_form},
+                                  {'tasks': res, 'lists': lists, 'search_form': search_form, 'events':events},
                                   context_instance=RequestContext(request))
         
 
@@ -421,7 +430,10 @@ def set_task_priority(request, task_id, priority):
     """Set Priority for a Task."""
     try:
         the_task = AdminTasks.objects.get(task_id=task_id)
-        the_task.priority = priority
+        if the_task.priority == int(priority):
+            the_task.priority = -2
+        else:
+            the_task.priority = priority
         the_task.save()
         return redirect ('user_dashboard')
     except MailmanApiError:
@@ -443,23 +455,25 @@ def reorder_tasks_by(request, reorder_param):
         email = request.user.email
         lists = List.objects.all()
         search_form = TaskSearchForm()
+        events = EventTracker.objects.all()
         if not request.user.is_superuser:
             tasks, lists = filter_by_role(email, tasks, lists)  
-        
+        for each in events:
+            each.made_on = AdminTasksView().get_timediff(each)
+            each.event_on = each.event_on.date()
         if reorder_param != 'made_on':
 			for each in tasks:
 				each.made_on = AdminTasksView().get_timediff(each)
-        return render_to_response('postorius/user_dashboard.html',{'tasks': tasks, 'lists': lists, 'search_form': search_form},context_instance=RequestContext(request))
+        return render_to_response('postorius/user_dashboard.html',{'tasks': tasks, 'lists': lists, 'search_form': search_form, 'events':events},context_instance=RequestContext(request))
     except MailmanApiError:
         return utils.render_api_error(request)
-    return render_to_response('postorius/user_dashboard.html',{'tasks': tasks, 'lists': lists, 'search_form': search_form},context_instance=RequestContext(request))
+    return render_to_response('postorius/user_dashboard.html',{'tasks': tasks, 'lists': lists, 'search_form': search_form, 'events': events},context_instance=RequestContext(request))
 
 @login_required
 def remove_role_tasks(request, list_id, role, email):
     """Remove Role from Lists, Redirect to dashboard."""
     try:
         the_list = List.objects.get_or_404(fqdn_listname=list_id)
-        print the_list.members
         if role == 'owner':
             if email not in the_list.owners:
                 messages.error(request,

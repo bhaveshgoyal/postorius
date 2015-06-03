@@ -31,9 +31,9 @@ from django.core.exceptions import ValidationError
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from urllib2 import HTTPError
-
+from datetime import datetime
 from postorius import utils
-from postorius.models import (Domain, List, MailmanApiError, AdminTasks)
+from postorius.models import (Domain, List, MailmanApiError, AdminTasks, EventTracker)
 from postorius.forms import *
 from postorius.auth.decorators import *
 from postorius.views.generic import MailingListView
@@ -589,7 +589,41 @@ def list_subscriptions(request, option=None, list_id=None,
                                'list': the_list},
                               context_instance=RequestContext(request))
 
+def add_mod_event(request, msg_id, list_id, action):
+    """Adds a Moderation Event Log For Event Tracker."""
+    the_list = List.objects.get_or_404(fqdn_listname=list_id)
+    the_msg = next((each for each in the_list.held if each['request_id'] == int(msg_id)), None)
+    event = 'moderation-' + action
+    user_email = the_msg['sender']
+    made_on = datetime.now()
+    event_op = request.user.email
+    event_on = the_msg['hold_date']
+    event_logged = EventTracker.objects.create_event(
+                    user_email=user_email,
+                    event_op=event_op,
+                    event=event,
+                    list_id=list_id,
+                    made_on=made_on,
+                    event_on=event_on)
 
+def add_sub_event(request, sub_id, list_id, action):
+    """Adds an Subscription Event Log For Event Tracker."""
+    the_list = List.objects.get_or_404(fqdn_listname=list_id)
+    sub_req = next((each for each in the_list.requests if each['token'] == sub_id), None)
+    event = 'subscription-' + action
+    user_email = sub_req['email']
+    made_on = datetime.now()
+    event_op = request.user.email
+    event_on = sub_req['request_date']
+    event_logged = EventTracker.objects.create_event(
+                   user_email=user_email,
+                   event_op=event_op,
+                   event=event,
+                   list_id=list_id,
+                   made_on=made_on,
+                   event_on=event_on)
+
+	
 @list_owner_required
 def list_delete(request, list_id):
     """Deletes a list but asks for confirmation first.
@@ -962,6 +996,7 @@ def handle_mod_task(request, list_id, msg_id, action):
     try:
         the_list = List.objects.get_or_404(fqdn_listname=list_id)
         method = 'the_list.' + action + '_message(msg_id)'
+        add_mod_event(request, msg_id, list_id, action)
         eval(method)
         task_delete(msg_id)
         messages.success(request, response_messages[action])
@@ -983,6 +1018,7 @@ def handle_sub_task(request, list_id, sub_id, action):
     }
     try:
         m_list = utils.get_client().get_list(list_id)
+        add_sub_event(request, sub_id, list_id, action)
         m_list.moderate_request(sub_id, action)
         task_delete(sub_id)
         messages.success(request, response_messages[action])
