@@ -359,6 +359,51 @@ class AdminTasks(models.Model):
     
     objects = AdminTasksManager()
 
-    def __unicode__(self):
-        return u'{0} Request Pending for {1} in {2}'.format(self.task_type.capitalize(), self.user_email.split('@')[0].capitalize(), self.list_id.split('.')[0].capitalize())
 
+    def __unicode__(self):
+	user_email = self.user_email.split('@')[0].capitalize()
+        list_id = self.list_id.split('.')[0].capitalize()
+        return u'{0} Request Pending for {1} in {2}'.format(self.task_type.capitalize(), user_email, list_id)
+
+    @property
+    def get_date(self):
+        return AdminTasks.objects.get(task_id=self.task_id).made_on
+
+class EventTrackerManager(models.Manager):
+    """
+    Manager Class for Event Tracker.
+    """
+
+    def create_event(self, user_email, event_op, event, list_id, made_on, event_on):
+        event = self.create(user_email=user_email,
+                            event_op=event_op,
+                            event=event,
+                            list_id=list_id,
+                            made_on=made_on,
+                            event_on=event_on,)
+        return event
+
+class EventTracker(models.Model):
+    """
+    Model for Tracking all the Events around Postorius.
+    """
+    user_email = models.EmailField()
+    event_op = models.EmailField()
+    event = models.CharField(max_length=15)
+    list_id = models.CharField(max_length=50)
+    made_on = models.DateTimeField()
+    event_on = models.DateTimeField()
+
+    objects = EventTrackerManager()
+    
+    def __unicode__(self):
+        user_name = self.user_email.split('@')[0].capitalize()
+        event_op = self.event_op.split('@')[0].capitalize()
+        list_name = self.list_id.split('.')[0].capitalize()
+        if self.event.find('moderation') != -1:
+	    event = self.event.split('-')[1] + 'ed'
+            return u'{0} {1} a post from {2} in {3}'.format(event_op, event, user_name, list_name)
+        elif self.event.find('subscription') != -1:
+            event = self.event.split('-')[1] + 'ed'
+	    user_name = user_name + '\'s'
+            return u'{0} {1} {2} Subscription request in {3}'.format(event_op, event, user_name, list_name)
