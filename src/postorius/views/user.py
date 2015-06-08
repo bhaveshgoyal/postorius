@@ -26,6 +26,7 @@ from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.decorators import (login_required,
                                             user_passes_test)
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.utils.decorators import method_decorator
@@ -38,10 +39,11 @@ except ImportError:
 from postorius import utils
 from postorius.models import (
     MailmanUser, MailmanConnectionError, MailmanApiError, Mailman404Error,
-    AddressConfirmationProfile, AdminTasks, List, EventTracker)
+    AddressConfirmationProfile, AdminTasks, List, EventTracker, TaskCalender)
 from postorius.forms import *
 from postorius.auth.decorators import *
 from postorius.views.generic import MailmanUserView
+from postorius.views.list import add_mod_event, add_sub_event
 from smtplib import SMTPException
 
 
@@ -321,6 +323,12 @@ def user_profile(request, user_email=None):
                               # {'mm_user': the_user},
                               context_instance=RequestContext(request))
 
+class pseudo_log(object):
+    def __init__(self, date, log_type, log_num):
+        self.on_date = date
+        self.log_number = log_num
+        self.log_type = log_type
+        self.list_id = ""
 
 class AdminTasksView(MailmanUserView):
     
@@ -348,6 +356,22 @@ class AdminTasksView(MailmanUserView):
             return str(diff.days) + " days ago"
         return str(diff.days / 7) + " weeks ago"
 
+
+    def CalenderManager(self, stats):
+        today = datetime.today().date()
+        dates = []
+        print dates
+        for i in range(0,31):
+            dates.append(today + timedelta(days=-i))
+	for date in dates:
+            if TaskCalender.objects.filter(log_type="moderation").filter(on_date=date).count() == 0:
+                stats.append(pseudo_log(date, "moderation", 0))
+            if TaskCalender.objects.filter(log_type="subscription").filter(on_date=date).count() == 0:
+                stats.append(pseudo_log(date, "subscription", 0))
+        if TaskCalender.objects.values('on_date').distinct > 31:
+            TaskCalender.objects.filter(on_date__lte=date).delete()
+        return stats
+
     @method_decorator(login_required)
     def get(self, request):
         email = request.user.email
@@ -364,7 +388,14 @@ class AdminTasksView(MailmanUserView):
                 task_type = 'moderation',
                 stamp = mod['hold_date'],
                 list_id = '.'.join(mod['list_id'].split('@')),
-                user_email = mod['sender']) 
+                user_email = mod['sender'])
+            date = datetime.strptime(admin_task.made_on,'%Y-%m-%dT%H:%M:%S.%f').date()
+            try:
+                current_log = TaskCalender.objects.filter(on_date=date).filter(log_type='moderation').get(list_id=admin_task.list_id)
+                current_log.log_number = current_log.log_number + 1
+                current_log.save()
+            except ObjectDoesNotExist as e:
+                TaskCalender.objects.create_log(on_date=date, list_id=admin_task.list_id, log_type='moderation', log_number=1)
         for sub in sub_req[sub_sync:]:
             admin_req = AdminTasks.objects.create_task(
                 task_id = sub['token'],
@@ -372,9 +403,27 @@ class AdminTasksView(MailmanUserView):
                 stamp = sub['request_date'],
                 list_id = sub['list_id'],
                 user_email = sub['email'])
+            date = datetime.strptime(admin_req.made_on,'%Y-%m-%dT%H:%M:%S').date()
+            try:
+                current_log = TaskCalender.objects.filter(on_date=date).filter(log_type='subscription').get(list_id=admin_req.list_id)
+                current_log.log_number = current_log.log_number + 1
+                current_log.save()
+            except ObjectDoesNotExist as e:
+                TaskCalender.objects.create_log(on_date=date, list_id=admin_req.list_id, log_type='subscription', log_number=1)
+        stats = []
+        for each_log in TaskCalender.objects.all():
+            if action_allowed(request.user,each_log.log_type, each_log.list_id):
+                stats.append(each_log)
+        print stats
+        stats = self.CalenderManager(stats)
+        tasks = AdminTasks.objects.all().order_by('priority').reverse()
+        id_list = [list_mod['request_id'] for list_mod in mod_req] + [list_sub['token'] for list_sub in sub_req]
+        for task in tasks:
+            if task.task_id not in map(str,id_list):
+                AdminTasks.objects.filter(task_id=task.task_id).delete()
         tasks = AdminTasks.objects.all().order_by('priority').reverse()
         if not request.user.is_superuser:
-            tasks, lists = filter_by_role(email, tasks, lists)  
+            tasks, lists = filter_by_role(email, tasks, lists)
         for each in tasks:
             each.made_on = self.get_timediff(each)
         search_form = TaskSearchForm()
@@ -383,7 +432,7 @@ class AdminTasksView(MailmanUserView):
             each.made_on = self.get_timediff(each)
             each.event_on = each.event_on.date()
         return render_to_response('postorius/user_dashboard.html',
-                                  {'tasks': tasks, 'lists': lists, 'search_form': search_form, 'events': events},
+                                  {'tasks': tasks, 'lists': lists, 'search_form': search_form, 'events': events, 'stats': stats},
                                   context_instance=RequestContext(request))
     def post(self, request):
         tasks = AdminTasks.objects.all()
@@ -394,14 +443,13 @@ class AdminTasksView(MailmanUserView):
         for each in tasks:
             each.made_on = self.get_timediff(each)
         if 'search_tasks' in request.POST:
-            print dir(tasks)
             search_form = TaskSearchForm(request.POST)
             if search_form.is_valid():
                 query = request.POST['search_tasks'].lower()
                 if query.find("moderation") != -1:
                         res = [each_task for each_task in tasks if each_task.task_type == 'moderation']
                 elif query.find("subscription") != -1:
-                        res = [each_task for each_task in tasks if each_task.priority == 'subscription']
+                        res = [each_task for each_task in tasks if each_task.task_type == 'subscription']
                 elif query.find("priority") != -1:
                     if query.find("high") != -1:
                         res = [each_task for each_task in tasks if each_task.priority == 1]
@@ -426,6 +474,24 @@ class AdminTasksView(MailmanUserView):
                                   {'tasks': res, 'lists': lists, 'search_form': search_form, 'events':events},
                                   context_instance=RequestContext(request))
         
+def allowed_lists(email, lists):
+
+    lists = [each for each in lists if email in each.owners or email in each.moderators]  
+    return lists
+
+def action_allowed(user, action, list_id):
+    email = user.email
+    the_list = List.objects.get(fqdn_listname=list_id)
+    if user.is_superuser:
+        return True
+    if action == 'moderation':
+        if email in the_list.moderators:
+            return True
+        return False
+    elif action == 'subscription':
+        if email in the_list.owners:
+            return True
+        return False
 
 @login_required
 def set_task_priority(request, task_id, priority):
@@ -466,10 +532,16 @@ def reorder_tasks_by(request, reorder_param):
         if reorder_param != 'made_on':
 			for each in tasks:
 				each.made_on = AdminTasksView().get_timediff(each)
-        return render_to_response('postorius/user_dashboard.html',{'tasks': tasks, 'lists': lists, 'search_form': search_form, 'events':events},context_instance=RequestContext(request))
+        stats = TaskCalender.objects.all()
+        stats = AdminTasksView().CalenderManager(list(stats))
+        return render_to_response('postorius/user_dashboard.html',
+                                  {'tasks': tasks, 'lists': lists, 'search_form': search_form, 'events': events, 'stats': stats},
+                                  context_instance=RequestContext(request))
     except MailmanApiError:
         return utils.render_api_error(request)
-    return render_to_response('postorius/user_dashboard.html',{'tasks': tasks, 'lists': lists, 'search_form': search_form, 'events': events},context_instance=RequestContext(request))
+    return render_to_response('postorius/user_dashboard.html',
+                              {'tasks': tasks, 'lists': lists, 'search_form': search_form, 'events': events, 'stats': stats},
+                              context_instance=RequestContext(request))
 
 @login_required
 def remove_role_tasks(request, list_id, role, email):
