@@ -8,12 +8,14 @@
 <html><head>  
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="{% static 'postorius/css/chartist.min.css' %}">
+  <link rel="stylesheet" href="{% static 'postorius/css/bootstrap-multiselect.css' %}">
   
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
   <script src="{% static 'postorius/js/libs/chartist.min.js' %}"></script>
+  <script src="{% static 'postorius/js/libs/bootstrap-multiselect.js' %}"></script>
 
 <style>
 
@@ -527,16 +529,100 @@ html, body {
 	{% endif %}</div>
 </div>
 
-<div style="margin-left:23%;height:22%;margin-top:5%;width:75%;"class="ct-chart ct-golden-section" id="chart1"></div>
+<div class="container widget" style="margin-left:23%;height:22%;margin-top:5%;width:75%;">
+	<select id="select-list" multiple="multiple">
+		{% for each in lists %}
+   		<option value="{{each.list_id}}">{{each.display_name}}{% endfor %}
+	</select>  
+		<div style="width:97%;height:100%;float:right;" class="container ct-chart ct-golden-section">
+		</div>
+
+</div>
 
 
 <script>
+$(document).ready(function() {
+		$('#select-list').multiselect({
+onChange: function(option, checked, select) {
 
-new Chartist.Line('#chart1', {
-	labels: [{% for each in tasks %}"{{each.get_date}}",{% endfor %}],
-	series: [[10, 20,17 ]]
+var lists = []
+$('#select-list option:selected').each(function(idx, val){lists.push(val.value);});	
+
+var dates = [];
+{% regroup stats by on_date as dated_stats %}{% for each in dated_stats|dictsort:"grouper" %}
+dates.push("{{each.grouper|date:"Y-m-d"}}");{% endfor %}
+dates = dates.getUnique().sort();
+
+var stat = [];
+{% for each in stats|dictsort:"on_date" %}
+stat.push({on_date: "{{each.on_date|date:"Y-m-d"}}", log_type: "{{each.log_type}}", log_number: "{{each.log_number}}", list_id: "{{each.list_id}}"});{% endfor %}
+
+var subs = [];
+var mods = [];
+for (each in stat){
+	
+	console.log(stat[each].log_type + ": " + stat[each].list_id)
+	if (stat[each].log_type == 'subscription'){
+		if (lists.indexOf(stat[each].list_id) >=0 || stat[each].list_id == ""){
+		subs.push(stat[each].log_number);
+		}
+		else if (lists.indexOf(stat[each].list_id) <0){
+		subs.push("0");
+		}
+	}
+	else if (stat[each].log_type == 'moderation'){
+		if (lists.indexOf(stat[each].list_id) >=0 || stat[each].list_id == ""){
+		mods.push(stat[each].log_number);
+		}
+		else if (lists.indexOf(stat[each].list_id) <0){
+		mods.push("0");
+		}
+	}
+}
+console.log(mods);
+new Chartist.Line('.ct-chart', {
+	labels: dates,
+	series: [
+	{
+		name: 'Subscription Requests',
+		data: subs
+	
+	},
+	{
+		name: 'Moderation Requests',
+		data: mods
+	}]
 });
+}});
+		});
+Array.prototype.getUnique = function(){
+	   var u = {}, a = [];
+	      for(var i = 0, l = this.length; i < l; ++i){
+		            if(u.hasOwnProperty(this[i])) {
+				             continue;
+					           }
+			          a.push(this[i]);
+				        u[this[i]] = 1;
+					   }
+	         return a;
+}
+var dates = [];
+{% regroup stats by on_date as dated_stats %}{% for each in dated_stats %}dates.push("{{each.grouper|date:"Y-m-d"}}");{% endfor %}
 
+dates = dates.getUnique().sort()
+new Chartist.Line('.ct-chart', {
+	labels: dates,
+	series: [
+	{
+		name: 'Subscription Requests',
+		data: [{% for each in stats|dictsort:"on_date" %}{% if each.log_type == 'subscription' %}"{{each.log_number}}",{% endif %}{% endfor %}]
+	
+	},
+	{
+		name: 'Moderation Requests',
+		data: [{% for each in stats|dictsort:"on_date" %}{% if each.log_type == 'moderation' %}"{{each.log_number}}",{% endif %}{% endfor %}]
+	}]
+});
 $("#switcher a").on("click", function(){
 	$(".nav").find(".active").removeClass("active");
 	$(this).parent().addClass("active");

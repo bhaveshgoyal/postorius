@@ -365,14 +365,17 @@ class AdminTasks(models.Model):
     priority = models.IntegerField(default=-2)
     msg_subject = models.CharField(max_length=100, default=-1)
     msg_data = models.CharField(max_length=10000, default=-1)
-    
+
     objects = AdminTasksManager()
 
 
     def __unicode__(self):
 	user_email = self.user_email.split('@')[0].capitalize()
         list_id = self.list_id.split('.')[0].capitalize()
-        return u'{0} Request Pending for {1} in {2}'.format(self.task_type.capitalize(), user_email, list_id)
+        if self.task_type =='subscription':
+            return u'Subscription Request from {0} in {1}'.format(user_email, list_id)
+        elif self.task_type == 'moderation':
+            return u'Message held for moderation from {0} in {1}'.format(user_email, list_id)
 
     @property
     def get_date(self):
@@ -402,7 +405,6 @@ class EventTracker(models.Model):
     list_id = models.CharField(max_length=50)
     made_on = models.DateTimeField()
     event_on = models.DateTimeField()
-
     objects = EventTrackerManager()
     
     def __unicode__(self):
@@ -416,3 +418,27 @@ class EventTracker(models.Model):
             event = self.event.split('-')[1] + 'ed'
 	    user_name = user_name + '\'s'
             return u'{0} {1} {2} Subscription request in {3}'.format(event_op, event, user_name, list_name)
+
+class TaskCalenderManager(models.Manager):
+    """
+    Manager Class for Task Calender.
+    """
+    
+    def create_log(self, on_date, list_id, log_type, log_number):
+        log = self.create(on_date=on_date,
+                          list_id=list_id,
+                          log_type=log_type,
+                          log_number=log_number)
+        return log
+class TaskCalender(models.Model):
+    """
+    Model For Collecting Monthly Task Data.
+    """
+    on_date = models.DateField()
+    list_id = models.CharField(max_length=50)
+    log_type = models.CharField(max_length=20)
+    log_number = models.IntegerField()
+
+    objects = TaskCalenderManager()
+    def __unicode__(self):
+        return u'{0} Log dated {1}'.format(self.log_type, self.on_date)
