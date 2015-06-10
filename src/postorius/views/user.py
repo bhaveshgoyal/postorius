@@ -358,7 +358,6 @@ class AdminTasksView(MailmanUserView):
     def CalenderManager(self, stats):
         today = datetime.today().date()
         dates = []
-        print dates
         for i in range(0,31):
             dates.append(today + timedelta(days=-i))
 	for date in dates:
@@ -412,7 +411,6 @@ class AdminTasksView(MailmanUserView):
         for each_log in TaskCalender.objects.all():
             if action_allowed(request.user,each_log.log_type, each_log.list_id):
                 stats.append(each_log)
-        print stats
         stats = self.CalenderManager(stats)
         tasks = AdminTasks.objects.all().order_by('priority').reverse()
         id_list = [list_mod['request_id'] for list_mod in mod_req] + [list_sub['token'] for list_sub in sub_req]
