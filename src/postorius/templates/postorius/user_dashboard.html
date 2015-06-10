@@ -18,7 +18,58 @@
   <script src="{% static 'postorius/js/libs/bootstrap-multiselect.js' %}"></script>
 
 <style>
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
 
+@-webkit-keyframes dashoffset-seven {
+	0% {stroke-dashoffset: 7px;}
+	100% {stroke-dashoffset: 0px;}
+}
+.tooltip {
+	position: absolute;
+	z-index: 1;
+	padding: 5px;
+	background: rgba(0, 0, 0, 0.3);
+	opacity: 1;
+	border-radius: 3px;
+	text-align: center;
+	pointer-events: none;
+	color: white;
+	transition: opacity .1s ease-out;
+}
+.tooltip.tooltip-hidden {
+	opacity: 0;
+}
+.ct-chart .ct-series.ct-series-b .ct-line{
+	stroke: #FF5D56;
+	stroke-width: 3px;
+	stroke-dasharray: 5px 2px;
+	-webkit-animation: dashoffset-seven 300ms infinite linear;
+}
+.ct-chart .ct-series.ct-series-b .ct-point {
+	stroke: #FF5D56;
+}
+.ct-chart .ct-series.ct-series-a .ct-line {
+	stroke: #F1C40F;
+	stroke-width: 2px;
+	stroke-dasharray: 5px 2px;
+	-webkit-animation: dashoffset-seven 200ms infinite linear;
+}
+.ct-chart .ct-series.ct-series-a .ct-point {
+	stroke: #F1C40F;
+}
+
+@font-face {
+	font-family: "Brandon Grotesque Bold";
+	src: url("{% static 'postorius/fonts/brandon_grotesque_bold.ttf' %}") format("truetype");
+}
+@font-face {
+	font-family: "Brandon Grotesque Light";
+	src: url("{% static 'postorius/fonts/brandon_grotesque_light.ttf' %}") format("truetype");
+}
+h3 {
+	font-family: "Brandon Grotesque Light", sans-serif;
+	font-weight: 500;
+}
 .dialog {
 	position: absolute;
 	text-align: center;
@@ -35,13 +86,25 @@
 	border-radius:0px; !important
 }
 .nav li a{
-	-webkit-transition: .17s all;
-		transition: .17s all;
+	-webkit-transition: .2s all;
+		transition: .2s all;
 
 }
 .btn, button { 
-	-webkit-transition: .17s all;
-		transition: .17s all;
+	-webkit-transition: .2s all;
+		transition: .2s all;
+}
+.bg-color_-1 {
+	background-color:#EFFAFE !important;
+}
+.bg-color_0 {
+	background-color:#DBE7FD !important;
+}
+.bg-color_1 {
+	background-color:#9F84ED !important;
+}
+.bg-color_-2 {
+	background-color:#FFFFFF !important;
 }
 .btn_-1 {
 	border:1px solid #00BCD4;
@@ -119,6 +182,30 @@
 .parent-active {
 	background-color:#EEEEEE;
 }
+.panel-heading, .panel-default {
+	border-radius: 0px !important;
+}
+.panel-title  a {
+	color:#3a3a3a;
+	font-size:1em;
+}
+.panel-title  a:hover, 
+.panel-title a:active, 
+.panel-title a:focus {
+	text-decoration: none;
+	color:#3a3a3a;
+	font-size:1em;
+}
+
+.panel-title  ul li:first-child {
+	color:#3a3a3a;
+	font-size:1em;
+}
+
+.made-on {
+	color:#34373C;
+	font-size:0.96em;
+}
 #task-container {
 	float: left;
 	height: 60%;
@@ -130,31 +217,51 @@
 	display:none;
 	height:72%;
 }
-::-webkit-scrollbar-track {
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	border-radius: 10px;
-	background-color: #F7F7F7;
+#task-container::-webkit-scrollbar-track {
+	border-radius: 0px;
+	background-color: #F5F5F5;
 }
 
-::-webkit-scrollbar {
-	width: 12px;
-	background-color: #F7F7F7;
+#task-container::-webkit-scrollbar {
+	width: 8px;
+	background-color: #F5F5F5;
 }
 
-::-webkit-scrollbar-thumb {
-	border-radius: 10px;
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+#task-container::-webkit-scrollbar-thumb {
+	border-radius: 0px;
 	background-color: #777;
 }
-i:before {
+::-webkit-scrollbar-track {
+	border-radius: 0px;
+	background-color: #FFFFFF;
+}
+::-webkit-scrollbar {
+	width: 10px;
+	background-color: #FFFFFF;
+}
+::-webkit-scrollbar-thumb {
+	border-radius: 0px;
+	background-color: #0A1123;
+}
+.i-tasks:before {
 	background:white;
 	padding: 5px;
 	border: 1px solid;
 	color:#FFC107;
 }
 .panel {
-	border-radius:0px;
+	border-radius:0px !important;
 	border:1px solid #0097A7;
+}
+.task-table > tbody > tr:first-child > td{ 
+	border-top: none !important;
+}
+.table > tbody > tr:last-child > td {
+	padding-bottom: 0px !important;
+	margin-bottom:0px !important;
+}
+.panel_tasks .panel-collapse .panel-body{
+	padding-bottom:0px !important;
 }
 .role-nav li.active > a {
 	border-bottom:2px solid #000;
@@ -165,11 +272,67 @@ i:before {
 	color: #3a3a3a;
 }
 html, body {
+	font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	height:100%;
+	font-weight: 500;
+
+}
+.navbar {
+	background-color: #0A1123;
+}
+.nav-icon {
+	color: #ffffff;
 }
 </style>
 </head>
 <body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>                        
+			</button>
+			<a class="navbar-brand" href="#">Mailman | Dashboard</a>
+		</div>
+		<div class="collapse navbar-collapse" id="myNavbar">
+		<form class="navbar-form navbar-left" role="search">
+		  <div class="form-group">
+		      <input type="text" class="form-control" placeholder="Search">
+		        </div>
+			  <button type="submit" class="btn btn-default">Submit</button>
+			  </form>
+			<ul class="nav navbar-nav">
+				{% regroup tasks by task_type as typed_tasks %}
+				{% for each in typed_tasks %}
+					{% if each.grouper == "subscription" %}
+				<li><a href="#"><span class="nav-icon fa fa-lg fa-fw fa-user"></span><sup><span class="badge">{{each.list|length}}</span></sup> Subscription Requests</a></li>
+					{% elif each.grouper == "moderation" %}
+				<li><a href="#"><span class="nav-icon fa fa-lg fa-fw fa-envelope"></span><sup><span class="badge">{{each.list|length}}</span></sup> Held Messages</a></li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+						<span class="glyphicon glyphicon-user"></span>  Welcome {{user.username}}, You have <span>{{tasks|length}}</span> Remaining Tasks
+					</a>
+					<ul class="dropdown-menu" role="menu">
+						<li><a href="{% url 'list_index' %}"><i class="fa fa-envelope-o fa-fw"></i>&nbsp;{% trans "Lists" %}</a></li>
+						{% if user.is_superuser %}
+					        <li><a href="{% url 'domain_index' %}"><i class="fa fa-globe fa-fw"></i>&nbsp;{% trans "Domains" %}</a></li>
+					        {% endif %}
+					        <li><a href="{% url 'user_mailmansettings' %}"><i class="fa fa-gears"></i>&nbsp;{% trans "My Settings" %}</a></li>
+						<li class="divider"></li>
+						<li><a href="{% url 'user_logout' %}"><i class="fa fa-power-off fa-fw"></i>&nbsp;{% trans "Logout" %}</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
      <div class="mm_main mm_canvas">
          {% if messages %}
              <ul class="mm_messages">
@@ -202,91 +365,85 @@ html, body {
 	
 		<div style="margin-bottom:0px;border-radius:0px;height:72%;" class="well" id="task-container">
 			{% for task in tasks %}
+			<div class="panel-group" id="accordian" role="tablist" aria-multiselectable="true">
 			<div class="panel panel-default panel_tasks">
-			 	{% if task.priority == -1 %}
-				<div style="background-color:rgb(239,250,254);" class="panel-body">
-			 	{% elif task.priority == 0 %}
-				<div style="background-color: rgb(219,231,253);" class="panel-body">
-			 	{% elif task.priority == 1 %}
-				<div style="background-color:#9F84ED;" class="panel-body">
-			 	{% else %}
-				<div class="panel-body">
-				{% endif %}
-					<span style="float:left;" class="fa-lg">
 					{% if task.task_type == 'subscription'%} 
-						<i style="margin-top:25%;" class="fa fa-user"></i></span>
-						<ul style="list-style-type:none;">
-							<li>{{ task }}</li><br />
-							<li>{{ task.made_on }}&nbsp;&nbsp;
-			 			<small>{% if task.priority == -1 %}[Low Priority]
-						 	{% elif task.priority == 0 %}[Medium Priority]
-						 	{% elif task.priority == 1 %}[High Priority]
-						 	{% else %}[Priority Not Set]{% endif %}</small>&nbsp;
-							<div class="btn-group set-priority">
-								<span class="fa fa-lg fa-gear dropdown-toggle" data-toggle="dropdown" area-expanded="false" ></span>
-								<span class="sr-only">Toggle Priority</span>
-								<ul class="dropdown-menu" role="menu">
-									<li role="presentation" class="dropdown-header">Task Priority Level</li>
-									<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 1 %}">High Priority</a></li>
-									<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 0 %}">Medium Priority</a></li>
-									<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id -1 %}">Low Priority</a></li>
-								</ul>
-							</div>			
-							<div style="float:right;" id="holoid" class="btn-group btn-group-sm" id="block" role="group">
-								<a href="{% url 'handle_sub_task' task.list_id task.task_id 'accept' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Accept' %}</a>
-								<a href="{% url 'handle_sub_task' task.list_id task.task_id 'reject' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Reject' %}</a>
-			                		        <a href="{% url 'handle_sub_task' task.list_id task.task_id 'discard' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Discard' %}</a>
-							</div>
-							</li>
-						</ul>
-					{% else %} 
-						<i style="margin-top:25%;" class="fa fa-envelope-o "></i></span>
-						<ul style="list-style-type:none;">
-							<li>{{ task }}</li><br />
-							<li>{{task.made_on}}&nbsp;&nbsp;
-			 			<small>	{% if task.priority == -1 %}[Low Priority]
-						 	{% elif task.priority == 0 %}[Medium Priority]
-						 	{% elif task.priority == 1 %}[High Priority]
-						 	{% else %}[Priority Not Set]{% endif %}</small>&nbsp;
-							<div class="btn-group set-priority">
-								<span class="fa fa-lg fa-gear dropdown-toggle" data-toggle="dropdown" area-expanded="false" ></span>
-								<span class="sr-only">Toggle Priority</span>
-								<ul class="dropdown-menu" role="menu">
-									<li role="presentation" class="dropdown-header">Set Priority Level</li>
-									<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 1 %}">High Priority</a></li>
-									<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 0 %}">Medium Priority</a></li>
-									<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id -1 %}">Low Priority</a></li>
-								</ul>
-							</div>			
-							<div style="float:right;" id="holoid" class="btn-group btn-group-sm" role="group" >
-								<a href="{% url 'handle_mod_task' task.list_id task.task_id 'accept'%}" class="btn btn_{{task.priority}} btn-default">{% trans 'Accept' %}</a>
-								<a href="{% url 'handle_mod_task' task.list_id task.task_id 'defer' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Defer' %}</a>
-								<a href="{% url 'handle_mod_task' task.list_id task.task_id 'reject' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Reject' %}</a>
-								<a href="{% url 'handle_mod_task' task.list_id task.task_id 'discard' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Discard' %}</a>
-							</div>
-							</li>
-						</ul>
-						<div id="moderation_{{task.task_id}}" class="msg-box dialog container" style="display:none;z-index:1;width:27%;height:25%">
-							<table class="table msg-head"><thead></thead>
-								<tbody><tr style="text-align:left;border:0px;">
-										<td>{{task.msg_subject}}</td>
-										<td style="vertical-align:middle;" rowspan="2">
-											<div style="float:right;"class="btn-group btn-group-sm" role="group" >
-												<a href="{% url 'handle_mod_task' task.list_id task.task_id 'accept'%}" class="btn btn_{{task.priority}} btn-default">{% trans 'Accept' %}</a>
-												<a href="{% url 'handle_mod_task' task.list_id task.task_id 'defer' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Defer' %}</a>
-												<a href="{% url 'handle_mod_task' task.list_id task.task_id 'reject' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Reject' %}</a>
-												<a href="{% url 'handle_mod_task' task.list_id task.task_id 'discard' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Discard' %}</a>
-											</div>
-										</td>
+					<div class="panel-heading bg-color_{{task.priority}}" role="tab" id="heading_{{task.task_id}}">
+						<div class="panel-title">
+							<span style="float:left;" class="fa-lg"><i style="margin-top:25%;" class="i-tasks fa fa-user"></i></span>
+							<ul style="list-style-type:none;">
+								<li>{{ task }}</li><br />
+								<li><span class="made-on">{{ task.made_on }}</span>&nbsp;&nbsp;
+									<small>{% if task.priority == -1 %}[Low Priority]
+										{% elif task.priority == 0 %}[Medium Priority]
+									 	{% elif task.priority == 1 %}[High Priority]
+									 	{% else %}[Priority Not Set]{% endif %}</small>&nbsp;
+									<div class="btn-group set-priority">
+										<span class="fa fa-lg fa-gear dropdown-toggle" data-toggle="dropdown" area-expanded="false" ></span>
+										<span class="sr-only">Toggle Priority</span>
+										<ul class="dropdown-menu" role="menu">
+											<li role="presentation" class="dropdown-header">Task Priority Level</li>
+											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 1 %}">High Priority</a></li>
+											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 0 %}">Medium Priority</a></li>
+											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id -1 %}">Low Priority</a></li>
+										</ul>
+									</div>			
+									<div style="float:right;" id="holoid" class="btn-group btn-group-sm" id="block" role="group">
+										<a href="{% url 'handle_sub_task' task.list_id task.task_id 'accept' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Accept' %}</a>
+										<a href="{% url 'handle_sub_task' task.list_id task.task_id 'reject' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Reject' %}</a>
+										<a href="{% url 'handle_sub_task' task.list_id task.task_id 'discard' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Discard' %}</a>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+					{% else %}
+					<div class="panel-heading bg-color_{{task.priority}}" role="tab" id="heading_{{task.task_id}}">
+						<div class="panel-title">
+							<a data-toggle="collapse" data-parent="#accordion" href="#collapse_{{task.task_id}}" aria-expanded="true" aria-controls="collapse_{{task.task_id}}">
+							<span style="float:left;" class="fa-lg"><i style="margin-top:25%;" class="i-tasks fa fa-envelope-o "></i></span>
+							<ul style="list-style-type:none;">
+								<li>{{ task }}</li></a><br />
+								<li><span class="made-on">{{task.made_on}}</span>&nbsp;&nbsp;
+				 					<small>	{% if task.priority == -1 %}[Low Priority]
+								 	{% elif task.priority == 0 %}[Medium Priority]
+								 	{% elif task.priority == 1 %}[High Priority]
+								 	{% else %}[Priority Not Set]{% endif %}</small>&nbsp;
+									<div class="btn-group set-priority">
+										<span class="fa fa-lg fa-gear dropdown-toggle" data-toggle="dropdown" area-expanded="false" ></span>
+										<span class="sr-only">Toggle Priority</span>
+										<ul class="dropdown-menu" role="menu">
+											<li role="presentation" class="dropdown-header">Set Priority Level</li>
+											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 1 %}">High Priority</a></li>
+											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 0 %}">Medium Priority</a></li>
+											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id -1 %}">Low Priority</a></li>
+										</ul>
+									</div>			
+									<div style="float:right;" id="holoid" class="btn-group btn-group-sm" role="group" >
+										<a href="{% url 'handle_mod_task' task.list_id task.task_id 'accept'%}" class="btn btn_{{task.priority}} btn-default">{% trans 'Accept' %}</a>
+										<a href="{% url 'handle_mod_task' task.list_id task.task_id 'defer' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Defer' %}</a>
+										<a href="{% url 'handle_mod_task' task.list_id task.task_id 'reject' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Reject' %}</a>
+										<a href="{% url 'handle_mod_task' task.list_id task.task_id 'discard' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Discard' %}</a>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div id="collapse_{{task.task_id}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_{{task.task_id}}">
+						<div class="panel-body">
+							<table class="table task-table"><thead></thead>
+								<tbody>
+									<tr style="text-align:left;">
+										<td>Subject: {{task.msg_subject}}</td>
 									</tr>
 									<tr style="text-align:left;"><td>- {{task.user_email|capfirst}}</td></tr>
 									<tr>
-										<td colspan="2" style="text-align:left;">{{task.msg_data|linebreaks|truncatewords:36}}<a href="#" style="float:right;" data-toggle="modal" data-target="#modal-{{task.task_id}}">View More</a></td>
+										<td style="text-align:left;">{{task.msg_data|linebreaks|truncatewords:36}}<a href="#" style="float:right;" data-toggle="modal" data-target="#modal-{{task.task_id}}">View More</a></td>
 									</tr>
 								</tbody>
 							</table>
 						</div>
-
+					</div>
 					{% endif %}
 				</div>
 			</div>
@@ -513,7 +670,7 @@ html, body {
 		<h3 style="display:inline-block;">Events Stream</h3>
 	</div>
 <div style="overflow-y:auto;height:92%;" class="activities">
-	{% if events|length == 0 %}
+	{% if events|length == 0 %}<hr />
 	No new Recent Stories found
 	{% else %}
 	<table class="table" style=";padding-left:0.2em;"><thead></thead>
@@ -530,11 +687,11 @@ html, body {
 </div>
 
 <div class="container widget" style="margin-left:23%;height:22%;margin-top:5%;width:75%;">
-	<select id="select-list" multiple="multiple">
+	<div style="display:inline-block;margin-left:3%;"><select id="select-list" multiple="multiple">
 		{% for each in lists %}
-   		<option value="{{each.list_id}}">{{each.display_name}}{% endfor %}
-	</select>  
-		<div style="width:97%;height:100%;float:right;" class="container ct-chart ct-golden-section">
+   		<option value="{{each.list_id}}" selected="selected">{{each.display_name}}{% endfor %}
+	</select>  </div>
+		<div style="width:100%;height:100%;" class="ct-chart ct-golden-section">
 		</div>
 
 </div>
@@ -610,19 +767,53 @@ var dates = [];
 {% regroup stats by on_date as dated_stats %}{% for each in dated_stats %}dates.push("{{each.grouper|date:"Y-m-d"}}");{% endfor %}
 
 dates = dates.getUnique().sort()
-new Chartist.Line('.ct-chart', {
+var chart = new Chartist.Line('.ct-chart', {
 	labels: dates,
 	series: [
 	{
-		name: 'Subscription Requests',
-		data: [{% for each in stats|dictsort:"on_date" %}{% if each.log_type == 'subscription' %}"{{each.log_number}}",{% endif %}{% endfor %}]
+		name: 'Moderation Requests',
+		data: [{% for each in stats|dictsort:"on_date" %}{% if each.log_type == 'moderation' %}"{{each.log_number}}",{% endif %}{% endfor %}]
 	
 	},
 	{
-		name: 'Moderation Requests',
-		data: [{% for each in stats|dictsort:"on_date" %}{% if each.log_type == 'moderation' %}"{{each.log_number}}",{% endif %}{% endfor %}]
-	}]
-});
+		name: 'Subscription Requests',
+		data: [{% for each in stats|dictsort:"on_date" %}{% if each.log_type == 'subscription' %}"{{each.log_number}}",{% endif %}{% endfor %}]
+		}]
+		}, {
+			low: 0,
+			axisX: {
+				offset: 25,
+				labelOffset: { y: 10 }
+				},
+			axisY: {
+				offset: 35,
+				labelOffset: { x: -10,y: 3 }
+				}
+		});
+
+
+var $tooltip = $('<div class="tooltip tooltip-hidden"></div>').appendTo($('.ct-chart'));
+ 
+$(document).on('mouseenter', '.ct-point', function() {
+		  var seriesName = $(this).closest('.ct-series').attr('ct:series-name'),
+		        value = $(this).attr('ct:value');
+			  
+			  $tooltip.text(seriesName + ': ' + value);
+			    $tooltip.removeClass('tooltip-hidden');
+			    });
+
+$(document).on('mouseleave', '.ct-point', function() {
+		  $tooltip.addClass('tooltip-hidden');
+		  });
+
+$(document).on('mousemove', '.ct-point', function(event) {
+		  console.log(event);
+		    $tooltip.css({
+			        left: (event.offsetX || event.originalEvent.layerX) - $tooltip.width() / 2,
+				    top: (event.offsetY || event.originalEvent.layerY) - $tooltip.height() - 20
+				      });
+		    });
+
 $("#switcher a").on("click", function(){
 	$(".nav").find(".active").removeClass("active");
 	$(this).parent().addClass("active");
@@ -742,27 +933,6 @@ $(".panel_lists").on("click", function(){
 	$(the_box).fadeIn(200);
 	$(the_box).css({"display":"block","top":$(this).parent().position().top + $(this).parent().height(),"right":$(this).parent().width()});
 	$(this).addClass('active');
-	}
-});
-
-$(".panel_tasks").on("click", function(e){
-	var target = e.target;
-	var class_name = $(target).attr("class");
-	if (!class_name || (!class_name.includes("fa-gear") && !class_name.includes("btn") && !class_name.includes("menu"))){
-		var d_id = $(this).find(".dialog").attr("id");
-		var all_boxes = $('.dialog');
-		the_box = $.grep(all_boxes, function(e){ return e.id==d_id})[0];
-		if ($(this).hasClass('active')){
-    		$(the_box).fadeOut(200);
-    	    $(this).removeClass('active');
-		} 
-		else {
-			$(".panel_tasks").find(".dialog").each(function(){$(this).hide();});
-			$(this).parent().children('.panel_tasks').each(function(){$(this).removeClass('active');});
-			$(the_box).fadeIn(200);
-	  		$(the_box).css({"display":"block","top":$(this).position().top + $(this).height(),"right":$(this).width()})
-			$(this).addClass('active');
-		}
 	}
 });
 
