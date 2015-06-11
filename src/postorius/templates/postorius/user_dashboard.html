@@ -20,6 +20,26 @@
 <style>
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
 
+@font-face {
+	font-family: "Brandon Grotesque Bold";
+	src: url("{% static 'postorius/fonts/brandon_grotesque_bold.ttf' %}") format("truetype");
+}
+@font-face {
+	font-family: "Brandon Grotesque Light";
+	src: url("{% static 'postorius/fonts/brandon_grotesque_light.ttf' %}") format("truetype");
+}
+::-webkit-scrollbar-track {
+	border-radius: 0px;
+	background-color: #FFFFFF;
+}
+::-webkit-scrollbar {
+	width: 10px;
+	background-color: #FFFFFF;
+}
+::-webkit-scrollbar-thumb {
+	border-radius: 0px;
+	background-color: #0A1123;
+}
 @-webkit-keyframes dashoffset-seven {
 	0% {stroke-dashoffset: 7px;}
 	100% {stroke-dashoffset: 0px;}
@@ -58,33 +78,6 @@
 	stroke: #F1C40F;
 }
 
-@font-face {
-	font-family: "Brandon Grotesque Bold";
-	src: url("{% static 'postorius/fonts/brandon_grotesque_bold.ttf' %}") format("truetype");
-}
-@font-face {
-	font-family: "Brandon Grotesque Light";
-	src: url("{% static 'postorius/fonts/brandon_grotesque_light.ttf' %}") format("truetype");
-}
-h3 {
-	font-family: "Brandon Grotesque Light", sans-serif;
-	font-weight: 500;
-}
-.dialog {
-	position: absolute;
-	text-align: center;
-	padding:0px;
-	background: #fff;
-	border-radius: 4px;
-	margin: 0px 0 4px 4px;
-	display: inline-block;
-	width: 27%;
-	height: 27%;
-	box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.52);
-}
-#holoid > a {
-	border-radius:0px; !important
-}
 .nav li a{
 	-webkit-transition: .2s all;
 		transition: .2s all;
@@ -143,6 +136,18 @@ h3 {
 	border:1px solid #3a3a3a;
 	color: #fff;
 }
+.dialog {
+	position: absolute;
+	text-align: center;
+	padding:0px;
+	background: #fff;
+	border-radius: 4px;
+	margin: 0px 0 4px 4px;
+	display: inline-block;
+	width: 27%;
+	height: 27%;
+	box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.52);
+}
 .dialog:after, .dialog:before {
 	bottom: 100%;
 	border: solid transparent;
@@ -185,6 +190,10 @@ h3 {
 .panel-heading, .panel-default {
 	border-radius: 0px !important;
 }
+.panel {
+	border-radius:0px !important;
+	border:1px solid #0097A7;
+}
 .panel-title  a {
 	font-size:1em;
 }
@@ -205,16 +214,19 @@ h3 {
 	color:#34373C;
 	font-size:0.96em;
 }
+h3 {
+	font-family: "Brandon Grotesque Light", sans-serif;
+	font-weight: 500;
+}
+#holoid > a {
+	border-radius:0px; !important
+}
 #task-container {
 	float: left;
 	height: 60%;
 	width: 100%;
 	overflow-y: auto; 
 	overflow-x: visible;
-}
-#list-container {
-	display:none;
-	height:72%;
 }
 #task-container::-webkit-scrollbar-track {
 	border-radius: 0px;
@@ -230,27 +242,15 @@ h3 {
 	border-radius: 0px;
 	background-color: #777;
 }
-::-webkit-scrollbar-track {
-	border-radius: 0px;
-	background-color: #FFFFFF;
-}
-::-webkit-scrollbar {
-	width: 10px;
-	background-color: #FFFFFF;
-}
-::-webkit-scrollbar-thumb {
-	border-radius: 0px;
-	background-color: #0A1123;
+#list-container {
+	display:none;
+	height:72%;
 }
 .i-tasks:before {
 	background:white;
 	padding: 5px;
 	border: 1px solid;
 	color:#FFC107;
-}
-.panel {
-	border-radius:0px !important;
-	border:1px solid #0097A7;
 }
 .task-table > tbody > tr:first-child > td{ 
 	border-top: none !important;
@@ -282,6 +282,15 @@ html, body {
 .nav-icon {
 	color: #ffffff;
 }
+.navbar > .container-fluid > .navbar-header a{
+color: #E4F1FE;
+}
+.navbar .navbar-nav > li > a{
+color: #FFFFFF !important;
+}
+.navbar .navbar-nav > li > a:hover{
+color: #E4F1FE !important;
+}
 </style>
 </head>
 <body>
@@ -296,12 +305,14 @@ html, body {
 			<a class="navbar-brand" href="#">Mailman | Dashboard</a>
 		</div>
 		<div class="collapse navbar-collapse" id="myNavbar">
-		<form class="navbar-form navbar-left" role="search">
-		  <div class="form-group">
-		      <input type="text" class="form-control" placeholder="Search">
-		        </div>
-			  <button type="submit" class="btn btn-default">Submit</button>
-			  </form>
+			<form class="navbar-form navbar-left" role="search" action="{% url 'user_dashboard' %}" method="POST" class="form-inline">{% csrf_token %}
+				<div class="form-group">
+					{{global_search.query_field}}
+					<label class="checkbox-inline">{{global_search.check_lists}}Lists</label>
+					<label class="checkbox-inline">{{global_search.check_requests}}Requests</label>
+					<label class="checkbox-inline">{{global_search.check_people}}People</label>
+				</div>
+		       </form>
 			<ul class="nav navbar-nav">
 				{% regroup tasks|dictsort:"task_type" by task_type as typed_tasks %}
 				{% for each in typed_tasks %}
@@ -600,9 +611,12 @@ html, body {
 					</ul>
 					<table style="display:none;" id="list-owners" class="table table-hover"> <thead></thead>
 						<tbody>
+						{% if list.owners|length_is:"0" %}
+						<tr><td>There are no Owners currently for this list</td></tr>
+						{% endif %}
 						{% for each_owner in list.owners %}
 						<tr>
-							<td>
+							<td>	
 								<span style="float:left">{{each_owner|capfirst}}</span>
 								<div style="float:right;"class="btn-group btn-group-sm remove-role" role="group" >
 									<a href="{% url 'remove_role_tasks' list.list_id 'owner' each_owner %}" class="btn btn-default remove">{% trans 'Remove' %}</a>
@@ -614,6 +628,9 @@ html, body {
 					</table>
 					<table style="display:none;" id="list-moderators" class="table table-hover"> <thead></thead>
 						<tbody>
+						{% if list.moderators|length_is:"0" %}
+						<tr><td>There are no Moderators currently for this list</td></tr>
+						{% endif %}
 						{% for each_mod in list.moderators %}
 						<tr>
 							<td>
@@ -628,6 +645,9 @@ html, body {
 					</table>
 					<table id="list-subscribers" class="table table-hover"> <thead></thead>
 						<tbody>
+						{% if list.members|length_is:"0" %}
+						<tr><td>None members are subscribed to the List currently</td></tr>
+						{% endif %}
 						{% for each_member in list.members %}
 						
 						{% for each_mod in list.moderators %}

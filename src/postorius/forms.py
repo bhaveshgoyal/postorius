@@ -102,6 +102,30 @@ class TaskSearchForm(forms.Form):
             'required': _('Search Field Can\'t be empty'),
             'invalid': _('Search Query Not valid')})
 
+class GlobalSearchForm(forms.Form):
+
+    """Global Search for Entities on Dashboard."""
+    query_field = forms.CharField(
+        label=_('Dashboard Global Search Query'),
+        required=True,
+        widget=forms.TextInput(),
+        error_messages={
+            'required': _('Search Query Can\'t be None'),
+            'invalid': _('Invalid Query')})
+   
+    check_lists = forms.BooleanField(
+        required=False,
+        label=_('Search Among Lists'),
+            )
+    check_requests = forms.BooleanField(
+        required=False,
+        label=_('Search in all Pending Requests'),
+            )
+    check_people = forms.BooleanField(
+        required=False,
+        label=_('Search Among People'),
+            )
+
 class ListNew(FieldsetForm):
 
     """
