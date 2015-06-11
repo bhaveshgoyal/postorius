@@ -459,6 +459,11 @@ class AdminTasksView(MailmanUserView):
                     res = [each_task for each_task in tasks if each_task.user_email.find(query) != -1]
         search_form = TaskSearchForm()
         events = EventTracker.objects.all()
+        stats = []
+        for each_log in TaskCalender.objects.all():
+            if action_allowed(request.user,each_log.log_type, each_log.list_id):
+                stats.append(each_log)
+        stats = self.CalenderManager(stats)
         for each in events:
             each.made_on = self.get_timediff(each)
             each.event_on = each.event_on.date()
@@ -467,7 +472,7 @@ class AdminTasksView(MailmanUserView):
         except UnboundLocalError as e:
             res = tasks
         return render_to_response('postorius/user_dashboard.html',
-                                  {'tasks': res, 'lists': lists, 'search_form': search_form, 'events':events},
+                                  {'tasks': res, 'lists': lists, 'search_form': search_form, 'events':events, 'stats': stats},
                                   context_instance=RequestContext(request))
         
 def allowed_lists(email, lists):
@@ -520,16 +525,18 @@ def reorder_tasks_by(request, reorder_param):
         lists = List.objects.all()
         search_form = TaskSearchForm()
         events = EventTracker.objects.all()
+        stats = []
+        for each_log in TaskCalender.objects.all():
+            if action_allowed(request.user,each_log.log_type, each_log.list_id):
+                stats.append(each_log)
+        stats = AdminTasksView().CalenderManager(stats)
         if not request.user.is_superuser:
             tasks, lists = filter_by_role(email, tasks, lists)  
         for each in events:
             each.made_on = AdminTasksView().get_timediff(each)
             each.event_on = each.event_on.date()
-        if reorder_param != 'made_on':
-			for each in tasks:
-				each.made_on = AdminTasksView().get_timediff(each)
-        stats = TaskCalender.objects.all()
-        stats = AdminTasksView().CalenderManager(list(stats))
+        for each in tasks:
+            each.made_on = AdminTasksView().get_timediff(each)
         return render_to_response('postorius/user_dashboard.html',
                                   {'tasks': tasks, 'lists': lists, 'search_form': search_form, 'events': events, 'stats': stats},
                                   context_instance=RequestContext(request))
