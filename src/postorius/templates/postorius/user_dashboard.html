@@ -186,12 +186,11 @@ h3 {
 	border-radius: 0px !important;
 }
 .panel-title  a {
-	color:#3a3a3a;
 	font-size:1em;
 }
-.panel-title  a:hover, 
-.panel-title a:active, 
-.panel-title a:focus {
+.toggle-accordian:hover, 
+.toggle-accordian:active, 
+.toggle-accordian:focus {
 	text-decoration: none;
 	color:#3a3a3a;
 	font-size:1em;
@@ -304,7 +303,7 @@ html, body {
 			  <button type="submit" class="btn btn-default">Submit</button>
 			  </form>
 			<ul class="nav navbar-nav">
-				{% regroup tasks by task_type as typed_tasks %}
+				{% regroup tasks|dictsort:"task_type" by task_type as typed_tasks %}
 				{% for each in typed_tasks %}
 					{% if each.grouper == "subscription" %}
 				<li><a href="#"><span class="nav-icon fa fa-lg fa-fw fa-user"></span><sup><span class="badge">{{each.list|length}}</span></sup> Subscription Requests</a></li>
@@ -400,7 +399,7 @@ html, body {
 					{% else %}
 					<div class="panel-heading bg-color_{{task.priority}}" role="tab" id="heading_{{task.task_id}}">
 						<div class="panel-title">
-							<a data-toggle="collapse" data-parent="#accordion" href="#collapse_{{task.task_id}}" aria-expanded="true" aria-controls="collapse_{{task.task_id}}">
+							<a class="toggle-accordian" data-toggle="collapse" data-parent="#accordion" href="#collapse_{{task.task_id}}" aria-expanded="true" aria-controls="collapse_{{task.task_id}}">
 							<span style="float:left;" class="fa-lg"><i style="margin-top:25%;" class="i-tasks fa fa-envelope-o "></i></span>
 							<ul style="list-style-type:none;">
 								<li>{{ task }}</li></a><br />
@@ -706,9 +705,9 @@ var lists = []
 $('#select-list option:selected').each(function(idx, val){lists.push(val.value);});	
 
 var dates = [];
-{% regroup stats by on_date as dated_stats %}{% for each in dated_stats|dictsort:"grouper" %}
+{% regroup stats|dictsort:"on_date" by on_date as dated_stats %}{% for each in dated_stats|dictsort:"grouper" %}
 dates.push("{{each.grouper|date:"Y-m-d"}}");{% endfor %}
-dates = dates.getUnique().sort();
+dates = dates.sort();
 
 var stat = [];
 {% for each in stats|dictsort:"on_date" %}
@@ -718,7 +717,6 @@ var subs = [];
 var mods = [];
 for (each in stat){
 	
-	console.log(stat[each].log_type + ": " + stat[each].list_id)
 	if (stat[each].log_type == 'subscription'){
 		if (lists.indexOf(stat[each].list_id) >=0 || stat[each].list_id == ""){
 		subs.push(stat[each].log_number);
@@ -736,7 +734,6 @@ for (each in stat){
 		}
 	}
 }
-console.log(mods);
 new Chartist.Line('.ct-chart', {
 	labels: dates,
 	series: [
@@ -752,21 +749,10 @@ new Chartist.Line('.ct-chart', {
 });
 }});
 		});
-Array.prototype.getUnique = function(){
-	   var u = {}, a = [];
-	      for(var i = 0, l = this.length; i < l; ++i){
-		            if(u.hasOwnProperty(this[i])) {
-				             continue;
-					           }
-			          a.push(this[i]);
-				        u[this[i]] = 1;
-					   }
-	         return a;
-}
 var dates = [];
-{% regroup stats by on_date as dated_stats %}{% for each in dated_stats %}dates.push("{{each.grouper|date:"Y-m-d"}}");{% endfor %}
+{% regroup stats|dictsort:"on_date" by on_date as dated_stats %}{% for each in dated_stats %}dates.push("{{each.grouper|date:"Y-m-d"}}");{% endfor %}
 
-dates = dates.getUnique().sort()
+dates = dates.sort()
 var chart = new Chartist.Line('.ct-chart', {
 	labels: dates,
 	series: [
@@ -807,7 +793,6 @@ $(document).on('mouseleave', '.ct-point', function() {
 		  });
 
 $(document).on('mousemove', '.ct-point', function(event) {
-		  console.log(event);
 		    $tooltip.css({
 			        left: (event.offsetX || event.originalEvent.layerX) - $tooltip.width() / 2,
 				    top: (event.offsetY || event.originalEvent.layerY) - $tooltip.height() - 20
