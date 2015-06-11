@@ -425,12 +425,13 @@ class AdminTasksView(MailmanUserView):
         for each in tasks:
             each.made_on = self.get_timediff(each)
         search_form = TaskSearchForm()
+        global_search = GlobalSearchForm()
         events = EventTracker.objects.all()
         for each in events:
             each.made_on = self.get_timediff(each)
             each.event_on = each.event_on.date()
         return render_to_response('postorius/user_dashboard.html',
-                                  {'tasks': tasks, 'lists': lists, 'search_form': search_form, 'events': events, 'stats': stats},
+                                  {'tasks': tasks, 'lists': lists, 'search_form': search_form, 'global_search': global_search, 'events': events, 'stats': stats},
                                   context_instance=RequestContext(request))
     def post(self, request):
         tasks = AdminTasks.objects.all()
