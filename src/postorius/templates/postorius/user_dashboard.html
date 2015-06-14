@@ -305,11 +305,12 @@ color: #E4F1FE !important;
 			<a class="navbar-brand" href="#">Mailman | Dashboard</a>
 		</div>
 		<div class="collapse navbar-collapse" id="myNavbar">
-			<form class="navbar-form navbar-left" role="search" action="{% url 'user_dashboard' %}" method="POST" class="form-inline">{% csrf_token %}
+			<form id="global-search-form" class="navbar-form navbar-left" role="search" action="{% url 'user_dashboard' %}" method="POST" class="form-inline">{% csrf_token %}
 				<div class="form-group">
 					{{global_search.query_field}}
+					<datalist id="global-result"></datalist>
 					<label class="checkbox-inline">{{global_search.check_lists}}Lists</label>
-					<label class="checkbox-inline">{{global_search.check_requests}}Requests</label>
+					<label class="checkbox-inline">{{global_search.check_domains}}Domains</label>
 					<label class="checkbox-inline">{{global_search.check_people}}People</label>
 				</div>
 		       </form>
@@ -717,6 +718,52 @@ color: #E4F1FE !important;
 
 
 <script>
+$(document).ready(function() {
+	$('[name="query_field"]').attr("list","global-result");
+	$("#id_query_field").on('input', function(){
+		$("#global-search-form").submit();
+		var val = this.value;
+		$('#global-result option').each(function(){
+			if (this.value === val){
+				if ($(this).attr("id") == "list_option"){
+					window.location = "/postorius/lists/" + $(this).attr("label");
+				}
+				else if ($(this).attr("id") == "people_option"){
+					window.location = "/postorius/lists/" + $(this).attr("label") + "/members";
+				}
+				else if ($(this).attr("id") == "domain_option"){
+					window.location = "/postorius/domains";
+				}
+			}
+		}); 
+	});
+	$("#global-search-form").submit(function() {
+		var myCheckboxes = new Array();
+		$("input:checked").each(function() {
+			myCheckboxes.push($(this).val());
+		});
+		$.ajax({
+			type: "POST",
+			url: "{% url 'user_dashboard' %}",
+			data: $(this).serialize(),
+			success: function(response){
+				$("#global-result").empty();
+				for (each in response.lists){
+					var id = response.lists[each].list_id
+					$("#global-result").append("<option id='list_option' value='" + response.lists[each].display_name + "' label='" + response.lists[each].list_id + "'>");
+				}
+				for (each in response.people){
+					$("#global-result").append("<option id='people_option' value='" + response.people[each].useremail + "' label='" + response.people[each].list_id + "'>");
+				}
+				for (each in response.domains){
+					$("#global-result").append("<option id='domain_option' value='" + response.domains[each].mail_host + "' label='" + response.domains[each].base_url + "'>");
+				}
+			}
+		});
+		return false;
+	});
+});
+
 $(document).ready(function() {
 		$('#select-list').multiselect({
 onChange: function(option, checked, select) {
