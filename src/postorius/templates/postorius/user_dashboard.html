@@ -16,6 +16,7 @@
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
   <script src="{% static 'postorius/js/libs/chartist.min.js' %}"></script>
   <script src="{% static 'postorius/js/libs/bootstrap-multiselect.js' %}"></script>
+  
 
 <style>
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
@@ -125,7 +126,6 @@
 	background-color: #0097A7;
 	color: #fff;
 }
-
 .btn_-1:hover, .btn_-1:focus {
 	border:1px solid #00BCD4;
 	background-color: #00BCD4;
@@ -276,20 +276,59 @@ html, body {
 	font-weight: 500;
 
 }
+#id_query_field {
+	padding: 7px;
+	border: none;
+	border-bottom: solid 2px #E4F1FE;
+	transition: border 0.3s;
+}
+#id_query_field:focus,
+#id_query_field.focus {
+border-bottom: solid 2px #1ABC9C;
+}
 .navbar {
 	background-color: #0A1123;
 }
 .nav-icon {
 	color: #ffffff;
 }
+.checkbox-wrapper {
+margin-left: 2em;
+display:inline-block;
+}
+.checkbox-inline input[type=checkbox]{
+	position: relative;
+	color:#1ABC9C;
+	font-size:1.64em;
+}
+.checkbox-inline >input[type=checkbox]:before {
+	position: absolute;
+	background-color: #0A1123;
+	height: 100%;
+	width: 100%;
+	font-family: FontAwesome;
+	content:"\f096";
+	
+ }
+.checkbox-inline >input[type=checkbox]:checked:before {
+	font-family: FontAwesome;
+	display: inline-block;
+	content:"\f046";
+}
+.check-label {
+	margin-left: 1em;
+	margin-right: 1em;
+	border-bottom:2px solid #1ABC9C;
+	color: #E4F1FE;
+}
 .navbar > .container-fluid > .navbar-header a{
-color: #E4F1FE;
+	color: #E4F1FE;
 }
 .navbar .navbar-nav > li > a{
-color: #FFFFFF !important;
+	color: #FFFFFF !important;
 }
 .navbar .navbar-nav > li > a:hover{
-color: #E4F1FE !important;
+	color: #E4F1FE !important;
 }
 </style>
 </head>
@@ -308,13 +347,13 @@ color: #E4F1FE !important;
 			<form id="global-search-form" class="navbar-form navbar-left" role="search" action="{% url 'user_dashboard' %}" method="POST" class="form-inline">{% csrf_token %}
 				<div class="form-group">
 					{{global_search.query_field}}
-					<datalist id="global-result"></datalist>
-					<label class="checkbox-inline">{{global_search.check_lists}}Lists</label>
-					<label class="checkbox-inline">{{global_search.check_domains}}Domains</label>
-					<label class="checkbox-inline">{{global_search.check_people}}People</label>
+					<datalist id="global-result"></datalist><div class="checkbox-wrapper">
+					<label class="checkbox-inline">{{global_search.check_lists}}<label class="check-label" for="id_check_lists">Lists</label></label>
+					<label class="checkbox-inline">{{global_search.check_domains}}<label class="check-label" for="id_check_domains">Domains</label></label>
+					<label class="checkbox-inline">{{global_search.check_people}}<label class="check-label" for="id_check_people">People</label></label></div>
 				</div>
 		       </form>
-			<ul class="nav navbar-nav">
+			<ul class="nav navbar-nav navbar-center">
 				{% regroup tasks|dictsort:"task_type" by task_type as typed_tasks %}
 				{% for each in typed_tasks %}
 					{% if each.grouper == "subscription" %}
@@ -720,6 +759,7 @@ color: #E4F1FE !important;
 <script>
 $(document).ready(function() {
 	$('[name="query_field"]').attr("list","global-result");
+	 $("#id_query_field").attr("placeholder", "Search Dashboard");
 	$("#id_query_field").on('input', function(){
 		$("#global-search-form").submit();
 		var val = this.value;
