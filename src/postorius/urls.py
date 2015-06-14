@@ -100,7 +100,6 @@ per_list_urlpatterns = patterns('postorius.views',
 urlpatterns = patterns(
     'postorius.views',
     (r'^$', 'list_index'),
-    (r'^autocomplete/', include('autocomplete_light.urls')),
     # /account/
     url(r'^accounts/login/$', login_view,
         {"template_name": "postorius/login.html"}, name='user_login'),
