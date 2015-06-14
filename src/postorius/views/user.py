@@ -18,7 +18,6 @@
 
 
 import logging
-
 from datetime import datetime, timedelta, date
 from django.forms.formsets import formset_factory
 from django.contrib import messages
@@ -32,14 +31,16 @@ from django.template import RequestContext
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from django.views.generic import TemplateView
+<<<<<<< HEAD
 try:
     from urllib2 import HTTPError
 except ImportError:
     from urllib.error import HTTPError
+from django.http import JsonResponse
 from postorius import utils
 from postorius.models import (
     MailmanUser, MailmanConnectionError, MailmanApiError, Mailman404Error,
-    AddressConfirmationProfile, AdminTasks, List, EventTracker, TaskCalender)
+    AddressConfirmationProfile, AdminTasks, Domain, List, EventTracker, TaskCalender)
 from postorius.forms import *
 from postorius.auth.decorators import *
 from postorius.views.generic import MailmanUserView
@@ -460,6 +461,23 @@ class AdminTasksView(MailmanUserView):
                         res = [each_task for each_task in tasks if each_task.priority == -2]
                 else:
                     res = [each_task for each_task in tasks if each_task.user_email.find(query) != -1]
+        if 'query_field' in request.POST:
+            query = request.POST.get('query_field').lower()
+            global_result = {}
+            if 'check_lists' in request.POST:
+                lists_res = [ { "display_name": each.display_name, "list_id": each.list_id} for each in lists if each.list_id.find(query) >= 0]
+                global_result['lists'] = lists_res
+            if 'check_domains' in request.POST:
+                domains_res = [{"mail_host": each.mail_host, "base_url": each.base_url} for each in Domain.objects.all() if each.mail_host.find(query) >=0]
+                global_result['domains'] = domains_res
+            if 'check_people' in request.POST:
+                people_res = [{ "useremail": each_member.email, "list_id": each_list.list_id} for each_list in lists for each_member in each_list.members if each_member.email.find(query) >=0]
+                global_result['people'] = people_res
+            try:
+                print global_result
+                return JsonResponse(global_result)
+            except Exception as e:
+                pass
         search_form = TaskSearchForm()
         events = EventTracker.objects.all()
         stats = []

@@ -117,9 +117,9 @@ class GlobalSearchForm(forms.Form):
         required=False,
         label=_('Search Among Lists'),
             )
-    check_requests = forms.BooleanField(
+    check_domains = forms.BooleanField(
         required=False,
-        label=_('Search in all Pending Requests'),
+        label=_('Search Among Domains'),
             )
     check_people = forms.BooleanField(
         required=False,
