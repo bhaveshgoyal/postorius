@@ -63,6 +63,7 @@
 .ct-chart .ct-series.ct-series-b .ct-line{
 	stroke: #FF5D56;
 	stroke-width: 3px;
+opacity:0.5;
 	stroke-dasharray: 5px 2px;
 	-webkit-animation: dashoffset-seven 300ms infinite linear;
 }
@@ -246,11 +247,34 @@ h3 {
 	display:none;
 	height:72%;
 }
+.fa-plus-circle {
+float:right;
+display:inline-block;
+transition: 0.3s all;
+color: #08C;
+}
+.fa-plus-circle:hover {
+float:right;
+display:inline-block;
+transition: 0.3s all;
+transform: rotate(90deg);
+color: #3F51B5;
+}
 .i-tasks:before {
 	background:white;
 	padding: 5px;
 	border: 1px solid;
 	color:#FFC107;
+}
+.fa-bars,
+.fa-gear{
+transition: 0.3s all;
+}
+.fa-bars:hover,
+.fa-gear:hover{
+color: #000;
+transition: 0.3s all;
+transform: rotate(90deg);
 }
 .task-table > tbody > tr:first-child > td{ 
 	border-top: none !important;
@@ -330,6 +354,32 @@ display:inline-block;
 .navbar .navbar-nav > li > a:hover{
 	color: #E4F1FE !important;
 }
+#refresh {
+margin: 100px auto ;
+display:block;
+position: relative;
+	  box-shadow: 
+		  1px 1px #53A7EA,
+		      2px 2px #53A7EA,
+		      3px 3px #53A7EA;
+transition: all 0.1s ease-in;
+border: none;
+padding: 10px;
+background: #08C;
+color: white;
+       font-weight: bold;
+       text-decoration: none;
+       font-size: 18px;
+       font-family: Arial;
+width: 6.85em;
+height: 3.25em;
+}
+
+#refresh:active { 
+	       box-shadow: none;
+top: 3px;
+left: 3px;
+       }
 </style>
 </head>
 <body>
@@ -366,7 +416,7 @@ display:inline-block;
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-						<span class="glyphicon glyphicon-user"></span>  Welcome {{user.username}}, You have <span>{{tasks|length}}</span> Remaining Tasks
+						<span class="glyphicon glyphicon-user"></span>  Welcome {{user.username}}, You have <span>{{tasks|length}}</span> Remaining Task (s)
 					</a>
 					<ul class="dropdown-menu" role="menu">
 						<li><a href="{% url 'list_index' %}"><i class="fa fa-envelope-o fa-fw"></i>&nbsp;{% trans "Lists" %}</a></li>
@@ -401,11 +451,30 @@ display:inline-block;
 	<h3 class="text-center">To-Do List</h3>
 	<ul class="nav nav-tabs nav-justified" id="switcher" role="tablist">
 		<li class="active" ><a id="task-view" href="#">Task Basis</a></li>
-		<li><a id="list-view" href="#">List Basis</a></li>
+		{% if tasks|length_is:"0" %}
+			<li><a href="#">List Basis</a></li>
+		{% else %}
+			<li><a id="list-view" href="#">List Basis</a></li>
+		{% endif %}
 	</ul>
 
 		<div class="col-xs-4" style="width:100%;height:3.2em;">
 			<form action="{% url 'user_dashboard' %}" method="POST" class="form-inline">{% csrf_token %}
+		<div data-toggle="modal" data-target="#manual-task-modal"class="fa fa-fw fa-3x fa-plus-circle"></div>
+			<div class="modal fade" id="manual-task-modal" tabindex=-1 role="dialog">
+				<div class="modal-dialog">
+				<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title">Add Self Note</h4>
+						</div>
+						<div class="modal-body">
+							<p>Lorem epsum salt</p>
+						</div>
+					</div>
+				</div>
+			</div><!-- Modal -->
 				<div style="margin-top:1%;float:right;width:40%;" class="input-group">
 	             			<span class="input-group-btn"><button class="btn btn-default fa fa-filter" type="submit"></button></span>
 					{{search_form.search_tasks}}
@@ -414,6 +483,10 @@ display:inline-block;
 		</div>
 	
 		<div style="margin-bottom:0px;border-radius:0px;height:72%;" class="well" id="task-container">
+			{% if tasks|length_is:"0" %}<h4>
+			There are no Pending Tasks for {{user.username}} matching the criteria</h4>
+			<a href="."><button id="refresh"><span class="fa fa-lg fa-fw fa-refresh"></span>Refresh</button></a>
+			{% endif %}
 			{% for task in tasks %}
 			<div class="panel-group" id="accordian" role="tablist" aria-multiselectable="true">
 			<div class="panel panel-default panel_tasks">
@@ -433,9 +506,20 @@ display:inline-block;
 										<span class="sr-only">Toggle Priority</span>
 										<ul class="dropdown-menu" role="menu">
 											<li role="presentation" class="dropdown-header">Task Priority Level</li>
-											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 1 %}">High Priority</a></li>
-											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 0 %}">Medium Priority</a></li>
-											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id -1 %}">Low Priority</a></li>
+											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 1 %}">High Priority
+											{% if task.priority == 1 %}
+											<span class="fa fa-fw fa-check"></span>
+											{% endif %}</a>
+											</li>
+											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 0 %}">Medium Priority
+											{% if task.priority == 0 %}
+											<span class="fa fa-fw fa-check"></span>
+											{% endif %}</a>
+											</li>
+											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id -1 %}">Low Priority
+											{% if task.priority == -1 %}
+											<span class="fa fa-fw fa-check"></span>
+											{% endif %}</a></li>
 										</ul>
 									</div>			
 									<div style="float:right;" id="holoid" class="btn-group btn-group-sm" id="block" role="group">
@@ -464,9 +548,21 @@ display:inline-block;
 										<span class="sr-only">Toggle Priority</span>
 										<ul class="dropdown-menu" role="menu">
 											<li role="presentation" class="dropdown-header">Set Priority Level</li>
-											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 1 %}">High Priority</a></li>
-											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 0 %}">Medium Priority</a></li>
-											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id -1 %}">Low Priority</a></li>
+											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 1 %}">High Priority
+											{% if task.priority == 1 %}
+											<span class="fa fa-fw fa-check"></span>
+											{% endif %}</a>
+											</li>
+											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 0 %}">Medium Priority
+											{% if task.priority == 0 %}
+											<span class="fa fa-fw fa-check"></span>
+											{% endif %}</a>
+											</li>
+											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id -1 %}">Low Priority
+											{% if task.priority == -1 %}
+											<span class="fa fa-fw fa-check"></span>
+											{% endif %}</a>
+											</li>
 										</ul>
 									</div>			
 									<div style="float:right;" id="holoid" class="btn-group btn-group-sm" role="group" >
@@ -524,6 +620,9 @@ display:inline-block;
 			<li id="subr"><a style="border-radius:0px;" href="#">Subscriptions</a></li>
 		</ul>	
 		<div style="height:92%;" class="well" id="list-view">
+			{% if tasks|length_is:"0" %}<h4>
+			There are No Pending Tasks For {{user.username}} at the Moment</h4>
+			{% endif %}
 			{% regroup tasks|dictsort:"list_id" by list_id as listed_tasks %}
 			{%for listed_object in listed_tasks %}
 				<div class="panel panel-default">
@@ -652,7 +751,7 @@ display:inline-block;
 					<table style="display:none;" id="list-owners" class="table table-hover"> <thead></thead>
 						<tbody>
 						{% if list.owners|length_is:"0" %}
-						<tr><td>There are no Owners currently for this list</td></tr>
+						<tr><td>The List {{list.display_name}} doesn't have any owner(s)</td></tr>
 						{% endif %}
 						{% for each_owner in list.owners %}
 						<tr>
@@ -669,7 +768,7 @@ display:inline-block;
 					<table style="display:none;" id="list-moderators" class="table table-hover"> <thead></thead>
 						<tbody>
 						{% if list.moderators|length_is:"0" %}
-						<tr><td>There are no Moderators currently for this list</td></tr>
+						<tr><td>No Moderators are currently set for {{list.display_name}}</td></tr>
 						{% endif %}
 						{% for each_mod in list.moderators %}
 						<tr>
@@ -686,7 +785,7 @@ display:inline-block;
 					<table id="list-subscribers" class="table table-hover"> <thead></thead>
 						<tbody>
 						{% if list.members|length_is:"0" %}
-						<tr><td>None members are subscribed to the List currently</td></tr>
+						<tr><td>Noone has yet subscribed to {{list.deisplay_name}}</td></tr>
 						{% endif %}
 						{% for each_member in list.members %}
 						
@@ -804,7 +903,9 @@ $(document).ready(function() {
 	});
 });
 
+
 $(document).ready(function() {
+
 		$('#select-list').multiselect({
 onChange: function(option, checked, select) {
 
@@ -881,7 +982,13 @@ var chart = new Chartist.Line('.ct-chart', {
 			axisY: {
 				offset: 35,
 				labelOffset: { x: -10,y: 3 }
-				}
+				},
+			     
+			lineSmooth: Chartist.Interpolation.simple({
+				divisor: 5
+		        }),
+			 fullWidth: true
+			     
 		});
 
 

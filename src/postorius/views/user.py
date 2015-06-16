@@ -41,7 +41,6 @@ from postorius.models import (
 from postorius.forms import *
 from postorius.auth.decorators import *
 from postorius.views.generic import MailmanUserView
-from postorius.views.list import add_mod_event, add_sub_event
 from smtplib import SMTPException
 
 
@@ -419,7 +418,8 @@ class AdminTasksView(MailmanUserView):
                 AdminTasks.objects.filter(task_id=task.task_id).delete()
         tasks = AdminTasks.objects.all().order_by('priority').reverse()
         if not request.user.is_superuser:
-            tasks, lists = filter_by_role(email, tasks, lists)
+            tasks = filter_tasks_by_role(email, tasks, lists)
+            lists = allowed_lists(lists)
         for each in tasks:
             each.made_on = self.get_timediff(each)
         search_form = TaskSearchForm()
@@ -436,7 +436,8 @@ class AdminTasksView(MailmanUserView):
         lists = List().objects.all()
         email = request.user.email
         if not request.user.is_superuser:
-            tasks, lists = filter_by_role(email, tasks, lists)  
+            tasks = filter_tasks_by_role(email, tasks, lists)  
+            lists = allowed_lists(lists)
         for each in tasks:
             each.made_on = self.get_timediff(each)
         if 'search_tasks' in request.POST:
@@ -476,6 +477,7 @@ class AdminTasksView(MailmanUserView):
             except Exception as e:
                 pass
         search_form = TaskSearchForm()
+        global_search = GlobalSearchForm()
         events = EventTracker.objects.all()
         stats = []
         for each_log in TaskCalender.objects.all():
@@ -490,7 +492,7 @@ class AdminTasksView(MailmanUserView):
         except UnboundLocalError as e:
             res = tasks
         return render_to_response('postorius/user_dashboard.html',
-                                  {'tasks': res, 'lists': lists, 'search_form': search_form, 'events':events, 'stats': stats},
+                                  {'tasks': res, 'lists': lists, 'search_form': search_form, 'global_search': global_search, 'events':events, 'stats': stats},
                                   context_instance=RequestContext(request))
         
 def allowed_lists(email, lists):
@@ -527,12 +529,11 @@ def set_task_priority(request, task_id, priority):
         return utils.render_api_error(request)
     return redirect ('user_dashboard')
 
-def filter_by_role(email, tasks, lists):
+def filter_tasks_by_role(email, tasks, lists):
     user_sub_tasks = [each for each in tasks if email in List.objects.get(fqdn_listname=each.list_id).owners and each.task_type == 'subscription'] 
     user_mod_tasks = [each for each in tasks if (email in List.objects.get(fqdn_listname=each.list_id).moderators or email in List.objects.get(fqdn_listname=each.list_id).owners) and each.task_type == 'moderation']
     tasks = user_sub_tasks + user_mod_tasks
-    lists = [each for each in lists if email in each.owners or email in each.moderators]  
-    return tasks, lists
+    return tasks
        
 @login_required
 def reorder_tasks_by(request, reorder_param):
@@ -549,7 +550,8 @@ def reorder_tasks_by(request, reorder_param):
                 stats.append(each_log)
         stats = AdminTasksView().CalenderManager(stats)
         if not request.user.is_superuser:
-            tasks, lists = filter_by_role(email, tasks, lists)  
+            tasks = filter_tasks_by_role(email, tasks, lists)
+            lists = allowed_lists(lists)
         for each in events:
             each.made_on = AdminTasksView().get_timediff(each)
             each.event_on = each.event_on.date()
