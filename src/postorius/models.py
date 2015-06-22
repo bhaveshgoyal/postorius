@@ -348,7 +348,7 @@ class AdminTasks(models.Model):
     """
     Tasks Model for Storing list of pending Admin Tasks.
     """
-    task_id = models.CharField(max_length=50)
+    task_id = models.CharField(max_length=50, null=True)
     task_type = models.CharField(max_length=20)
     made_on = models.DateTimeField()
     user_email = models.EmailField()
@@ -367,6 +367,8 @@ class AdminTasks(models.Model):
             return u'Subscription Request from {0} in {1}'.format(user_email, list_id)
         elif self.task_type == 'moderation':
             return u'Message held for moderation from {0} in {1}'.format(user_email, list_id)
+        elif self.task_type == 'manual':
+            return unicode(self.msg_subject)
 
     @property
     def get_date(self):
@@ -385,6 +387,9 @@ class EventTrackerManager(models.Manager):
                             made_on=made_on,
                             event_on=event_on,)
         return event
+    
+    def get_count(self):
+        return len(self.all())
 
 class EventTracker(models.Model):
     """

@@ -102,6 +102,34 @@ class TaskSearchForm(forms.Form):
             'required': _('Search Field Can\'t be empty'),
             'invalid': _('Search Query Not valid')})
 
+class ListIndexSearchForm(forms.Form):
+
+    """Search among List Index for a List on Dashboard."""
+    search_li = forms.CharField(
+        label=_('Search Lists'),
+        required=True,
+        widget=forms.TextInput(attrs={'class': "form-control", 'placeholder' : "Search"}),
+        error_messages={
+            'required': _('Search Field Can\'t be empty'),
+            'invalid': _('Invalid List Search query')})
+
+class NewManualTaskForm(forms.Form):
+
+    """Form instance to add a Manual Task To Dashboard."""
+    mtask_subject = forms.CharField(
+        label=_('Subject Description for Manual Task'),
+        required=True,
+        widget=forms.TextInput(),
+        error_messages={
+            'required': _('Task Heading can\'t e empty'),
+            'invalid': _('Invalid Set of Characters')})
+    mtask_description = forms.CharField(
+        label=_('Full Description for The User Manual Task'),
+        required=True,
+        widget=forms.TextInput(),
+        error_messages={
+            'invalid': _('Invalid Set of Characters')})
+		    
 class GlobalSearchForm(forms.Form):
 
     """Global Search for Entities on Dashboard."""
