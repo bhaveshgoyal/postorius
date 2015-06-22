@@ -591,6 +591,9 @@ def list_subscriptions(request, option=None, list_id=None,
 
 def add_mod_event(request, msg_id, list_id, action):
     """Adds a Moderation Event Log For Event Tracker."""
+    event_count = EventTracker.objects.get_count()
+    if event_count == 30:
+        EventTracker.objects.earliest('made_on').delete()
     the_list = List.objects.get_or_404(fqdn_listname=list_id)
     the_msg = next((each for each in the_list.held if each['request_id'] == int(msg_id)), None)
     event = 'moderation-' + action
@@ -608,6 +611,9 @@ def add_mod_event(request, msg_id, list_id, action):
 
 def add_sub_event(request, sub_id, list_id, action):
     """Adds an Subscription Event Log For Event Tracker."""
+    event_count = EventTracker.objects.get_count()
+    if event_count == 30:
+        EventTracker.objects.earliest('made_on').delete()
     the_list = List.objects.get_or_404(fqdn_listname=list_id)
     sub_req = next((each for each in the_list.requests if each['token'] == sub_id), None)
     event = 'subscription-' + action
@@ -665,6 +671,7 @@ def accept_held_message(request, list_id, msg_id):
     """
     try:
         the_list = List.objects.get_or_404(fqdn_listname=list_id)
+        add_mod_event(request, msg_id, list_id, 'accept')
         the_list.accept_message(msg_id)
     except MailmanApiError:
         return utils.render_api_error(request)
@@ -681,6 +688,7 @@ def discard_held_message(request, list_id, msg_id):
     """
     try:
         the_list = List.objects.get_or_404(fqdn_listname=list_id)
+        add_mod_event(request, msg_id, list_id, 'discard')
         the_list.discard_message(msg_id)
     except MailmanApiError:
         return utils.render_api_error(request)
@@ -697,6 +705,7 @@ def defer_held_message(request, list_id, msg_id):
     """
     try:
         the_list = List.objects.get_or_404(fqdn_listname=list_id)
+        add_mod_event(request, msg_id, list_id, 'defer')
         the_list.defer_message(msg_id)
     except MailmanApiError:
         return utils.render_api_error(request)
@@ -713,6 +722,7 @@ def reject_held_message(request, list_id, msg_id):
     """
     try:
         the_list = List.objects.get_or_404(fqdn_listname=list_id)
+        add_mod_event(request, msg_id, list_id, 'reject')
         the_list.reject_message(msg_id)
     except MailmanApiError:
         return utils.render_api_error(request)
@@ -754,6 +764,7 @@ def handle_subscription_request(request, list_id, request_id, action):
     try:
         m_list = utils.get_client().get_list(list_id)
         # Moderate request and add feedback message to session.
+        add_sub_event(request, request_id, list_id, action)
         m_list.moderate_request(request_id, action)
         messages.success(request, confirmation_messages[action])
     except MailmanApiError:
