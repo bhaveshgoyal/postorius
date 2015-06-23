@@ -477,25 +477,31 @@ class AdminTasksView(MailmanUserView):
             except Exception as e:
                 print e
         if 'mtask_subject' in request.POST:
-            mtask_subject = request.POST.get('mtask_subject')
-            mtask_description = request.POST.get('mtask_description')
-            try:
-                mtask_id = int(AdminTasks.objects.filter(task_type='manual').latest('made_on').task_id) -1
-            except ObjectDoesNotExist:  
-                mtask_id = -1
-            mtask = AdminTasks.objects.create_task(
-                task_id = mtask_id,
-                task_type = 'manual',
-                stamp = datetime.now(),
-                list_id = "",
-                user_email = request.user.email)
-            mtask.msg_subject = mtask_subject
-            mtask.msg_data = mtask_description
-            mtask.save()
-            tasks = AdminTasks.objects.all()
-            tasks = filter_tasks_by_role(request.user, tasks, lists)  
-            for each in tasks:
-                each.made_on = self.get_timediff(each)
+            mtask_form = NewManualTaskForm(request.POST)
+            if mtask_form.is_valid():
+                mtask_subject = request.POST.get('mtask_subject')
+                mtask_description = request.POST.get('mtask_description')
+                try:
+                    mtask_id = int(AdminTasks.objects.filter(task_type='manual').latest('made_on').task_id) -1
+                except ObjectDoesNotExist:  
+                    mtask_id = -1
+                mtask = AdminTasks.objects.create_task(
+                    task_id = mtask_id,
+                    task_type = 'manual',
+                    stamp = datetime.now(),
+                    list_id = "",
+                    user_email = request.user.email)
+                mtask.msg_subject = mtask_subject
+                mtask.msg_data = mtask_description
+                mtask.save()
+                tasks = AdminTasks.objects.all()
+                tasks = filter_tasks_by_role(request.user, tasks, lists)  
+                for each in tasks:
+                    each.made_on = self.get_timediff(each)
+            else:
+                messages.error(request,
+                            _('Error Creating Task entry : Task Heading can\'t be left Empty'))
+                return redirect('user_dashboard')
         mtask_form = NewManualTaskForm()
         search_form = TaskSearchForm()
         search_li = ListIndexSearchForm()
@@ -575,7 +581,6 @@ def generate_graph_object(select_lists):
             sub_objects[date.strftime("%Y-%m-%d")] = sub_count
     sub_objects = collections.OrderedDict(sorted(sub_objects.items()))
     mod_objects = collections.OrderedDict(sorted(mod_objects.items()))
-    print sub_objects
     return sub_objects, mod_objects
 
 @login_required

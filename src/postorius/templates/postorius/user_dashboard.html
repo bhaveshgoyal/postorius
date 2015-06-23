@@ -5,8 +5,8 @@
 {# extends postorius_base_template #}
 {% load url from future %}
 {% load i18n %}
-<html><head>  
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<html><head>
+  <meta name="viewport" content="width=device-width, target-densitydpi=device-dpi, initial-scale=0, maximum-scale=1" />
   <link rel="stylesheet" href="{% static 'postorius/css/chartist.min.css' %}">
   <link rel="stylesheet" href="{% static 'postorius/css/bootstrap-multiselect.css' %}">
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
@@ -29,7 +29,6 @@
 	font-family: "Brandon Grotesque Light";
 	src: url("{% static 'postorius/fonts/brandon_grotesque_light.ttf' %}") format("truetype");
 }
-
 ::-webkit-scrollbar-track {
 	border-radius: 0px;
 	background-color: #FFFFFF;
@@ -42,11 +41,58 @@
 	border-radius: 0px;
 	background-color: #0A1123;
 }
-@-webkit-keyframes dashoffset-seven {
+::-moz-scrollbar-track {
+	border-radius: 0px;
+	background-color: #FFFFFF;
+}
+::-moz-scrollbar {
+	width: 10px;
+	background-color: #FFFFFF;
+}
+::-moz-scrollbar-thumb {
+	border-radius: 0px;
+	background-color: #0A1123;
+}
+::scrollbar-track {
+	border-radius: 0px;
+	background-color: #FFFFFF;
+}
+::scrollbar {
+	width: 10px;
+	background-color: #FFFFFF;
+}
+::scrollbar-thumb {
+	border-radius: 0px;
+	background-color: #0A1123;
+}
+@-webkit-keyframes dashoffset-seven{
+	0% {stroke-dashoffset: 7px;}
+	100% {stroke-dashoffset: 0px;}
+}
+@-moz-keyframes dashoffset-seven{
+	0% {stroke-dashoffset: 7px;}
+	100% {stroke-dashoffset: 0px;}
+}
+@keyframes dashoffset-seven{
 	0% {stroke-dashoffset: 7px;}
 	100% {stroke-dashoffset: 0px;}
 }
 
+@-webkit-keyframes width-pulse {
+	0% {stroke-width: 2px;}
+	50% {stroke-width: 4px;}
+	100% {stroke-width: 2px;}
+}
+@-moz-keyframes width-pulse {
+	0% {stroke-width: 2px;}
+	50% {stroke-width: 4px;}
+	100% {stroke-width: 2px;}
+}
+@keyframes width-pulse {
+	0% {stroke-width: 2px;}
+	50% {stroke-width: 4px;}
+	100% {stroke-width: 2px;}
+}
 h3 {
 	font-family: "Brandon Grotesque Light", sans-serif;
 	font-weight: 500;
@@ -60,7 +106,7 @@ html, body {
 
 
 /* Chart CSS */
-.tooltip {
+.ctooltip {
 	position: absolute;
 	z-index: 1;
 	padding: 5px;
@@ -72,15 +118,15 @@ html, body {
 	color: white;
 	transition: opacity .1s ease-out;
 }
-.tooltip.tooltip-hidden {
+.ctooltip.ctooltip-hidden {
 	opacity: 0;
 }
 .ct-chart .ct-series.ct-series-b .ct-line{
 	stroke: #FF5D56;
 	stroke-width: 3px;
-	opacity:0.5;
-	stroke-dasharray: 5px 2px;
-	-webkit-animation: dashoffset-seven 300ms infinite linear;
+	stroke-dasharray: 6px 3px;
+	-webkit-animation: dashoffset-seven 350ms infinite linear;
+	-moz-animation: dashoffset-seven 350ms infinite linear;
 }
 .ct-chart .ct-series.ct-series-b .ct-point {
 	stroke: #FF5D56;
@@ -88,8 +134,9 @@ html, body {
 .ct-chart .ct-series.ct-series-a .ct-line {
 	stroke: #F1C40F;
 	stroke-width: 2px;
-	stroke-dasharray: 5px 2px;
-	-webkit-animation: dashoffset-seven 200ms infinite linear;
+	opacity: 0.7;
+	-webkit-animation: width-pulse 2s infinite;
+	-moz-animation: width-pulse 2s infinite;
 }
 .ct-chart .ct-series.ct-series-a .ct-point {
 	stroke: #F1C40F;
@@ -100,7 +147,8 @@ html, body {
 .btn, button { 
 	border-radius:0px;
 	-webkit-transition: .2s all;
-		transition: .2s all;
+	-moz-transition: .2s all;
+	transition: .2s all;
 }
 .btn_-1 {
 	border:1px solid #00BCD4;
@@ -165,6 +213,7 @@ html, body {
 .panel-tw {
 	border-radius:0px !important;
 	border:1px solid #0097A7;
+	background-color:#FFFFFF;
 }
 .panel-title  a {
 	font-size:1em;
@@ -216,6 +265,18 @@ html, body {
 	border-radius: 0px;
 	background-color: #777;
 }
+#listi_container::-webkit-scrollbar-track {
+	border-radius: 0px;
+	background-color: #F5F5F5;
+}
+#listi_container::-webkit-scrollbar {
+	width: 6px;
+	background-color: #F5F5F5;
+}
+#listi_container::-webkit-scrollbar-thumb {
+	border-radius: 0px;
+	background-color: #777;
+}
 .made-on {
 	color:#34373C;
 	font-size:0.96em;
@@ -230,13 +291,19 @@ html, body {
 	font-size:2.7em;
 	vertical-align:middle;
 	display:inline-block;
+	-webkit-transition: 0.3s all;
+	-moz-transition: 0.3s all;
 	transition: 0.3s all;
 	color: #08C;
 }
 .fa-plus-circle:hover {
 	float:right;
 	display:inline-block;
+	-webkit-transition: 0.3s all;
+	-moz-transition: 0.3s all;
 	transition: 0.3s all;
+	-webkit-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
 	transform: rotate(90deg);
 	color: #3F51B5;
 }
@@ -248,12 +315,18 @@ html, body {
 }
 .fa-bars,
 .fa-gear{
+	-webkit-transition: 0.3s all;
+	-moz-transition: 0.3s all;
 	transition: 0.3s all;
 }
 .fa-bars:hover,
 .fa-gear:hover{
 	color: #000;
+	-webkit-transition: 0.3s all;
+	-moz-transition: 0.3s all;
 	transition: 0.3s all;
+	-webkit-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
 	transform: rotate(90deg);
 }
 .task-table > tbody > tr:first-child > td{ 
@@ -288,6 +361,8 @@ html, body {
 		1px 1px #53A7EA,
 		2px 2px #53A7EA,
 		3px 3px #53A7EA;
+	-webkit-transition: all 0.1s ease-in;
+	-moz-transition: all 0.1s ease-in;
 	transition: all 0.1s ease-in;
 	border: none;
 	padding: 10px;
@@ -310,13 +385,16 @@ html, body {
 /* Nav Styling */
 .nav li a{
 	-webkit-transition: .2s all;
-		transition: .2s all;
+	-moz-transition: .2s all;
+	transition: .2s all;
 }
 
 #id_query_field {
 	padding: 7px;
 	border: none;
 	border-bottom: solid 2px #E4F1FE;
+	-webkit-transition: border 0.3s;
+	-moz-transition: border 0.3s;
 	transition: border 0.3s;
 }
 #id_query_field:focus,
@@ -338,15 +416,16 @@ html, body {
 	color:#1ABC9C;
 	font-size:1.64em;
 }
-.checkbox-inline >input[type=checkbox]:before {
+.checkbox-inline >input[type=checkbox]::before {
 	position: absolute;
 	background-color: #0A1123;
 	height: 100%;
 	width: 100%;
 	font-family: FontAwesome;
-	content:"\f096";	
- }
-.checkbox-inline >input[type=checkbox]:checked:before {
+	content:"\f096";
+
+}
+.checkbox-inline >input[type=checkbox]:checked::before {
 	font-family: FontAwesome;
 	display: inline-block;
 	content:"\f046";
@@ -367,7 +446,6 @@ html, body {
 	color: #E4F1FE !important;
 }
 </style>
-
 </head>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -405,7 +483,7 @@ html, body {
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-						<span class="glyphicon glyphicon-user"></span>  Welcome {{user.username}}, You have <span>{{tasks|length}}</span> Remaining Task (s)
+						<span class="glyphicon glyphicon-user"></span>  Welcome {{user.username}}, You have <span>{{tasks|length}}</span> Task{{ tasks|pluralize }} Remaining
 					</a>
 					<ul class="dropdown-menu" role="menu">
 						<li><a href="{% url 'list_index' %}"><i class="fa fa-envelope-o fa-fw"></i>&nbsp;{% trans "Lists" %}</a></li>
@@ -421,19 +499,16 @@ html, body {
 		</div>
 	</div>
 </nav>
-
-     <div class="mm_main mm_canvas">
+<div style="min-width:136em;height:100%;margin-top:5em;" class="container">
          {% if messages %}
-             <ul class="mm_messages">
+             <ul style="position:absolute; text-align:center;margin: 2em 0 0 37em; width:53em; list-style: none;" class="mm_messages">
              {% for message in messages %}
                  <li class="alert {% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</li>
              {% endfor %}
              </ul>
          {% endif %}
          {% block main %}{% endblock main %}
-     </div>
-<div style="min-width:136em;height:100%;" class="container">
-<div class="container widget tasks-widget" style="min-width:45em;min-height:49em;position:relative;width:45em;height:49em;margin-top:11em;vertical-align:top;display:inline-block;border:1px solid;margin-left:16em; box-shadow: 5px 5px 5px #888888;">
+<div class="container widget tasks-widget" style="min-width:45em;min-height:49em;position:relative;width:45em;height:49em;margin-top:8em;vertical-align:top;display:inline-block;border:1px solid;margin-left:16em; box-shadow: 5px 5px 5px #888888;">
 	<div class="row">
 		<div class="col-xs-12"><h3 class="text-center">To-Do List</h3></div>
 		<div class="col-xs-12">
@@ -461,9 +536,11 @@ html, body {
 							</div>
 							<div class="modal-body">
 								<form action="{% url 'user_dashboard' %}" method="POST">{% csrf_token %}
-								{{mtask_form.mtask_subject}}
-								{{mtask_form.mtask_description}}
-								<button type="submit">Submit</button>
+								{{mtask_form.mtask_subject}}<br />
+								{{mtask_form.mtask_description}}<hr />
+								<button type="submit" id="loading_btn" data-loading-text="Processing..." class="btn btn-primary" autocomplete="off">
+								  Submit
+								  </button>
 								</form>
 							</div>
 						</div>
@@ -777,9 +854,7 @@ html, body {
 
 </div>
 
-
-
-<div id="li-widget-wrapper" style="vertical-align:top;position:relative;white-space:nowrap;float:right;min-width:30em;width:30em;height:49em;display:inline-block;margin-top:11em;border:1px solid;margin-right:5em;" class="widget container">
+<div id="li-widget-wrapper" style="vertical-align:top;position:relative;white-space:nowrap;float:right;min-width:30em;width:30em;height:49em;display:inline-block;margin-top:8em;border:1px solid;margin-right:5em;" class="widget container">
 		<div class="row" style="margin-bottom:1.2em;text-align:center;">
 			<div class="col-xs-6"><h3 style="display:inline-block;">List Index</h3></div>
 			<div style="margin-top:3%;float:right;width:40%;margin-right:5%;" class="col-xs-6 input-group">
@@ -791,6 +866,7 @@ html, body {
 				</form>
 			</div>
 		</div>
+		<div id="listi_container" style="overflow-y:auto;height:40em;">
 		{% if li_res|length_is:"0" %}
 			<p class="text-muted">No Lists Found matching the query</p>
 		{% endif %}
@@ -827,7 +903,7 @@ html, body {
 									<span style="float:left">{{each_owner|capfirst}}</span>
 								</div>
 								<div class="col-xs-6">
-									<a style="float:right;" href="{% url 'remove_role_tasks' list.list_id 'owner' each_owner %}" class="btn btn-default remove">{% trans 'Remove' %}</a>
+									<a style="float:right;" data-loading-text="Working..." autocomplete="off" data-toggle="confirm_tooltip" data-placement="left" title="Please Double Click to Confirm" href="{% url 'remove_role_tasks' list.list_id 'owner' each_owner %}" class="btn btn-default remove">{% trans 'Remove' %}</a>
 								</div>
 								</div>
 								{% endfor %}
@@ -842,7 +918,7 @@ html, body {
 									<span style="float:left">{{each_mod|capfirst}}</span>
 								</div>
 								<div class="col-xs-6">
-									<a style="float:right;" href="{% url 'remove_role_tasks' list.list_id 'moderator' each_mod %}" class="btn btn-default remove">{% trans 'Remove' %}</a>
+									<a style="float:right;" data-loading-text="Working..." autocomplete="off" data-toggle="confirm_tooltip" data-placement="left" title="Please Double Click to Confirm" href="{% url 'remove_role_tasks' list.list_id 'moderator' each_mod %}" class="btn btn-default remove">{% trans 'Remove' %}</a>
 								</div>
 								</div>
 								{% endfor %}
@@ -863,7 +939,7 @@ html, body {
 											<span>{{each_member.email|capfirst}}</span>
 											<div style="float:right;" id="holoid" class="btn-group btn-group-sm remove-role" role="group" >
 												<a href="{% url 'list_member_options' list.fqdn_listname each_member.email %}" class="btn btn-default">{% trans 'View' %}</a>
-												<a href="{% url 'remove_role_tasks' list.list_id 'subscriber' each_member.email %}" class="btn btn-default remove">{% trans 'Remove' %}</a>
+												<a data-loading-text="Working..." autocomplete="off" data-toggle="confirm_tooltip" data-placement="left" title="Please Double Click to Confirm" href="{% url 'remove_role_tasks' list.list_id 'subscriber' each_member.email %}" class="btn btn-default remove">{% trans 'Remove' %}</a>
 											</div>
 									</div>
 									</div>
@@ -875,13 +951,13 @@ html, body {
 				</div>
 			</div>
 		{% endfor %}
+		</div>
 {% if user.is_superuser %}
-<a href="{% url 'list_new' %}"><button class="btn btn-default" style="position:absolute;top:45.2em;"><span class="fa fa-plus"></span>&nbsp;Create List</button></a>
+<a href="{% url 'list_new' %}"><button class="btn btn-default"><span class="fa fa-plus"></span>&nbsp;Create List</button></a></div>
 {% endif %}
-</div>
 
 
-<div style="min-width:20em;width:22em;float:left;display:inline-block;height:72em;margin-top:11em; border:1px solid;margin-left:4.5em;" class="widget container">
+<div style="min-width:20em;width:22em;float:left;display:inline-block;height:72em;margin-top:8em; border:1px solid;margin-left:4.5em;" class="widget container">
 	<div style="text-align:center;">
 		<h3 style="display:inline-block;">Events Stream</h3><br />
 	</div>
