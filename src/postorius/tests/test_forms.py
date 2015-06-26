@@ -17,7 +17,7 @@
 from django.utils import unittest
 
 from postorius.forms import (ListNew,
-    UserPreferences, DomainNew, ListSubscribe, ChangeSubscriptionForm)
+    UserPreferences, DomainNew, ListSubscribe, ChangeSubscriptionForm, NewManualTaskForm)
 
 
 class UserPreferencesTest(unittest.TestCase):
@@ -111,5 +111,21 @@ class ListNewTest(unittest.TestCase):
              'list_owner': 'mailman.most-desirable.org',
              'advertise': 'abcd',
              'description': 'The Most Desirable organization',
+        })
+        self.assertFalse(form.is_valid())
+
+class MTaskNewTest(unittest.TestCase):
+
+    def test_mtask_form_valid(self):
+        form = NewManualTaskForm({
+            'mtask_subject': 'MTask Header',
+            'mtask_description': 'This is a MTask Form'
+        })
+        self.assertTrue(form.is_valid())
+    
+    def test_mtask_form_invalid(self):
+        form = NewManualTaskForm({
+            'mtask_subject': '',
+            'mtask_description': 'This is a MTask Form'
         })
         self.assertFalse(form.is_valid())

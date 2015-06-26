@@ -379,13 +379,12 @@ class EventTrackerManager(models.Manager):
     Manager Class for Event Tracker.
     """
 
-    def create_event(self, user_email, event_op, event, list_id, made_on, event_on):
+    def create_event(self, user_email, event_op, event, list_id, made_on):
         event = self.create(user_email=user_email,
                             event_op=event_op,
                             event=event,
                             list_id=list_id,
-                            made_on=made_on,
-                            event_on=event_on,)
+                            made_on=made_on,)
         return event
     
     def get_count(self):
@@ -400,7 +399,6 @@ class EventTracker(models.Model):
     event = models.CharField(max_length=15)
     list_id = models.CharField(max_length=50)
     made_on = models.DateTimeField()
-    event_on = models.DateTimeField()
     objects = EventTrackerManager()
     
     def __unicode__(self):
