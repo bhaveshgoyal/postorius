@@ -600,14 +600,12 @@ def add_mod_event(request, msg_id, list_id, action):
     user_email = the_msg['sender']
     made_on = datetime.now()
     event_op = request.user.email
-    event_on = the_msg['hold_date']
     event_logged = EventTracker.objects.create_event(
                     user_email=user_email,
                     event_op=event_op,
                     event=event,
                     list_id=list_id,
-                    made_on=made_on,
-                    event_on=event_on)
+                    made_on=made_on)
 
 def add_sub_event(request, sub_id, list_id, action):
     """Adds an Subscription Event Log For Event Tracker."""
@@ -620,14 +618,12 @@ def add_sub_event(request, sub_id, list_id, action):
     user_email = sub_req['email']
     made_on = datetime.now()
     event_op = request.user.email
-    event_on = sub_req['request_date']
     event_logged = EventTracker.objects.create_event(
                    user_email=user_email,
                    event_op=event_op,
                    event=event,
                    list_id=list_id,
-                   made_on=made_on,
-                   event_on=event_on)
+                   made_on=made_on)
 
 	
 @list_owner_required

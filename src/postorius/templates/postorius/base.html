@@ -24,6 +24,9 @@
             <div class="mm_canvas">
                 <a href="{% url 'list_index' %}" class="mm_logo"><img src="{% static 'postorius/img/mailman_logo_small_trans.png' %}" alt="{% trans 'Home' %}" /></a>
                 <ul class="mm_metaNav">
+                    {% if user.is_superuser or user.is_staff %}
+                        <li><i class="icon-tasks"></i> <a href="{% url 'user_dashboard' %}">{% trans "Dashboard" %}</a></li>
+                    {% endif %}
                     <li><i class="icon-envelope"></i> <a href="{% url 'list_index' %}">{% trans "Lists" %}</a></li>
                     {% if user.is_superuser %}
                         <li><i class="icon-globe"></i> <a href="{% url 'domain_index' %}">{% trans "Domains" %}</a></li>

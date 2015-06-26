@@ -885,7 +885,7 @@ html, body {
 							</div>
 						</div>
 					</div>
-					{% if user.email in list.owners %}
+					{% if user.email in list.owners or user.is_superuser %}
 					<div id="collapse_{{list.list_id|cut:'.'|add:'li'}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_{{list.list_id}}">
 						<div style="padding:0px;" class="panel-body">
 							<ul style="border-radius:0px;" id="role-switcher-{{list.list_id}}" class="nav nav-justified role-nav">
