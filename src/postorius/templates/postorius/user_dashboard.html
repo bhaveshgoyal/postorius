@@ -953,8 +953,9 @@ html, body {
 		{% endfor %}
 		</div>
 {% if user.is_superuser %}
-<a href="{% url 'list_new' %}"><button class="btn btn-default"><span class="fa fa-plus"></span>&nbsp;Create List</button></a></div>
+<a href="{% url 'list_new' %}"><button class="btn btn-default"><span class="fa fa-plus"></span>&nbsp;Create List</button></a>
 {% endif %}
+</div>
 
 
 <div style="min-width:20em;width:22em;float:left;display:inline-block;height:72em;margin-top:8em; border:1px solid;margin-left:4.5em;" class="widget container">
