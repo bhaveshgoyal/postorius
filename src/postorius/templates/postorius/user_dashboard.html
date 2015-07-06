@@ -239,11 +239,37 @@ html, body {
 	margin-right:auto;
 	position:relative;
 	border-radius:0px;
-	height:34em;
+	height:72%;
 }
-@media (max-width: 768px){
+@media (max-width: 1366px){
 #task-container {
-	height:63%;
+	height:59%;
+	font-size:0.5em;
+}
+#task-container .panel-title li{
+	font-size:0.83em;
+}
+#task-container #text-priority {
+	display:none;
+}
+ #task-container #holoid a{
+	font-size:0.83em; 
+} 
+#actions_link{
+font-size:0.85em;
+}
+.activities td {
+	font-size: 0.9em;
+}
+#members-expand li a, #members-expand span, 
+#members-expand a{
+font-size:0.85em;
+}
+#reorder span , #reorder li a{
+	font-size:0.9em;
+}
+.i-tasks {
+	font-size:0.8em;
 }
 #list-container-well {
 	height:24em;
@@ -499,7 +525,7 @@ html, body {
 		</div>
 	</div>
 </nav>
-<div style="min-width:136em;height:100%;margin-top:5em;" class="container">
+<div style="min-width:90em;width:100%;height:100%;margin-top:5em;" class="container">
          {% if messages %}
              <ul style="position:absolute; text-align:center;margin: 2em 0 0 37em; width:53em; list-style: none;" class="mm_messages">
              {% for message in messages %}
@@ -508,7 +534,7 @@ html, body {
              </ul>
          {% endif %}
          {% block main %}{% endblock main %}
-<div class="container widget tasks-widget" style="min-width:45em;min-height:49em;position:relative;width:45em;height:49em;margin-top:8em;vertical-align:top;display:inline-block;border:1px solid;margin-left:16em; box-shadow: 5px 5px 5px #888888;">
+<div class="container widget tasks-widget" style="min-width:35em;position:relative;width:33%;height:70%;margin-top:8%;vertical-align:top;display:inline-block;border:1px solid;margin-left:12%; box-shadow: 5px 5px 5px #888888;">
 	<div class="row">
 		<div class="col-xs-12"><h3 class="text-center">To-Do List</h3></div>
 		<div class="col-xs-12">
@@ -839,7 +865,7 @@ html, body {
 	</div>
 	</div><!-- list container -->
 
-	<div id="reorder" class="col-xs-4" style="width:100%;height:3.2em;"><span>Reorder</span>
+	<div id="reorder" class="row" style="margin-left:auto;margin-right:auto;width:100%;"><span>Reorder</span>
 		<div style="float:right;" class="btn-group">
 			<span class="fa fa-lg fa-bars dropdown-toggle" data-toggle="dropdown" area-expanded="false" ></span>
 			<span class="sr-only">Reorder Tasks</span>
@@ -854,7 +880,7 @@ html, body {
 
 </div>
 
-<div id="li-widget-wrapper" style="vertical-align:top;position:relative;white-space:nowrap;float:right;min-width:30em;width:30em;height:49em;display:inline-block;margin-top:8em;border:1px solid;margin-right:5em;" class="widget container">
+<div id="li-widget-wrapper" style="vertical-align:top;position:relative;white-space:nowrap;float:right;width:23%;height:70%;display:inline-block;margin-top:8%;border:1px solid;margin-right:2%;" class="widget container">
 		<div class="row" style="margin-bottom:1.2em;text-align:center;">
 			<div class="col-xs-6"><h3 style="display:inline-block;">List Index</h3></div>
 			<div style="margin-top:3%;float:right;width:40%;margin-right:5%;" class="col-xs-6 input-group">
@@ -881,13 +907,13 @@ html, body {
 							</div>
 							</a>
 							<div class="col-xs-6">
-								<a style="white-space:normal;word-break:normal;float:right;" href="{% url 'list_summary' list.list_id %}" class="btn btn-default"><span class="fa fa-wrench fa-fw"></span>{% trans 'Actions' %}</a>
+								<a id="actions_link" style="white-space:normal;word-break:normal;float:right;" href="{% url 'list_summary' list.list_id %}" class="btn btn-default"><span class="fa fa-wrench fa-fw"></span>{% trans 'Actions' %}</a>
 							</div>
 						</div>
 					</div>
 					{% if user.email in list.owners or user.is_superuser %}
 					<div id="collapse_{{list.list_id|cut:'.'|add:'li'}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_{{list.list_id}}">
-						<div style="padding:0px;" class="panel-body">
+						<div id="members-expand" style="padding:0px;" class="panel-body">
 							<ul style="border-radius:0px;" id="role-switcher-{{list.list_id}}" class="nav nav-justified role-nav">
 								<li style="background-color:#FF5D56;" id="role-owners"><a href="javascript:void(0)">Owners</a></li>	
 								<li style="background-color:#FFF67F" id="role-moderators"><a href="javascript:void(0)">Moderators</a></li>
@@ -953,12 +979,12 @@ html, body {
 		{% endfor %}
 		</div>
 {% if user.is_superuser %}
-<a href="{% url 'list_new' %}"><button class="btn btn-default"><span class="fa fa-plus"></span>&nbsp;Create List</button></a>
+<a style="position:absolute;bottom:auto;left:auto;"href="{% url 'list_new' %}"><button class="btn btn-default"><span class="fa fa-plus"></span>&nbsp;Create List</button></a>
 {% endif %}
 </div>
 
 
-<div style="min-width:20em;width:22em;float:left;display:inline-block;height:72em;margin-top:8em; border:1px solid;margin-left:4.5em;" class="widget container">
+<div style="width:17%;float:left;display:inline-block;height:99%;margin-top:8%; border:1px solid;margin-left:2%;" class="widget container">
 	<div style="text-align:center;">
 		<h3 style="display:inline-block;">Events Stream</h3><br />
 	</div>
@@ -981,7 +1007,7 @@ html, body {
 	</div>
 </div>
 
-<div class="container widget" style="margin-left:31em;position:relative;height:15em;margin-top:5em;width:100em;">
+<div class="container widget" style="margin-left:20%;position:relative;height:21%;margin-top:3%;width:80%">
 	<div style="display:inline-block;margin-left:3%;"><select id="select-list" multiple="multiple">
 		{% for each in lists %}
    		<option value="{{each.list_id}}" selected="selected">{{each.display_name}}{% endfor %}

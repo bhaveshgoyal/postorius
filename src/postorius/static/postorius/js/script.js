@@ -254,11 +254,18 @@ $(".role-nav a").on("click", function(){
 		$(par).children('#list-moderators').hide("fast");
 	}
 });
+
 $('#loading_btn').on('click', function () {
 	var $btn = $(this).button('loading')
 })
+
 $('[data-toggle="confirm_tooltip"]').tooltip();
+
 $('.remove-role .remove').click(function(){
+	return false;
+});
+
+$('.remove').click(function(){
 	return false;
 });
 
@@ -267,4 +274,11 @@ $('.remove-role .remove').dblclick(function(){
 	var href = $(this).attr("href");
 	window.location = href;
 });
+
+$('.remove').dblclick(function(){
+	var $btn = $(this).button('loading')
+	var href = $(this).attr("href");
+	window.location = href;
+});
+
 });

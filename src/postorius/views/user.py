@@ -605,8 +605,7 @@ def events_allowed(user, events):
             elif each_event.event.find('subscription') >= 0 and is_owner:
                 allowed.append(each_event)
         return allowed
-    else:
-        return events
+    return events
 
 def generate_graph_object(select_lists):
     """Generates moderation and subscription data objects
