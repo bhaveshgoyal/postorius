@@ -508,6 +508,7 @@ def create_moderation_tasks(lists):
                 current_log.save()
             except ObjectDoesNotExist as e:
                 TaskCalender.objects.create_log(on_date=date, list_id=admin_task.list_id, log_type='moderation', log_number=1)
+            return admin_task
     except Exception, e:
         messages.error(request, str(e))
         return redirect('user_dashboard')
@@ -533,7 +534,9 @@ def create_subscription_tasks(lists):
                 current_log.save()
             except ObjectDoesNotExist as e:
                 TaskCalender.objects.create_log(on_date=date, list_id=admin_req.list_id, log_type='subscription', log_number=1)
+            return admin_req
     except Exception, e:
+        print str(e)
         messages.error(request, str(e))
         return redirect('user_dashboard')
 
@@ -578,6 +581,7 @@ def sync_tasks_to_current(lists):
         for task in tasks:
             if task.task_type != 'manual' and task.task_id not in map(str,current_ids):
                 AdminTasks.objects.filter(task_id=task.task_id).delete()
+        return AdminTasks.objects.all()
     except Exception, e:
         messages.error(request,"Could not Sync Tasks" + str(e))
         return redirect('user_dashboard')
