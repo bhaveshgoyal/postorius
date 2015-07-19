@@ -1,5 +1,51 @@
 $(document).ready(function() {
-
+function layout_render() {
+	var mobile_view = $("#view_bot").css("display") == "none";
+	if (mobile_view){
+		$(".view-chooser").css("display","block");
+		var check_id = $(".widget-chooser-menu").find(".active").attr("id");
+		if (check_id == "listi-view-check"){
+			$("#listi-view-check").show();
+			$("#events-view-check").hide();
+			$("#li-widget-wrapper").attr("style", "display: inline-block !important");
+			$("#events-widget").attr("style", "display:none !important");
+		}
+		else {
+			$("#listi-view-check").hide();
+			$("#events-view-check").show();
+			$("#li-widget-wrapper").after($("#events-widget"));
+			$("#li-widget-wrapper").attr("style", "display: none !important");
+			$("#events-widget").attr("style", "display:inline-block !important");
+		}
+		
+	}
+	else{
+		$(".view-chooser").css("display","none");
+		$("#li-widget-wrapper").attr("style", "display:inline-block !important");
+		$("#events-widget").attr("style", "display:inline-block !important");
+		if ( $(".primary-widgets-wrapper").find("#events-widget").get().length == 1){
+			$(".primary-widgets-wrapper").after($("#events-widget"));
+			$(".primary-widgets-wrapper").find("#events-widget").remove();
+		}
+	}
+}
+$(".widget-chooser-menu a").on('click', function(){
+	$(".widget-chooser-menu").find(".active").hide();
+	$(".widget-chooser-menu").find(".active").removeClass("active");
+	$(this).find(".fa").addClass("active");
+	$(this).find(".fa").show();
+	var which_id = $(".widget-chooser-menu").find(".active").attr("id");
+	if (which_id == "listi-view-check"){
+	$("#li-widget-wrapper").show();
+	$("#events-widget").attr("style", "display:none !important");
+	}
+	else {
+	$("#li-widget-wrapper").attr("style", "display: none !important");
+	$("#events-widget").attr("style", "display: inline-block !important");
+	$("#li-widget-wrapper").after($("#events-widget"));
+	}
+});
+layout_render();
 $('[name="query_field"]').attr("list","global-result");
 $("#id_query_field").attr("placeholder", "Search Dashboard");
 $("#id_query_field").on('input', function(){
@@ -280,5 +326,7 @@ $('.remove').dblclick(function(){
 	var href = $(this).attr("href");
 	window.location = href;
 });
-
+$(window).resize(function(){
+	layout_render();
+});
 });

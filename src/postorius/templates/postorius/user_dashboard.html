@@ -6,7 +6,7 @@
 {% load url from future %}
 {% load i18n %}
 <html><head>
-  <meta name="viewport" content="width=device-width, target-densitydpi=device-dpi, initial-scale=0, maximum-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=0, maximum-scale=1" />
   <link rel="stylesheet" href="{% static 'postorius/css/chartist.min.css' %}">
   <link rel="stylesheet" href="{% static 'postorius/css/bootstrap-multiselect.css' %}">
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
@@ -243,7 +243,7 @@ html, body {
 }
 @media (max-width: 1366px){
 #task-container {
-	height:59%;
+	height:72%;
 	font-size:0.5em;
 }
 #task-container .panel-title li{
@@ -265,7 +265,7 @@ font-size:0.85em;
 #members-expand a{
 font-size:0.85em;
 }
-#reorder span , #reorder li a{
+#reorder > .btn-grp span , #reorder li a{
 	font-size:0.9em;
 }
 .i-tasks {
@@ -407,7 +407,47 @@ font-size:0.85em;
 	top: 3px;
 	left: 3px;
        }
-
+#id_mtask_description {
+	resize: vertical;
+}
+/* List Index Widget Styling*/
+#li-widget-wrapper{
+position:relative;
+margin:auto;
+display: inline-block;
+       white-space:nowrap;
+float:right;
+width:37%;
+height:70%;
+border:1px solid;
+}
+/* Events Widget Styling */
+#events-widget{
+width:17%;
+float:left;
+display:inline-block;
+height:99%;
+       margin-top:8%; 
+border:1px solid;
+       margin-left:2%;
+       margin-right:7%;
+}
+@media (max-width: 90em){
+#events-widget{
+display:none !important;
+	position:relative;
+	margin:auto;
+	float:right;
+	width:37%;
+	height:70%;
+	}
+.primary-widgets-wrapper{
+width:100% !important;
+}
+#view_bot{
+display:none !important;
+}
+}
 /* Nav Styling */
 .nav li a{
 	-webkit-transition: .2s all;
@@ -471,6 +511,9 @@ font-size:0.85em;
 .navbar .navbar-nav > li > a:hover{
 	color: #E4F1FE !important;
 }
+#view_bot {
+display:inline-block;
+}
 </style>
 </head>
 <body>
@@ -507,6 +550,18 @@ font-size:0.85em;
 				{% endfor %}
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
+				<li class="dropdown view-chooser">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+						<span class="fa fa-chevron-circle-down fa-lg fa-fw "></span>Change View
+					</a>
+					<ul class="dropdown-menu widget-chooser-menu" role="menu">
+						<li><a id="view-li" href="#">{% trans "List Index" %}<span style="display:none;" id="listi-view-check" class="active fa fa-fw fa-check"></span>
+						</a></li>
+						<li class="divider"></li>
+					        <li><a id="view-events" href="#">{% trans "Events" %}<span style="display:none;" id="events-view-check" class="fa fa-fw fa-check"></span>
+						</a></li>
+					</ul>
+				</li>
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
 						<span class="glyphicon glyphicon-user"></span>  Welcome {{user.username}}, You have <span>{{tasks|length}}</span> Task{{ tasks|pluralize }} Remaining
@@ -525,7 +580,7 @@ font-size:0.85em;
 		</div>
 	</div>
 </nav>
-<div style="min-width:90em;width:100%;height:100%;margin-top:5em;" class="container">
+<div style="width:100%;height:100%;margin-top:5em;" class="container">
          {% if messages %}
              <ul style="position:absolute; text-align:center;margin: 2em 0 0 37em; width:53em; list-style: none;" class="mm_messages">
              {% for message in messages %}
@@ -534,7 +589,8 @@ font-size:0.85em;
              </ul>
          {% endif %}
          {% block main %}{% endblock main %}
-<div class="container widget tasks-widget" style="min-width:35em;position:relative;width:33%;height:70%;margin-top:8%;vertical-align:top;display:inline-block;border:1px solid;margin-left:12%; box-shadow: 5px 5px 5px #888888;">
+<div class="primary-widgets-wrapper container" style="min-width:65em;position:relative;display:inline-block;margin-top:8%;height:100%;width:72%;float:right;">
+<div class="container widget tasks-widget" style="min-width:35em;position:relative;width:50%;height:70%;display:inline-block;border:1px solid; box-shadow: 5px 5px 5px #888888;">
 	<div class="row">
 		<div class="col-xs-12"><h3 class="text-center">To-Do List</h3></div>
 		<div class="col-xs-12">
@@ -817,7 +873,7 @@ font-size:0.85em;
 							 	{% else %}<tr>
 								{% endif %}
 								<td>
-									<span style="float:left">{{each.user_email|capfirst}}</span>
+									<span style="float:left">{{each.user_email|capfirst}}<br/ > <small class="text-muted">Subject: {{each.msg_subject}}</span>
 									<div id="holoid" style="float:right;" class="btn-group btn-group-sm" role="group" >
 										<a href="{% url 'handle_mod_task' listed_object.grouper each.task_id 'accept'%}" class="btn btn_{{each.priority}} btn-default">{% trans 'Accept' %}</a>
 										<a href="{% url 'handle_mod_task' listed_object.grouper each.task_id 'defer' %}" class="btn btn_{{each.priority}} btn-default">{% trans 'Defer' %}</a>
@@ -865,9 +921,9 @@ font-size:0.85em;
 	</div>
 	</div><!-- list container -->
 
-	<div id="reorder" class="row" style="margin-left:auto;margin-right:auto;width:100%;"><span>Reorder</span>
-		<div style="float:right;" class="btn-group">
-			<span class="fa fa-lg fa-bars dropdown-toggle" data-toggle="dropdown" area-expanded="false" ></span>
+	<div id="reorder" class="row" style="position:absolute;right:1em;bottom:0.5em;margin:auto;padding:auto;width:auto;">
+		<div class="btn-group">
+			<span class="fa fa-fw fa-lg fa-bars dropdown-toggle" data-toggle="dropdown" area-expanded="false" ></span>
 			<span class="sr-only">Reorder Tasks</span>
 			<ul class="dropdown-menu" role="menu">
 				<li role="presentation" class="dropdown-header">Reorder By</li>
@@ -880,7 +936,7 @@ font-size:0.85em;
 
 </div>
 
-<div id="li-widget-wrapper" style="vertical-align:top;position:relative;white-space:nowrap;float:right;width:23%;height:70%;display:inline-block;margin-top:8%;border:1px solid;margin-right:2%;" class="widget container">
+<div id="li-widget-wrapper" class="widget container">
 		<div class="row" style="margin-bottom:1.2em;text-align:center;">
 			<div class="col-xs-6"><h3 style="display:inline-block;">List Index</h3></div>
 			<div style="margin-top:3%;float:right;width:40%;margin-right:5%;" class="col-xs-6 input-group">
@@ -977,14 +1033,26 @@ font-size:0.85em;
 				</div>
 			</div>
 		{% endfor %}
-		</div>
 {% if user.is_superuser %}
-<a style="position:absolute;bottom:auto;left:auto;"href="{% url 'list_new' %}"><button class="btn btn-default"><span class="fa fa-plus"></span>&nbsp;Create List</button></a>
+<a style="position:absolute;bottom:1em;left:auto;"href="{% url 'list_new' %}"><button class="btn btn-default"><span class="fa fa-plus"></span>&nbsp;Create List</button></a>
 {% endif %}
+		</div>
 </div>
 
+<div class="container widget" style="vertical-align:bottom;position:relative;height:21%;margin-top:3%;width:100%">
+	<div style="display:inline-block;margin-left:3%;">
+		<select id="select-list" multiple="multiple">
+		{% for each in lists %}
+   		<option value="{{each.list_id}}" selected="selected">{{each.display_name}}{% endfor %}
+		</select>
+	</div>
+	<div style="width:100%;height:100%;" class="ct-chart ct-golden-section">
+	</div>
+</div>
 
-<div style="width:17%;float:left;display:inline-block;height:99%;margin-top:8%; border:1px solid;margin-left:2%;" class="widget container">
+</div>
+
+<div id="events-widget" class="widget container">
 	<div style="text-align:center;">
 		<h3 style="display:inline-block;">Events Stream</h3><br />
 	</div>
@@ -1007,15 +1075,8 @@ font-size:0.85em;
 	</div>
 </div>
 
-<div class="container widget" style="margin-left:20%;position:relative;height:21%;margin-top:3%;width:80%">
-	<div style="display:inline-block;margin-left:3%;"><select id="select-list" multiple="multiple">
-		{% for each in lists %}
-   		<option value="{{each.list_id}}" selected="selected">{{each.display_name}}{% endfor %}
-	</select>  </div>
-		<div style="width:100%;height:100%;" class="ct-chart ct-golden-section">
-		</div>
-
-</div</div>
+</div>
+<input type="hidden" id="view_bot" />
 <input type="hidden" name="dashboard_url" value="{% url 'user_dashboard' %}" />
 <input type="hidden" name="dates" value="{% for each in stats.mods.keys %}{{ each }},{% endfor %}" />
 <input type="hidden" name="subs_data" value="{% for each in stats.subs.values %}{{ each }},{% endfor %}" />
