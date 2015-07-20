@@ -230,7 +230,7 @@ class UserSubscriptionsView(MailmanUserView):
 
 class AddressActivationView(TemplateView):
     """
-    Starts the process of adding additional email addresses to a mailman user 
+    Starts the process of adding additional email addresses to a mailman user
     record. Forms are processes and email notifications are sent accordingly.
     """
 
@@ -322,14 +322,15 @@ def user_profile(request, user_email=None):
                               # {'mm_user': the_user},
                               context_instance=RequestContext(request))
 
+
 class AdminTasksView(MailmanUserView):
-    
 
     @method_decorator(login_required)
     def get(self, request):
         lists = List.objects.all()
         if not has_control_access(request.user, lists):
-            messages.error(request, "Warning! You are not authorised to access Control Dashboard")
+            messages.error(request, "Warning! You are not authorised
+                           to access Control Dashboard")
             return redirect('list_index')
         email = request.user.email
         create_moderation_tasks(lists)
@@ -357,14 +358,15 @@ class AdminTasksView(MailmanUserView):
         global_search = GlobalSearchForm()
         mtask_form = NewManualTaskForm()
         return render_to_response('postorius/user_dashboard.html',
-            {'tasks': tasks, 'lists': lists, 'li_res': lists, 'mtask_form': mtask_form, 'search_li': search_li, 'search_form': search_form, 'global_search': global_search, 'events': events, 'stats': stats}, 
-            context_instance=RequestContext(request))
+                                  {'tasks': tasks, 'lists': lists, 'li_res': lists, 'mtask_form': mtask_form,
+                                   'search_li': search_li, 'search_form': search_form, 'global_search': global_search,
+                                   'events': events, 'stats': stats}, context_instance=RequestContext(request))
 
     def post(self, request):
         tasks = AdminTasks.objects.all()
         lists = List().objects.all()
         email = request.user.email
-        tasks = filter_tasks_by_role(request.user, tasks, lists)  
+        tasks = filter_tasks_by_role(request.user, tasks, lists)
         lists = allowed_lists(request.user, lists)
         if 'search_tasks' in request.POST:
             search_form = TaskSearchForm(request.POST)
@@ -396,13 +398,16 @@ class AdminTasksView(MailmanUserView):
             query = request.POST.get('query_field').lower()
             global_result = {}
             if 'check_lists' in request.POST:
-                lists_res = [ { "display_name": each.display_name, "list_id": each.list_id} for each in lists if each.list_id.find(query) >= 0]
+                lists_res = [{"display_name": each.display_name, "list_id": each.list_id}
+                             for each in lists if each.list_id.find(query) >= 0]
                 global_result['lists'] = lists_res
             if 'check_domains' in request.POST:
-                domains_res = [{"mail_host": each.mail_host, "base_url": each.base_url} for each in Domain.objects.all() if each.mail_host.find(query) >=0]
+                domains_res = [{"mail_host": each.mail_host, "base_url": each.base_url}
+                               for each in Domain.objects.all() if each.mail_host.find(query) >= 0]
                 global_result['domains'] = domains_res
             if 'check_people' in request.POST:
-                people_res = [{ "useremail": each_member.email, "list_id": each_list.list_id} for each_list in lists for each_member in each_list.members if each_member.email.find(query) >=0]
+                people_res = [{"useremail": each_member.email, "list_id": each_list.list_id}
+                              for each_list in lists for each_member in each_list.members if each_member.email.find(query) >= 0]
                 global_result['people'] = people_res
             try:
                 return HttpResponse(json.dumps(global_result), content_type="application/json")
@@ -413,7 +418,8 @@ class AdminTasksView(MailmanUserView):
                 selects = request.POST.getlist('selected_lists[]')
                 selects = [str(each) for each in selects]
                 sub_objects, mod_objects = generate_graph_object(selects)
-                return HttpResponse(json.dumps({'subs': sub_objects, 'mods': mod_objects}), content_type="application/json")
+                return HttpResponse(json.dumps({'subs': sub_objects, 'mods': mod_objects}),
+                                    content_type="application/json")
             except Exception as e:
                 print e
         if 'mtask_subject' in request.POST:
@@ -422,23 +428,23 @@ class AdminTasksView(MailmanUserView):
                 mtask_subject = request.POST.get('mtask_subject')
                 mtask_description = request.POST.get('mtask_description')
                 try:
-                    mtask_id = int(AdminTasks.objects.filter(task_type='manual').latest('made_on').task_id) -1
-                except ObjectDoesNotExist:  
+                    mtask_id = int(AdminTasks.objects.filter(task_type='manual').latest('made_on').task_id) - 1
+                except ObjectDoesNotExist:
                     mtask_id = -1
                 mtask = AdminTasks.objects.create_task(
-                    task_id = mtask_id,
-                    task_type = 'manual',
-                    stamp = datetime.now(),
-                    list_id = "",
-                    user_email = request.user.email)
+                    task_id=mtask_id,
+                    task_type='manual',
+                    stamp=datetime.now(),
+                    list_id="",
+                    user_email=request.user.email)
                 mtask.msg_subject = mtask_subject
                 mtask.msg_data = mtask_description
                 mtask.save()
                 tasks = AdminTasks.objects.all()
-                tasks = filter_tasks_by_role(request.user, tasks, lists)  
+                tasks = filter_tasks_by_role(request.user, tasks, lists)
             else:
                 messages.error(request,
-                            _('Error Creating Task entry : Task Heading can\'t be left Empty'))
+                               _('Error Creating Task entry : Task Heading can\'t be left Empty'))
                 return redirect('user_dashboard')
         mtask_form = NewManualTaskForm()
         search_form = TaskSearchForm()
@@ -463,8 +469,10 @@ class AdminTasksView(MailmanUserView):
         except UnboundLocalError as e:
             li_res = lists
         return render_to_response('postorius/user_dashboard.html',
-                {'tasks': res, 'lists': lists, 'li_res': li_res, 'mtask_form': mtask_form, 'search_li': search_li, 'search_form': search_form, 'global_search': global_search, 'events':events, 'stats': stats},
-                context_instance=RequestContext(request))
+                                  {'tasks': res, 'lists': lists, 'li_res': li_res, 'mtask_form': mtask_form,
+                                   'search_li': search_li, 'search_form': search_form, 'global_search': global_search,
+                                   'events': events, 'stats': stats}, context_instance=RequestContext(request))
+
 
 def has_control_access(user, lists):
     """Returns boolean based on whether user posesses
@@ -475,17 +483,21 @@ def has_control_access(user, lists):
     has_moderator_rights = len([each_list for each_list in lists if user.email in each_list.moderators]) != 0
     return is_su or has_owner_rights or has_moderator_rights
 
+
 def get_moderations(lists):
     """Get Pending Moderations from all Lists."""
 
-    mod_req = [dict(each_mod,list_id=each_list.fqdn_listname) for each_list in lists for each_mod in each_list.held]
+    mod_req = [dict(each_mod, list_id=each_list.fqdn_listname)
+               for each_list in lists for each_mod in each_list.held]
     return sorted(mod_req, key=itemgetter('hold_date'), reverse=False)
+
 
 def get_subscription_reqs(lists):
     """Returns all pending Suscription requests."""
 
     sub_req = [each_req for each_list in lists for each_req in each_list.requests]
     return sorted(sub_req, key=itemgetter('request_date'), reverse=False)
+
 
 def create_moderation_tasks(lists):
     """Keeps Tasks Model Updated with all Pending Moderations."""
@@ -495,23 +507,25 @@ def create_moderation_tasks(lists):
         mod_sync = AdminTasks.objects.get_count('moderation')
         for mod in mod_req[mod_sync:]:
             admin_task = AdminTasks.objects.create_task(
-                task_id = mod['request_id'],
-                task_type = 'moderation',
-                stamp = mod['hold_date'],
-                list_id = '.'.join(mod['list_id'].split('@')),
-                user_email = mod['sender'])
-            date = datetime.strptime(admin_task.made_on,'%Y-%m-%dT%H:%M:%S.%f').date()
+                task_id=mod['request_id'],
+                task_type='moderation',
+                stamp=mod['hold_date'],
+                list_id='.'.join(mod['list_id'].split('@')),
+                user_email=mod['sender'])
+            date = datetime.strptime(admin_task.made_on, '%Y-%m-%dT%H:%M:%S.%f').date()
             # Update stats data for any new messages
             try:
                 current_log = TaskCalender.objects.filter(on_date=date).filter(log_type='moderation').get(list_id=admin_task.list_id)
                 current_log.log_number = current_log.log_number + 1
                 current_log.save()
             except ObjectDoesNotExist as e:
-                TaskCalender.objects.create_log(on_date=date, list_id=admin_task.list_id, log_type='moderation', log_number=1)
+                TaskCalender.objects.create_log(on_date=date,
+                                                list_id=admin_task.list_id, log_type='moderation', log_number=1)
             return admin_task
     except Exception, e:
         messages.error(request, str(e))
         return redirect('user_dashboard')
+
 
 def create_subscription_tasks(lists):
     """Keeps Tasks Model Updated with Pending Subscription Requests."""
@@ -521,24 +535,26 @@ def create_subscription_tasks(lists):
         sub_sync = AdminTasks.objects.get_count('subscription')
         for sub in sub_req[sub_sync:]:
             admin_req = AdminTasks.objects.create_task(
-                task_id = sub['token'],
-                task_type = 'subscription',
-                stamp = sub['request_date'],
-                list_id = sub['list_id'],
-                user_email = sub['email'])
-            date = datetime.strptime(admin_req.made_on,'%Y-%m-%dT%H:%M:%S').date()
+                task_id=sub['token'],
+                task_type='subscription',
+                stamp=sub['request_date'],
+                list_id=sub['list_id'],
+                user_email=sub['email'])
+            date = datetime.strptime(admin_req.made_on, '%Y-%m-%dT%H:%M:%S').date()
             # Update stats data for any new subscription request made
             try:
                 current_log = TaskCalender.objects.filter(on_date=date).filter(log_type='subscription').get(list_id=admin_req.list_id)
                 current_log.log_number = current_log.log_number + 1
                 current_log.save()
             except ObjectDoesNotExist as e:
-                TaskCalender.objects.create_log(on_date=date, list_id=admin_req.list_id, log_type='subscription', log_number=1)
+                TaskCalender.objects.create_log(on_date=date,
+                                                list_id=admin_req.list_id, log_type='subscription', log_number=1)
             return admin_req
     except Exception, e:
         print str(e)
         messages.error(request, str(e))
         return redirect('user_dashboard')
+
 
 def get_rel_timediff(admin_task):
     """Converts datetime object to relative time
@@ -556,16 +572,17 @@ def get_rel_timediff(admin_task):
         if diff.seconds < 120:
             return "a minute ago"
         if diff.seconds < 3600:
-           return str(diff.seconds / 60) + " minutes ago"
+            return str(diff.seconds / 60) + " minutes ago"
         if diff.seconds < 7200:
-           return "an hour ago"
+            return "an hour ago"
         if diff.seconds < 86400:
-           return str(diff.seconds / 3600) + " hours ago"
+            return str(diff.seconds / 3600) + " hours ago"
     if diff.days == 1:
         return "Yesterday"
     if diff.days < 7:
         return str(diff.days) + " days ago"
     return str(diff.days / 7) + " weeks ago"
+
 
 def sync_tasks_to_current(lists):
     """Keeps Tasks Lists Synced with the current number of pending
@@ -579,22 +596,24 @@ def sync_tasks_to_current(lists):
     current_ids = [list_mod['request_id'] for list_mod in mod_req] + [list_sub['token'] for list_sub in sub_req]
     try:
         for task in tasks:
-            if task.task_type != 'manual' and task.task_id not in map(str,current_ids):
+            if task.task_type != 'manual' and task.task_id not in map(str, current_ids):
                 AdminTasks.objects.filter(task_id=task.task_id).delete()
         return AdminTasks.objects.all()
     except Exception, e:
-        messages.error(request,"Could not Sync Tasks" + str(e))
+        messages.error(request, "Could not Sync Tasks" + str(e))
         return redirect('user_dashboard')
+
 
 def allowed_lists(user, lists):
     """Filters lists according to logged in user privileges."""
 
     if not user.is_superuser:
-        lists = [each for each in lists if user.email in each.owners or user.email in each.moderators]  
+        lists = [each for each in lists if user.email in each.owners or user.email in each.moderators]
     return lists
 
+
 def events_allowed(user, events):
-    """Filters The Event Streamer according to 
+    """Filters The Event Streamer according to
     logged in user privileges.
     """
 
@@ -611,6 +630,7 @@ def events_allowed(user, events):
         return allowed
     return events
 
+
 def generate_graph_object(select_lists):
     """Generates moderation and subscription data objects
     to be sent to dashboard for graph generation.
@@ -620,14 +640,14 @@ def generate_graph_object(select_lists):
     mod_objects = {}
     today = datetime.today().date()
     dates = []
-    for i in range(0,31):
+    for i in range(0, 31):
         dates.append(today + timedelta(days=-i))
     for date in dates:
         mod_count = TaskCalender.objects.filter(list_id__in=select_lists).filter(log_type="moderation").filter(on_date=date).count()
         sub_count = TaskCalender.objects.filter(list_id__in=select_lists).filter(log_type="subscription").filter(on_date=date).count()
         if mod_count == 0:
             mod_objects[date.strftime("%Y-%m-%d")] = 0
-	elif mod_count > 0:
+        elif mod_count > 0:
             mod_objects[date.strftime("%Y-%m-%d")] = mod_count
         if sub_count == 0:
             sub_objects[date.strftime("%Y-%m-%d")] = 0
@@ -637,6 +657,7 @@ def generate_graph_object(select_lists):
     sub_objects = collections.OrderedDict(sorted(sub_objects.items()))
     mod_objects = collections.OrderedDict(sorted(mod_objects.items()))
     return sub_objects, mod_objects
+
 
 @login_required
 def set_task_priority(request, task_id, priority):
@@ -648,45 +669,50 @@ def set_task_priority(request, task_id, priority):
         else:
             the_task.priority = priority
         the_task.save()
-        return redirect ('user_dashboard')
+        return redirect('user_dashboard')
     except ObjectDoesNotExist:
         messages.error(request, "An unexpected Error occured! The Task couldn't be found")
     except MailmanApiError:
         return utils.render_api_error(request)
-    return redirect ('user_dashboard')
+    return redirect('user_dashboard')
+
 
 def filter_tasks_by_role(user, tasks, lists):
     user_manual_tasks = [each for each in tasks if each.user_email == user.email and each.task_type == 'manual']
     if not user.is_superuser:
-        user_sub_tasks = [each for each in tasks if each.task_type == 'subscription' and user.email in List.objects.get(fqdn_listname=each.list_id).owners] 
-        user_mod_tasks = [each for each in tasks if each.task_type == 'moderation' and (user.email in List.objects.get(fqdn_listname=each.list_id).moderators or user.email in List.objects.get(fqdn_listname=each.list_id).owners)]
+        user_sub_tasks = [each for each in tasks if each.task_type == 'subscription' and
+                          user.email in List.objects.get(fqdn_listname=each.list_id).owners]
+        user_mod_tasks = [each for each in tasks if each.task_type == 'moderation' and
+                          (user.email in List.objects.get(fqdn_listname=each.list_id).moderators or
+                           user.email in List.objects.get(fqdn_listname=each.list_id).owners)]
         return user_sub_tasks + user_mod_tasks + user_manual_tasks
     return list(tasks.filter(~Q(task_type='manual'))) + user_manual_tasks
-       
+
+
 @login_required
 def reorder_tasks_by(request, reorder_param):
-    """Reorder Dashboard Tasks according to specified 
+    """Reorder Dashboard Tasks according to specified
     parameter.
     """
     try:
         lists = List.objects.all()
         tasks = filter_tasks_by_role(request.user, AdminTasks.objects.all(), lists)
         order_tasks = []
-	for idx in xrange(0,len(tasks)):
+        for idx in xrange(0, len(tasks)):
             max_ob = max(tasks, key=operator.attrgetter(reorder_param))
             order_tasks.append(max_ob)
             tasks.remove(max_ob)
-	tasks = order_tasks
+        tasks = order_tasks
         email = request.user.email
-	global_search = GlobalSearchForm()
+        global_search = GlobalSearchForm()
         search_form = TaskSearchForm()
         search_li = ListIndexSearchForm()
         mtask_form = NewManualTaskForm()
         events = events_allowed(request.user, EventTracker.objects.all())
-        
+
         sub_objects, mod_objects = generate_graph_object([each_list.list_id for each_list in lists])
         stats = {'subs': sub_objects, 'mods': mod_objects}
-        
+
         lists = allowed_lists(request.user, lists)
         for each in events:
             each.made_on = get_rel_timediff(each)
@@ -695,8 +721,10 @@ def reorder_tasks_by(request, reorder_param):
     except MailmanApiError:
         return utils.render_api_error(request)
     return render_to_response('postorius/user_dashboard.html',
-        {'tasks': tasks, 'lists': lists, 'li_res': lists, 'mtask_form': mtask_form, 'search_li': search_li, 'search_form': search_form, 'global_search': global_search, 'events':events, 'stats': stats},
-        context_instance=RequestContext(request))
+                              {'tasks': tasks, 'lists': lists, 'li_res': lists, 'mtask_form': mtask_form,
+                               'search_li': search_li, 'search_form': search_form, 'global_search': global_search,
+                               'events': events, 'stats': stats}, context_instance=RequestContext(request))
+
 
 @login_required
 def discard_manual_task(request, task_id):
@@ -706,13 +734,14 @@ def discard_manual_task(request, task_id):
         mtask = AdminTasks.objects.get(task_id=task_id)
         if request.user.email != mtask.user_email:
             messages.error(request,
-                          _('You Are Not Allowed To Perform This Operation'))
+                           _('You Are Not Allowed To Perform This Operation'))
             return redirect('user_dashboard')
         mtask.delete()
     except ObjectDoesNotExist:
         messages.error(request,
                        _('The task with request id Does Not Exist'))
     return redirect('user_dashboard')
+
 
 @login_required
 def remove_role_tasks(request, list_id, role, email):
@@ -722,13 +751,13 @@ def remove_role_tasks(request, list_id, role, email):
         if role == 'owner':
             if email not in the_list.owners:
                 messages.error(request,
-                              _('The user {} is not an owner'.format(email)))
+                               _('The user {} is not an owner'.format(email)))
                 return redirect('user_dashboard')
             the_list.remove_role(role, email)
         elif role == 'moderator':
             if email not in the_list.moderators:
                 messages.error(request,
-                              _('The user {} is not a moderator'.format(email)))
+                               _('The user {} is not a moderator'.format(email)))
                 return redirect('user_dashboard')
             the_list.remove_role(role, email)
         elif role == 'subscriber':
@@ -737,8 +766,9 @@ def remove_role_tasks(request, list_id, role, email):
         return utils.render_api_error(request)
     except HTTPError as e:
         messages.error(request, _('The {0} could not be removed:'
-                                ' {1}'.format(role, e.msg)))
+                                  ' {1}'.format(role, e.msg)))
     return redirect('user_dashboard')
+
 
 @user_passes_test(lambda u: u.is_superuser)
 def user_delete(request, user_id,
@@ -781,8 +811,8 @@ def _add_address(request, user_email, address):
 def address_activation_link(request, activation_key):
     """
     Checks the given activation_key. If it is valid, the saved address will be
-    added to mailman. Also, the corresponding profile record will be removed. 
-    If the key is not valid, it will be ignored. 
+    added to mailman. Also, the corresponding profile record will be removed.
+    If the key is not valid, it will be ignored.
     """
     try:
         profile = AddressConfirmationProfile.objects.get(
@@ -792,4 +822,4 @@ def address_activation_link(request, activation_key):
     except profile.DoesNotExist:
         pass
     return render_to_response('postorius/user_address_activation_link.html',
-        {}, context_instance=RequestContext(request))
+                              {}, context_instance=RequestContext(request))
