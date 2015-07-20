@@ -1,1087 +1,1084 @@
 <!DOCTYPE html>
-<!--
-{# load url from future #} -->
 {% load i18n %}{% load staticfiles %}
 {# extends postorius_base_template #}
 {% load url from future %}
 {% load i18n %}
 <html><head>
-  <meta name="viewport" content="width=device-width, initial-scale=0, maximum-scale=1" />
-  <link rel="stylesheet" href="{% static 'postorius/css/chartist.min.css' %}">
-  <link rel="stylesheet" href="{% static 'postorius/css/bootstrap-multiselect.css' %}">
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-  <script src="{% static 'postorius/js/libs/chartist.min.js' %}"></script>
-  <script src="{% static 'postorius/js/libs/bootstrap-multiselect.js' %}"></script>
-  <script src="{% static 'postorius/js/script.js' %}"></script>
+<meta name="viewport" content="width=device-width, initial-scale=0, maximum-scale=1" />
+<link rel="stylesheet" href="{% static 'postorius/css/chartist.min.css' %}">
+<link rel="stylesheet" href="{% static 'postorius/css/bootstrap-multiselect.css' %}">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="{% static 'postorius/js/libs/chartist.min.js' %}"></script>
+<script src="{% static 'postorius/js/libs/bootstrap-multiselect.js' %}"></script>
+<script src="{% static 'postorius/js/script.js' %}"></script>
 
 <style>
 /* Imports */
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
 
 @font-face {
-	font-family: "Brandon Grotesque Bold";
-	src: url("{% static 'postorius/fonts/brandon_grotesque_bold.ttf' %}") format("truetype");
+    font-family: "Brandon Grotesque Bold";
+    src: url("{% static 'postorius/fonts/brandon_grotesque_bold.ttf' %}") format("truetype");
 }
 @font-face {
-	font-family: "Brandon Grotesque Light";
-	src: url("{% static 'postorius/fonts/brandon_grotesque_light.ttf' %}") format("truetype");
+    font-family: "Brandon Grotesque Light";
+    src: url("{% static 'postorius/fonts/brandon_grotesque_light.ttf' %}") format("truetype");
 }
 ::-webkit-scrollbar-track {
-	border-radius: 0px;
-	background-color: #FFFFFF;
+    border-radius: 0px;
+    background-color: #FFFFFF;
 }
 ::-webkit-scrollbar {
-	width: 10px;
-	background-color: #FFFFFF;
+    width: 10px;
+    background-color: #FFFFFF;
 }
 ::-webkit-scrollbar-thumb {
-	border-radius: 0px;
-	background-color: #0A1123;
+    border-radius: 0px;
+    background-color: #0A1123;
 }
 ::-moz-scrollbar-track {
-	border-radius: 0px;
-	background-color: #FFFFFF;
+    border-radius: 0px;
+    background-color: #FFFFFF;
 }
 ::-moz-scrollbar {
-	width: 10px;
-	background-color: #FFFFFF;
+    width: 10px;
+    background-color: #FFFFFF;
 }
 ::-moz-scrollbar-thumb {
-	border-radius: 0px;
-	background-color: #0A1123;
+    border-radius: 0px;
+    background-color: #0A1123;
 }
 ::scrollbar-track {
-	border-radius: 0px;
-	background-color: #FFFFFF;
+    border-radius: 0px;
+    background-color: #FFFFFF;
 }
 ::scrollbar {
-	width: 10px;
-	background-color: #FFFFFF;
+    width: 10px;
+    background-color: #FFFFFF;
 }
 ::scrollbar-thumb {
-	border-radius: 0px;
-	background-color: #0A1123;
+    border-radius: 0px;
+    background-color: #0A1123;
 }
 @-webkit-keyframes dashoffset-seven{
-	0% {stroke-dashoffset: 7px;}
-	100% {stroke-dashoffset: 0px;}
+    0% {stroke-dashoffset: 7px;}
+    100% {stroke-dashoffset: 0px;}
 }
 @-moz-keyframes dashoffset-seven{
-	0% {stroke-dashoffset: 7px;}
-	100% {stroke-dashoffset: 0px;}
+    0% {stroke-dashoffset: 7px;}
+    100% {stroke-dashoffset: 0px;}
 }
 @keyframes dashoffset-seven{
-	0% {stroke-dashoffset: 7px;}
-	100% {stroke-dashoffset: 0px;}
+    0% {stroke-dashoffset: 7px;}
+    100% {stroke-dashoffset: 0px;}
 }
 
 @-webkit-keyframes width-pulse {
-	0% {stroke-width: 2px;}
-	50% {stroke-width: 4px;}
-	100% {stroke-width: 2px;}
+    0% {stroke-width: 2px;}
+    50% {stroke-width: 4px;}
+    100% {stroke-width: 2px;}
 }
 @-moz-keyframes width-pulse {
-	0% {stroke-width: 2px;}
-	50% {stroke-width: 4px;}
-	100% {stroke-width: 2px;}
+    0% {stroke-width: 2px;}
+    50% {stroke-width: 4px;}
+    100% {stroke-width: 2px;}
 }
 @keyframes width-pulse {
-	0% {stroke-width: 2px;}
-	50% {stroke-width: 4px;}
-	100% {stroke-width: 2px;}
+    0% {stroke-width: 2px;}
+    50% {stroke-width: 4px;}
+    100% {stroke-width: 2px;}
 }
 h3 {
-	font-family: "Brandon Grotesque Light", sans-serif;
-	font-weight: 500;
+    font-family: "Brandon Grotesque Light", sans-serif;
+    font-weight: 500;
 }
 
 html, body {
-	font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-	height:100%;
-	font-weight: 500;
+    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    height:100%;
+    font-weight: 500;
 }
 
 
 /* Chart CSS */
 .ctooltip {
-	position: absolute;
-	z-index: 1;
-	padding: 5px;
-	background: rgba(0, 0, 0, 0.3);
-	opacity: 1;
-	border-radius: 3px;
-	text-align: center;
-	pointer-events: none;
-	color: white;
-	transition: opacity .1s ease-out;
+    position: absolute;
+    z-index: 1;
+    padding: 5px;
+    background: rgba(0, 0, 0, 0.3);
+    opacity: 1;
+    border-radius: 3px;
+    text-align: center;
+    pointer-events: none;
+    color: white;
+    transition: opacity .1s ease-out;
 }
 .ctooltip.ctooltip-hidden {
-	opacity: 0;
+    opacity: 0;
 }
 .ct-chart .ct-series.ct-series-b .ct-line{
-	stroke: #FF5D56;
-	stroke-width: 3px;
-	stroke-dasharray: 6px 3px;
-	-webkit-animation: dashoffset-seven 350ms infinite linear;
-	-moz-animation: dashoffset-seven 350ms infinite linear;
+    stroke: #FF5D56;
+    stroke-width: 3px;
+    stroke-dasharray: 6px 3px;
+    -webkit-animation: dashoffset-seven 350ms infinite linear;
+    -moz-animation: dashoffset-seven 350ms infinite linear;
 }
 .ct-chart .ct-series.ct-series-b .ct-point {
-	stroke: #FF5D56;
+    stroke: #FF5D56;
 }
 .ct-chart .ct-series.ct-series-a .ct-line {
-	stroke: #F1C40F;
-	stroke-width: 2px;
-	opacity: 0.7;
-	-webkit-animation: width-pulse 2s infinite;
-	-moz-animation: width-pulse 2s infinite;
+    stroke: #F1C40F;
+    stroke-width: 2px;
+    opacity: 0.7;
+    -webkit-animation: width-pulse 2s infinite;
+    -moz-animation: width-pulse 2s infinite;
 }
 .ct-chart .ct-series.ct-series-a .ct-point {
-	stroke: #F1C40F;
+    stroke: #F1C40F;
 }
 
 
 /* Button Styling And Animations */
 .btn, button { 
-	border-radius:0px;
-	-webkit-transition: .2s all;
-	-moz-transition: .2s all;
-	transition: .2s all;
+    border-radius:0px;
+    -webkit-transition: .2s all;
+    -moz-transition: .2s all;
+    transition: .2s all;
 }
 .btn_-1 {
-	border:1px solid #00BCD4;
-	color: #00BCD4;
+    border:1px solid #00BCD4;
+    color: #00BCD4;
 }
 .btn_0 {
-	border:1px solid  #0097A7;
-	color:  #0097A7;
+    border:1px solid  #0097A7;
+    color:  #0097A7;
 }
 .btn_1 {
-	border:1px solid #303F9F;
-	color: #303F9F;
+    border:1px solid #303F9F;
+    color: #303F9F;
 }
 .btn_-2 {
-	border:1px solid #3a3a3a;
-	color: #3a3a3a;
+    border:1px solid #3a3a3a;
+    color: #3a3a3a;
 }
 .btn_1:hover, .btn_1:focus {
-	border:1px solid #303F9F;
-	background-color: #303F9F;
-	color: #fff;
+    border:1px solid #303F9F;
+    background-color: #303F9F;
+    color: #fff;
 }
 .btn_0:hover, .btn_0:focus {
-	border:1px solid  #0097A7;
-	background-color: #0097A7;
-	color: #fff;
+    border:1px solid  #0097A7;
+    background-color: #0097A7;
+    color: #fff;
 }
 .btn_-1:hover, .btn_-1:focus {
-	border:1px solid #00BCD4;
-	background-color: #00BCD4;
-	color: #fff;
+    border:1px solid #00BCD4;
+    background-color: #00BCD4;
+    color: #fff;
 }
 .btn_-2:hover, .btn_-2:focus {
-	background-color: #3a3a3a;
-	border:1px solid #3a3a3a;
-	color: #fff;
+    background-color: #3a3a3a;
+    border:1px solid #3a3a3a;
+    color: #fff;
 }
 
 /* Tasks Widget Styling */
 .bg-color_-1 {
-	background-color:#EFFAFE !important;
+    background-color:#EFFAFE !important;
 }
 .bg-color_0 {
-	background-color:#DBE7FD !important;
+    background-color:#DBE7FD !important;
 }
 .bg-color_1 {
-	background-color:#9F84ED !important;
+    background-color:#9F84ED !important;
 }
 .bg-color_-2 {
-	background-color:#FFFFFF !important;
+    background-color:#FFFFFF !important;
 }
 .parent-active {
-	background-color:#EEEEEE;
+    background-color:#EEEEEE;
 }
 .panel-heading-listv {
-	padding:1.7em;
-	background: #FFFFFF !important;
+    padding:1.7em;
+    background: #FFFFFF !important;
 }
 .panel-heading, .panel-default {
-	border-radius: 0px !important;
+    border-radius: 0px !important;
 }
 .panel-tw {
-	border-radius:0px !important;
-	border:1px solid #0097A7;
-	background-color:#FFFFFF;
+    border-radius:0px !important;
+    border:1px solid #0097A7;
+    background-color:#FFFFFF;
 }
 .panel-title  a {
-	font-size:1em;
+    font-size:1em;
 }
 .toggle-accordian:hover, 
 .toggle-accordian:active, 
 .toggle-accordian:focus {
-	text-decoration: none;
-	color:#3a3a3a;
-	font-size:1em;
+    text-decoration: none;
+    color:#3a3a3a;
+    font-size:1em;
 }
 
 .panel-title  ul li:first-child {
-	color:#3a3a3a;
-	font-size:1em;
+    color:#3a3a3a;
+    font-size:1em;
 }
 
 #task-container, #list-container-well {
-	overflow-y: auto;
-	margin-left: auto;
-	padding-left:0px;
-	padding-right:0px;
-	margin-right:auto;
-	position:relative;
-	border-radius:0px;
-	height:72%;
+    overflow-y: auto;
+    margin-left: auto;
+    padding-left:0px;
+    padding-right:0px;
+    margin-right:auto;
+    position:relative;
+    border-radius:0px;
+    height:72%;
 }
 @media (max-width: 1366px){
-#task-container {
-	height:72%;
-	font-size:0.5em;
-}
-#task-container .panel-title li{
-	font-size:0.83em;
-}
-#task-container #text-priority {
-	display:none;
-}
- #task-container #holoid a{
-	font-size:0.83em; 
-} 
-#actions_link{
-font-size:0.85em;
-}
-.activities td {
-	font-size: 0.9em;
-}
-#members-expand li a, #members-expand span, 
-#members-expand a{
-font-size:0.85em;
-}
-#reorder > .btn-grp span , #reorder li a{
-	font-size:0.9em;
-}
-.i-tasks {
-	font-size:0.8em;
-}
-#list-container-well {
-	height:24em;
-}
+    #task-container {
+        height:72%;
+        font-size:0.5em;
+    }
+    #task-container .panel-title li{
+        font-size:0.83em;
+    }
+    #task-container #text-priority {
+        display:none;
+    }
+    #task-container #holoid a{
+        font-size:0.83em; 
+    } 
+    #actions_link{
+        font-size:0.85em;
+    }
+    .activities td {
+        font-size: 0.9em;
+    }
+    #members-expand li a, #members-expand span, 
+    #members-expand a{
+        font-size:0.85em;
+    }
+    #reorder > .btn-grp span , #reorder li a{
+        font-size:0.9em;
+    }
+    .i-tasks {
+        font-size:0.8em;
+    }
+    #list-container-well {
+        height:24em;
+    }
 }
 
 #list-container{
-	display:none;
+    display:none;
 }
 #task-container::-webkit-scrollbar-track {
-	border-radius: 0px;
-	background-color: #F5F5F5;
+    border-radius: 0px;
+    background-color: #F5F5F5;
 }
 #task-container::-webkit-scrollbar {
-	width: 8px;
-	background-color: #F5F5F5;
+    width: 8px;
+    background-color: #F5F5F5;
 }
 #task-container::-webkit-scrollbar-thumb {
-	border-radius: 0px;
-	background-color: #777;
+    border-radius: 0px;
+    background-color: #777;
 }
 #listi_container::-webkit-scrollbar-track {
-	border-radius: 0px;
-	background-color: #F5F5F5;
+    border-radius: 0px;
+    background-color: #F5F5F5;
 }
 #listi_container::-webkit-scrollbar {
-	width: 6px;
-	background-color: #F5F5F5;
+    width: 6px;
+    background-color: #F5F5F5;
 }
 #listi_container::-webkit-scrollbar-thumb {
-	border-radius: 0px;
-	background-color: #777;
+    border-radius: 0px;
+    background-color: #777;
 }
 .made-on {
-	color:#34373C;
-	font-size:0.96em;
+    color:#34373C;
+    font-size:0.96em;
 }
 #holoid > a {
-	border-radius:0px !important;
+    border-radius:0px !important;
 }
 .fa-plus-circle {
-	float:right;
-	position:relative;
-	margin-top:1%;
-	font-size:2.7em;
-	vertical-align:middle;
-	display:inline-block;
-	-webkit-transition: 0.3s all;
-	-moz-transition: 0.3s all;
-	transition: 0.3s all;
-	color: #08C;
+    float:right;
+    position:relative;
+    margin-top:1%;
+    font-size:2.7em;
+    vertical-align:middle;
+    display:inline-block;
+    -webkit-transition: 0.3s all;
+    -moz-transition: 0.3s all;
+    transition: 0.3s all;
+    color: #08C;
 }
 .fa-plus-circle:hover {
-	float:right;
-	display:inline-block;
-	-webkit-transition: 0.3s all;
-	-moz-transition: 0.3s all;
-	transition: 0.3s all;
-	-webkit-transform: rotate(90deg);
-	-moz-transform: rotate(90deg);
-	transform: rotate(90deg);
-	color: #3F51B5;
+    float:right;
+    display:inline-block;
+    -webkit-transition: 0.3s all;
+    -moz-transition: 0.3s all;
+    transition: 0.3s all;
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    transform: rotate(90deg);
+    color: #3F51B5;
 }
 .i-tasks:before {
-	background:white;
-	padding: 5px;
-	border: 1px solid;
-	color:#FFC107;
+    background:white;
+    padding: 5px;
+    border: 1px solid;
+    color:#FFC107;
 }
 .fa-bars,
 .fa-gear{
-	-webkit-transition: 0.3s all;
-	-moz-transition: 0.3s all;
-	transition: 0.3s all;
+    -webkit-transition: 0.3s all;
+    -moz-transition: 0.3s all;
+    transition: 0.3s all;
 }
 .fa-bars:hover,
 .fa-gear:hover{
-	color: #000;
-	-webkit-transition: 0.3s all;
-	-moz-transition: 0.3s all;
-	transition: 0.3s all;
-	-webkit-transform: rotate(90deg);
-	-moz-transform: rotate(90deg);
-	transform: rotate(90deg);
+    color: #000;
+    -webkit-transition: 0.3s all;
+    -moz-transition: 0.3s all;
+    transition: 0.3s all;
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    transform: rotate(90deg);
 }
 .task-table > tbody > tr:first-child > td{ 
-	border-top: none !important;
+    border-top: none !important;
 }
 .table > tbody > tr:last-child > td {
-	padding-bottom: 0px !important;
-	margin-bottom:0px !important;
+    padding-bottom: 0px !important;
+    margin-bottom:0px !important;
 }
 .panel_tasks .panel-collapse .panel-body{
-	padding-bottom:0px !important;
+    padding-bottom:0px !important;
 }
 .role-nav li.active > a {
-	border-bottom:2px solid #000;
-	background-color: inherit;
+    border-bottom:2px solid #000;
+    background-color: inherit;
 }
 .role-nav li > a {
-	border-radius:0px;
-	color: #3a3a3a;
+    border-radius:0px;
+    color: #3a3a3a;
 }
 #list-moderators .row, #list-owners .row, #list-subscribers .row{
-	margin:inherit;
+    margin:inherit;
 }
 #list-moderators .col-xs-6, #list-owners .col-xs-6, #list-subscribers .col-xs-12{
-	padding:0.5em;
+    padding:0.5em;
 }
 #refresh {
-	margin: 100px auto ;
-	display:block;
-	position: relative;
-	box-shadow: 
-		1px 1px #53A7EA,
-		2px 2px #53A7EA,
-		3px 3px #53A7EA;
-	-webkit-transition: all 0.1s ease-in;
-	-moz-transition: all 0.1s ease-in;
-	transition: all 0.1s ease-in;
-	border: none;
-	padding: 10px;
-	background: #08C;
-	color: white;
-	font-weight: bold;
-	text-decoration: none;
-	font-size: 18px;
-	font-family: Arial;
-	width: 6.85em;
-	height: 3.25em;
+    margin: 100px auto ;
+    display:block;
+    position: relative;
+    box-shadow: 
+    1px 1px #53A7EA,
+    2px 2px #53A7EA,
+    3px 3px #53A7EA;
+    -webkit-transition: all 0.1s ease-in;
+    -moz-transition: all 0.1s ease-in;
+    transition: all 0.1s ease-in;
+    border: none;
+    padding: 10px;
+    background: #08C;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 18px;
+    font-family: Arial;
+    width: 6.85em;
+    height: 3.25em;
 }
 
 #refresh:active { 
-	box-shadow: none;
-	top: 3px;
-	left: 3px;
-       }
+    box-shadow: none;
+    top: 3px;
+    left: 3px;
+}
 #id_mtask_description {
-	resize: vertical;
+    resize: vertical;
 }
 /* List Index Widget Styling*/
 #li-widget-wrapper{
-position:relative;
-margin:auto;
-display: inline-block;
-       white-space:nowrap;
-float:right;
-width:37%;
-height:70%;
-border:1px solid;
+    position:relative;
+    margin:auto;
+    display: inline-block;
+    white-space:nowrap;
+    float:right;
+    width:37%;
+    height:70%;
+    border:1px solid;
 }
 /* Events Widget Styling */
 #events-widget{
-width:17%;
-float:left;
-display:inline-block;
-height:99%;
-       margin-top:8%; 
-border:1px solid;
-       margin-left:2%;
-       margin-right:7%;
+    width:17%;
+    float:left;
+    display:inline-block;
+    height:99%;
+    margin-top:8%; 
+    border:1px solid;
+    margin-left:2%;
+    margin-right:7%;
 }
 @media (max-width: 90em){
-#events-widget{
-display:none !important;
-	position:relative;
-	margin:auto;
-	float:right;
-	width:37%;
-	height:70%;
-	}
-.primary-widgets-wrapper{
-width:100% !important;
-}
-#view_bot{
-display:none !important;
-}
+    #events-widget{
+        display:none !important;
+        position:relative;
+        margin:auto;
+        float:right;
+        width:37%;
+        height:70%;
+    }
+    .primary-widgets-wrapper{
+        width:100% !important;
+    }
+    #view_bot{
+        display:none !important;
+    }
 }
 /* Nav Styling */
 .nav li a{
-	-webkit-transition: .2s all;
-	-moz-transition: .2s all;
-	transition: .2s all;
+    -webkit-transition: .2s all;
+    -moz-transition: .2s all;
+    transition: .2s all;
 }
 
 #id_query_field {
-	padding: 7px;
-	border: none;
-	border-bottom: solid 2px #E4F1FE;
-	-webkit-transition: border 0.3s;
-	-moz-transition: border 0.3s;
-	transition: border 0.3s;
+    padding: 7px;
+    border: none;
+    border-bottom: solid 2px #E4F1FE;
+    -webkit-transition: border 0.3s;
+    -moz-transition: border 0.3s;
+    transition: border 0.3s;
 }
 #id_query_field:focus,
 #id_query_field.focus {
-	border-bottom: solid 2px #1ABC9C;
+    border-bottom: solid 2px #1ABC9C;
 }
 .navbar {
-	background-color: #0A1123;
+    background-color: #0A1123;
 }
 .nav-icon {
-	color: #ffffff;
+    color: #ffffff;
 }
 .checkbox-wrapper {
-	margin-left: 2em;
-	display:inline-block;
+    margin-left: 2em;
+    display:inline-block;
 }
 .checkbox-inline input[type=checkbox]{
-	position: relative;
-	color:#1ABC9C;
-	font-size:1.64em;
+    position: relative;
+    color:#1ABC9C;
+    font-size:1.64em;
 }
 .checkbox-inline >input[type=checkbox]::before {
-	position: absolute;
-	background-color: #0A1123;
-	height: 100%;
-	width: 100%;
-	font-family: FontAwesome;
-	content:"\f096";
+    position: absolute;
+    background-color: #0A1123;
+    height: 100%;
+    width: 100%;
+    font-family: FontAwesome;
+    content:"\f096";
 
 }
 .checkbox-inline >input[type=checkbox]:checked::before {
-	font-family: FontAwesome;
-	display: inline-block;
-	content:"\f046";
+    font-family: FontAwesome;
+    display: inline-block;
+    content:"\f046";
 }
 .check-label {
-	margin-left: 1em;
-	margin-right: 1em;
-	border-bottom:2px solid #1ABC9C;
-	color: #E4F1FE;
+    margin-left: 1em;
+    margin-right: 1em;
+    border-bottom:2px solid #1ABC9C;
+    color: #E4F1FE;
 }
 .navbar > .container-fluid > .navbar-header a{
-	color: #E4F1FE;
+    color: #E4F1FE;
 }
 .navbar .navbar-nav > li > a{
-	color: #FFFFFF !important;
+    color: #FFFFFF !important;
 }
 .navbar .navbar-nav > li > a:hover{
-	color: #E4F1FE !important;
+    color: #E4F1FE !important;
 }
 #view_bot {
-display:inline-block;
+    display:inline-block;
 }
 </style>
 </head>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
-	<div class="container-fluid">
-		<div class="navbar-header">
-			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>                        
-			</button>
-			<a class="navbar-brand" href="#">Mailman | Dashboard</a>
-		</div>
-		<div class="collapse navbar-collapse" id="myNavbar">
-			<form id="global-search-form" class="navbar-form navbar-left" role="search" action="{% url 'user_dashboard' %}" method="POST" class="form-inline">{% csrf_token %}
-				<div class="form-group">
-					{{global_search.query_field}}
-					<datalist id="global-result"></datalist><div class="checkbox-wrapper">
-					<label class="checkbox-inline">{{global_search.check_lists}}<label class="check-label" for="id_check_lists">Lists</label></label>
-					{% if user.is_superuser %}
-					<label class="checkbox-inline">{{global_search.check_domains}}<label class="check-label" for="id_check_domains">Domains</label></label>
-					{% endif %}
-					<label class="checkbox-inline">{{global_search.check_people}}<label class="check-label" for="id_check_people">People</label></label></div>
-				</div>
-		       </form>
-			<ul class="nav navbar-nav navbar-center">
-				{% regroup tasks|dictsort:"task_type" by task_type as typed_tasks %}
-				{% for each in typed_tasks %}
-					{% if each.grouper == "subscription" %}
-				<li><a href="#"><span class="nav-icon fa fa-lg fa-fw fa-user"></span><sup><span class="badge">{{each.list|length}}</span></sup> Subscription Requests</a></li>
-					{% elif each.grouper == "moderation" %}
-				<li><a href="#"><span class="nav-icon fa fa-lg fa-fw fa-envelope"></span><sup><span class="badge">{{each.list|length}}</span></sup> Held Messages</a></li>
-					{% endif %}
-				{% endfor %}
-			</ul>
-			<ul class="nav navbar-nav navbar-right">
-				<li class="dropdown view-chooser">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-						<span class="fa fa-chevron-circle-down fa-lg fa-fw "></span>Change View
-					</a>
-					<ul class="dropdown-menu widget-chooser-menu" role="menu">
-						<li><a id="view-li" href="#">{% trans "List Index" %}<span style="display:none;" id="listi-view-check" class="active fa fa-fw fa-check"></span>
-						</a></li>
-						<li class="divider"></li>
-					        <li><a id="view-events" href="#">{% trans "Events" %}<span style="display:none;" id="events-view-check" class="fa fa-fw fa-check"></span>
-						</a></li>
-					</ul>
-				</li>
-				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-						<span class="glyphicon glyphicon-user"></span>  Welcome {{user.username}}, You have <span>{{tasks|length}}</span> Task{{ tasks|pluralize }} Remaining
-					</a>
-					<ul class="dropdown-menu" role="menu">
-						<li><a href="{% url 'list_index' %}"><i class="fa fa-envelope-o fa-fw"></i>&nbsp;{% trans "Lists" %}</a></li>
-						{% if user.is_superuser %}
-					        <li><a href="{% url 'domain_index' %}"><i class="fa fa-globe fa-fw"></i>&nbsp;{% trans "Domains" %}</a></li>
-					        {% endif %}
-					        <li><a href="{% url 'user_mailmansettings' %}"><i class="fa fa-gears"></i>&nbsp;{% trans "My Settings" %}</a></li>
-						<li class="divider"></li>
-						<li><a href="{% url 'user_logout' %}"><i class="fa fa-power-off fa-fw"></i>&nbsp;{% trans "Logout" %}</a></li>
-					</ul>
-				</li>
-			</ul>
-		</div>
-	</div>
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>                        
+            </button>
+            <a class="navbar-brand" href="#">Mailman | Dashboard</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <form id="global-search-form" class="navbar-form navbar-left" role="search" action="{% url 'user_dashboard' %}" method="POST" class="form-inline">{% csrf_token %}
+                <div class="form-group">
+                    {{global_search.query_field}}
+                    <datalist id="global-result"></datalist><div class="checkbox-wrapper">
+                        <label class="checkbox-inline">{{global_search.check_lists}}<label class="check-label" for="id_check_lists">Lists</label></label>
+                        {% if user.is_superuser %}
+                        <label class="checkbox-inline">{{global_search.check_domains}}<label class="check-label" for="id_check_domains">Domains</label></label>
+                        {% endif %}
+                        <label class="checkbox-inline">{{global_search.check_people}}<label class="check-label" for="id_check_people">People</label></label></div>
+                </div>
+            </form>
+            <ul class="nav navbar-nav navbar-center">
+                {% regroup tasks|dictsort:"task_type" by task_type as typed_tasks %}
+                {% for each in typed_tasks %}
+                {% if each.grouper == "subscription" %}
+                <li><a href="#"><span class="nav-icon fa fa-lg fa-fw fa-user"></span><sup><span class="badge">{{each.list|length}}</span></sup> Subscription Requests</a></li>
+                {% elif each.grouper == "moderation" %}
+                <li><a href="#"><span class="nav-icon fa fa-lg fa-fw fa-envelope"></span><sup><span class="badge">{{each.list|length}}</span></sup> Held Messages</a></li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown view-chooser">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                    <span class="fa fa-chevron-circle-down fa-lg fa-fw "></span>Change View
+                </a>
+                <ul class="dropdown-menu widget-chooser-menu" role="menu">
+                    <li><a id="view-li" href="#">{% trans "List Index" %}<span style="display:none;" id="listi-view-check" class="active fa fa-fw fa-check"></span>
+                    </a></li>
+                    <li class="divider"></li>
+                    <li><a id="view-events" href="#">{% trans "Events" %}<span style="display:none;" id="events-view-check" class="fa fa-fw fa-check"></span>
+                    </a></li>
+                </ul>
+                </li>
+                <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                    <span class="glyphicon glyphicon-user"></span>  Welcome {{user.username}}, You have <span>{{tasks|length}}</span> Task{{ tasks|pluralize }} Remaining
+                </a>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="{% url 'list_index' %}"><i class="fa fa-envelope-o fa-fw"></i>&nbsp;{% trans "Lists" %}</a></li>
+                    {% if user.is_superuser %}
+                    <li><a href="{% url 'domain_index' %}"><i class="fa fa-globe fa-fw"></i>&nbsp;{% trans "Domains" %}</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'user_mailmansettings' %}"><i class="fa fa-gears"></i>&nbsp;{% trans "My Settings" %}</a></li>
+                    <li class="divider"></li>
+                    <li><a href="{% url 'user_logout' %}"><i class="fa fa-power-off fa-fw"></i>&nbsp;{% trans "Logout" %}</a></li>
+                </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
 </nav>
 <div style="width:100%;height:100%;margin-top:5em;" class="container">
-         {% if messages %}
-             <ul style="position:absolute; text-align:center;margin: 2em 0 0 37em; width:53em; list-style: none;" class="mm_messages">
-             {% for message in messages %}
-                 <li class="alert {% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</li>
-             {% endfor %}
-             </ul>
-         {% endif %}
-         {% block main %}{% endblock main %}
-<div class="primary-widgets-wrapper container" style="min-width:65em;position:relative;display:inline-block;margin-top:8%;height:100%;width:72%;float:right;">
-<div class="container widget tasks-widget" style="min-width:35em;position:relative;width:50%;height:70%;display:inline-block;border:1px solid; box-shadow: 5px 5px 5px #888888;">
-	<div class="row">
-		<div class="col-xs-12"><h3 class="text-center">To-Do List</h3></div>
-		<div class="col-xs-12">
-			<ul class="nav nav-tabs nav-justified" id="switcher" role="tablist">
-				<li class="active" ><a id="task-view" href="#">Task Basis</a></li>
-				{% if tasks|length_is:"0" %}
-				<li><a href="#">List Basis</a></li>
-				{% else %}
-				<li><a id="list-view" href="#">List Basis</a></li>
-				{% endif %}
-			</ul>
-		</div>
-	</div>
-	<div class="row" style="height:3.2em;">
-		<div class="col-xs-6" style="width:100%;">
-			<form action="{% url 'user_dashboard' %}" method="POST">{% csrf_token %}
-				<div data-toggle="modal" data-target="#manual-task-modal" class="fa fa-fw fa-plus-circle"></div>
-				<div class="modal fade" id="manual-task-modal" tabindex=-1 role="dialog">
-					<div class="modal-dialog">
-						<!-- Modal content-->
-						<div class="modal-content">
-							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal">&times;</button>
-								<h4 class="modal-title">Add Self Note</h4>
-							</div>
-							<div class="modal-body">
-								<form action="{% url 'user_dashboard' %}" method="POST">{% csrf_token %}
-								{{mtask_form.mtask_subject}}<br />
-								{{mtask_form.mtask_description}}<hr />
-								<button type="submit" id="loading_btn" data-loading-text="Processing..." class="btn btn-primary" autocomplete="off">
-								  Submit
-								  </button>
-								</form>
-							</div>
-						</div>
-					</div>
-				</div><!-- Modal -->
-			</form>
-			<form action="{% url 'user_dashboard' %}" method="POST">{% csrf_token %}
-				<div style="margin-top:1%;float:right;width:40%;" class="input-group">
-	             			<span class="input-group-btn"><button class="btn btn-default fa fa-filter" type="submit"></button></span>
-					{{search_form.search_tasks}}
-				</div>
-		       </form>
-		</div>
-	</div>
+    {% if messages %}
+    <ul style="position:absolute; text-align:center;margin: 2em 0 0 37em; width:53em; list-style: none;" class="mm_messages">
+        {% for message in messages %}
+        <li class="alert {% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% block main %}{% endblock main %}
+    <div class="primary-widgets-wrapper container" style="min-width:65em;position:relative;display:inline-block;margin-top:8%;height:100%;width:72%;float:right;">
+        <div class="container widget tasks-widget" style="min-width:35em;position:relative;width:50%;height:70%;display:inline-block;border:1px solid; box-shadow: 5px 5px 5px #888888;">
+            <div class="row">
+                <div class="col-xs-12"><h3 class="text-center">To-Do List</h3></div>
+                <div class="col-xs-12">
+                    <ul class="nav nav-tabs nav-justified" id="switcher" role="tablist">
+                        <li class="active" ><a id="task-view" href="#">Task Basis</a></li>
+                        {% if tasks|length_is:"0" %}
+                        <li><a href="#">List Basis</a></li>
+                        {% else %}
+                        <li><a id="list-view" href="#">List Basis</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            <div class="row" style="height:3.2em;">
+                <div class="col-xs-6" style="width:100%;">
+                    <form action="{% url 'user_dashboard' %}" method="POST">{% csrf_token %}
+                        <div data-toggle="modal" data-target="#manual-task-modal" class="fa fa-fw fa-plus-circle"></div>
+                        <div class="modal fade" id="manual-task-modal" tabindex=-1 role="dialog">
+                            <div class="modal-dialog">
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Add Self Note</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{% url 'user_dashboard' %}" method="POST">{% csrf_token %}
+                                            {{mtask_form.mtask_subject}}<br />
+                                            {{mtask_form.mtask_description}}<hr />
+                                            <button type="submit" id="loading_btn" data-loading-text="Processing..." class="btn btn-primary" autocomplete="off">
+                                                Submit
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- Modal -->
+                    </form>
+                    <form action="{% url 'user_dashboard' %}" method="POST">{% csrf_token %}
+                        <div style="margin-top:1%;float:right;width:40%;" class="input-group">
+                            <span class="input-group-btn"><button class="btn btn-default fa fa-filter" type="submit"></button></span>
+                            {{search_form.search_tasks}}
+                        </div>
+                    </form>
+                </div>
+            </div>
 
-	<div class="row well" id="task-container">
-		<div class="col-xs-12">
-			{% if tasks|length_is:"0" %}<h4>
-			There are no Pending Tasks for {{user.username}} matching the criteria</h4>
-			<a href="."><button id="refresh"><span class="fa fa-lg fa-fw fa-refresh"></span>Refresh</button></a>
-			{% endif %}
-			{% for task in tasks %}
-			<div class="panel-group" id="accordian" role="tablist" aria-multiselectable="true">
-				<div class="panel-tw panel-default panel_tasks">
-					{% if task.task_type == 'subscription'%} 
-					<div class="panel-heading bg-color_{{task.priority}}" role="tab" id="heading_{{task.task_id}}">
-						<div class="panel-title">
-							<span style="float:left;" class="fa-lg"><i style="margin-top:25%;" class="i-tasks fa fa-user"></i></span>
-							<ul style="list-style-type:none;">
-								<li>{{ task }}</li><br />
-								<li><span class="made-on">{{ task.made_on }}</span>&nbsp;&nbsp;
-									<small id="text-priority">{% if task.priority == -1 %}[Low Priority]
-										{% elif task.priority == 0 %}[Medium Priority]
-									 	{% elif task.priority == 1 %}[High Priority]
-									 	{% else %}[Priority Not Set]{% endif %}</small>&nbsp;
-									<div class="btn-group set-priority">
-										<span class="fa fa-lg fa-gear dropdown-toggle" data-toggle="dropdown" area-expanded="false" ></span>
-										<span class="sr-only">Toggle Priority</span>
-										<ul class="dropdown-menu" role="menu">
-											<li role="presentation" class="dropdown-header">Task Priority Level</li>
-											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 1 %}">High Priority
-											{% if task.priority == 1 %}
-											<span class="fa fa-fw fa-check"></span>
-											{% endif %}</a>
-											</li>
-											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 0 %}">Medium Priority
-											{% if task.priority == 0 %}
-											<span class="fa fa-fw fa-check"></span>
-											{% endif %}</a>
-											</li>
-											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id -1 %}">Low Priority
-											{% if task.priority == -1 %}
-											<span class="fa fa-fw fa-check"></span>
-											{% endif %}</a></li>
-										</ul>
-									</div>			
-									<div style="float:right;" id="holoid" class="btn-group btn-group-sm" id="block" role="group">
-										<a href="{% url 'handle_sub_task' task.list_id task.task_id 'accept' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Accept' %}</a>
-										<a href="{% url 'handle_sub_task' task.list_id task.task_id 'reject' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Reject' %}</a>
-										<a href="{% url 'handle_sub_task' task.list_id task.task_id 'discard' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Discard' %}</a>
-									</div>
-								</li>
-							</ul>
-						</div>
-					</div>
-					{% elif task.task_type == 'moderation' %}
-					<div class="panel-heading bg-color_{{task.priority}}" role="tab" id="heading_{{task.task_id}}">
-						<div class="panel-title">
-							<a class="toggle-accordian" data-toggle="collapse" data-parent="#accordion" href="#collapse_{{task.task_id}}" aria-expanded="true" aria-controls="collapse_{{task.task_id}}">
-							<span style="float:left;" class="fa-lg"><i style="margin-top:25%;" class="i-tasks fa fa-envelope-o "></i></span>
-							<ul style="list-style-type:none;">
-								<li>{{ task }}</li></a><br />
-								<li><span class="made-on">{{task.made_on}}</span>&nbsp;&nbsp;
-				 					<small id="text-priority" >{% if task.priority == -1 %}[Low Priority]
-								 	{% elif task.priority == 0 %}[Medium Priority]
-								 	{% elif task.priority == 1 %}[High Priority]
-								 	{% else %}[Priority Not Set]{% endif %}</small>&nbsp;
-									<div class="btn-group set-priority">
-										<span class="fa fa-lg fa-gear dropdown-toggle" data-toggle="dropdown" area-expanded="false" ></span>
-										<span class="sr-only">Toggle Priority</span>
-										<ul class="dropdown-menu" role="menu">
-											<li role="presentation" class="dropdown-header">Set Priority Level</li>
-											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 1 %}">High Priority
-											{% if task.priority == 1 %}
-											<span class="fa fa-fw fa-check"></span>
-											{% endif %}</a>
-											</li>
-											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 0 %}">Medium Priority
-											{% if task.priority == 0 %}
-											<span class="fa fa-fw fa-check"></span>
-											{% endif %}</a>
-											</li>
-											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id -1 %}">Low Priority
-											{% if task.priority == -1 %}
-											<span class="fa fa-fw fa-check"></span>
-											{% endif %}</a>
-											</li>
-										</ul>
-									</div>			
-									<div style="float:right;" id="holoid" class="btn-group btn-group-sm" role="group" >
-										<a href="{% url 'handle_mod_task' task.list_id task.task_id 'accept'%}" class="btn btn_{{task.priority}} btn-default">{% trans 'Accept' %}</a>
-										<a href="{% url 'handle_mod_task' task.list_id task.task_id 'defer' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Defer' %}</a>
-										<a href="{% url 'handle_mod_task' task.list_id task.task_id 'reject' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Reject' %}</a>
-										<a href="{% url 'handle_mod_task' task.list_id task.task_id 'discard' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Discard' %}</a>
-									</div>
-								</li>
-							</ul>
-						</div>
-					</div>
-					<div id="collapse_{{task.task_id}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_{{task.task_id}}">
-						<div class="panel-body">
-							<table class="table task-table"><thead></thead>
-								<tbody>
-									<tr style="text-align:left;">
-										<td>Subject: {{task.msg_subject}}</td>
-									</tr>
-									<tr style="text-align:left;"><td>- {{task.user_email|capfirst}}</td></tr>
-									<tr>
-										<td style="text-align:left;">{{task.msg_data|linebreaks|truncatewords:36}}<a href="javascript:void(0)" style="float:right;" data-toggle="modal" data-target="#modal-{{task.task_id}}">View More</a></td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-					<!-- Modal -->
-					<div class="modal fade" id="modal-{{task.task_id}}" tabindex=-1 role="dialog">
-						<div class="modal-dialog">
-							<!-- Modal content-->
-							<div class="modal-content">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal">&times;</button>
-									<h4 class="modal-title">Subject: {{task.msg_subject}}</h4>
-								</div>
-								<div class="modal-body">
-									<p>{{task.msg_data|linebreaks}}</p>
-								</div>
-							</div>
-						</div>
-					</div><!-- Modal -->
-					{% elif task.task_type == 'manual' %}
-					<div class="panel-heading bg-color_{{task.priority}}" role="tab" id="heading_{{task.task_id}}">
-						<div class="panel-title">
-							<a class="toggle-accordian" data-toggle="collapse" data-parent="#accordion" href="#collapse_{{task.task_id}}" aria-expanded="true" aria-controls="collapse_{{task.task_id}}">
-							<span style="float:left;" class="fa-lg"><i style="margin-top:25%;" class="i-tasks fa fa-bell-o "></i></span>
-							<ul style="list-style-type:none;">
-								<li>{{ task.msg_subject  }}</li></a><br />
-								<li><span class="made-on">{{task.made_on}}</span>&nbsp;&nbsp;
-				 					<small id="text-priority">{% if task.priority == -1 %}[Low Priority]
-								 	{% elif task.priority == 0 %}[Medium Priority]
-								 	{% elif task.priority == 1 %}[High Priority]
-								 	{% else %}[Priority Not Set]{% endif %}</small>&nbsp;
-									<div class="btn-group set-priority">
-										<span class="fa fa-lg fa-gear dropdown-toggle" data-toggle="dropdown" area-expanded="false" ></span>
-										<span class="sr-only">Toggle Priority</span>
-										<ul class="dropdown-menu" role="menu">
-											<li role="presentation" class="dropdown-header">Set Priority Level</li>
-											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 1 %}">High Priority
-											{% if task.priority == 1 %}
-											<span class="fa fa-fw fa-check"></span>
-											{% endif %}</a>
-											</li>
-											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 0 %}">Medium Priority
-											{% if task.priority == 0 %}
-											<span class="fa fa-fw fa-check"></span>
-											{% endif %}</a>
-											</li>
-											<li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id -1 %}">Low Priority
-											{% if task.priority == -1 %}
-											<span class="fa fa-fw fa-check"></span>
-											{% endif %}</a>
-											</li>
-										</ul>
-									</div>			
-									<div style="float:right;" id="holoid" class="btn-group btn-group-sm" role="group" >
-										<a href="{% url 'discard_manual_task' task.task_id %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Discard' %}</a>
-									</div>
-								</li>
-							</ul>
-						</div>
-					</div>
-					<div id="collapse_{{task.task_id}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_{{task.task_id}}">
-						<div class="panel-body">
-							<table class="table task-table"><thead></thead>
-								<tbody>
-									<tr>
-										<td style="text-align:left;">{{task.msg_data|linebreaks}}
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-					{% endif %}
-				</div>
-			</div>
-			{% endfor %}
-		</div>
-	</div><!-- Task container -->
+            <div class="row well" id="task-container">
+                <div class="col-xs-12">
+                    {% if tasks|length_is:"0" %}<h4>
+                        There are no Pending Tasks for {{user.username}} matching the criteria</h4>
+                    <a href="."><button id="refresh"><span class="fa fa-lg fa-fw fa-refresh"></span>Refresh</button></a>
+                    {% endif %}
+                    {% for task in tasks %}
+                    <div class="panel-group" id="accordian" role="tablist" aria-multiselectable="true">
+                        <div class="panel-tw panel-default panel_tasks">
+                            {% if task.task_type == 'subscription'%} 
+                            <div class="panel-heading bg-color_{{task.priority}}" role="tab" id="heading_{{task.task_id}}">
+                                <div class="panel-title">
+                                    <span style="float:left;" class="fa-lg"><i style="margin-top:25%;" class="i-tasks fa fa-user"></i></span>
+                                    <ul style="list-style-type:none;">
+                                        <li>{{ task }}</li><br />
+                                        <li><span class="made-on">{{ task.made_on }}</span>&nbsp;&nbsp;
+                                        <small id="text-priority">{% if task.priority == -1 %}[Low Priority]
+                                            {% elif task.priority == 0 %}[Medium Priority]
+                                            {% elif task.priority == 1 %}[High Priority]
+                                            {% else %}[Priority Not Set]{% endif %}</small>&nbsp;
+                                        <div class="btn-group set-priority">
+                                            <span class="fa fa-lg fa-gear dropdown-toggle" data-toggle="dropdown" area-expanded="false" ></span>
+                                            <span class="sr-only">Toggle Priority</span>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li role="presentation" class="dropdown-header">Task Priority Level</li>
+                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 1 %}">High Priority
+                                                    {% if task.priority == 1 %}
+                                                    <span class="fa fa-fw fa-check"></span>
+                                                    {% endif %}</a>
+                                                </li>
+                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 0 %}">Medium Priority
+                                                    {% if task.priority == 0 %}
+                                                    <span class="fa fa-fw fa-check"></span>
+                                                    {% endif %}</a>
+                                                </li>
+                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id -1 %}">Low Priority
+                                                    {% if task.priority == -1 %}
+                                                    <span class="fa fa-fw fa-check"></span>
+                                                    {% endif %}</a></li>
+                                            </ul>
+                                        </div>			
+                                        <div style="float:right;" id="holoid" class="btn-group btn-group-sm" id="block" role="group">
+                                            <a href="{% url 'handle_sub_task' task.list_id task.task_id 'accept' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Accept' %}</a>
+                                            <a href="{% url 'handle_sub_task' task.list_id task.task_id 'reject' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Reject' %}</a>
+                                            <a href="{% url 'handle_sub_task' task.list_id task.task_id 'discard' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Discard' %}</a>
+                                        </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            {% elif task.task_type == 'moderation' %}
+                            <div class="panel-heading bg-color_{{task.priority}}" role="tab" id="heading_{{task.task_id}}">
+                                <div class="panel-title">
+                                    <a class="toggle-accordian" data-toggle="collapse" data-parent="#accordion" href="#collapse_{{task.task_id}}" aria-expanded="true" aria-controls="collapse_{{task.task_id}}">
+                                        <span style="float:left;" class="fa-lg"><i style="margin-top:25%;" class="i-tasks fa fa-envelope-o "></i></span>
+                                        <ul style="list-style-type:none;">
+                                            <li>{{ task }}</li></a><br />
+                                        <li><span class="made-on">{{task.made_on}}</span>&nbsp;&nbsp;
+                                        <small id="text-priority" >{% if task.priority == -1 %}[Low Priority]
+                                            {% elif task.priority == 0 %}[Medium Priority]
+                                            {% elif task.priority == 1 %}[High Priority]
+                                            {% else %}[Priority Not Set]{% endif %}</small>&nbsp;
+                                        <div class="btn-group set-priority">
+                                            <span class="fa fa-lg fa-gear dropdown-toggle" data-toggle="dropdown" area-expanded="false" ></span>
+                                            <span class="sr-only">Toggle Priority</span>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li role="presentation" class="dropdown-header">Set Priority Level</li>
+                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 1 %}">High Priority
+                                                    {% if task.priority == 1 %}
+                                                    <span class="fa fa-fw fa-check"></span>
+                                                    {% endif %}</a>
+                                                </li>
+                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 0 %}">Medium Priority
+                                                    {% if task.priority == 0 %}
+                                                    <span class="fa fa-fw fa-check"></span>
+                                                    {% endif %}</a>
+                                                </li>
+                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id -1 %}">Low Priority
+                                                    {% if task.priority == -1 %}
+                                                    <span class="fa fa-fw fa-check"></span>
+                                                    {% endif %}</a>
+                                                </li>
+                                            </ul>
+                                        </div>			
+                                        <div style="float:right;" id="holoid" class="btn-group btn-group-sm" role="group" >
+                                            <a href="{% url 'handle_mod_task' task.list_id task.task_id 'accept'%}" class="btn btn_{{task.priority}} btn-default">{% trans 'Accept' %}</a>
+                                            <a href="{% url 'handle_mod_task' task.list_id task.task_id 'defer' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Defer' %}</a>
+                                            <a href="{% url 'handle_mod_task' task.list_id task.task_id 'reject' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Reject' %}</a>
+                                            <a href="{% url 'handle_mod_task' task.list_id task.task_id 'discard' %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Discard' %}</a>
+                                        </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div id="collapse_{{task.task_id}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_{{task.task_id}}">
+                                <div class="panel-body">
+                                    <table class="table task-table"><thead></thead>
+                                        <tbody>
+                                        <tr style="text-align:left;">
+                                            <td>Subject: {{task.msg_subject}}</td>
+                                        </tr>
+                                        <tr style="text-align:left;"><td>- {{task.user_email|capfirst}}</td></tr>
+                                        <tr>
+                                            <td style="text-align:left;">{{task.msg_data|linebreaks|truncatewords:36}}<a href="javascript:void(0)" style="float:right;" data-toggle="modal" data-target="#modal-{{task.task_id}}">View More</a></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- Modal -->
+                            <div class="modal fade" id="modal-{{task.task_id}}" tabindex=-1 role="dialog">
+                                <div class="modal-dialog">
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title">Subject: {{task.msg_subject}}</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>{{task.msg_data|linebreaks}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- Modal -->
+                            {% elif task.task_type == 'manual' %}
+                            <div class="panel-heading bg-color_{{task.priority}}" role="tab" id="heading_{{task.task_id}}">
+                                <div class="panel-title">
+                                    <a class="toggle-accordian" data-toggle="collapse" data-parent="#accordion" href="#collapse_{{task.task_id}}" aria-expanded="true" aria-controls="collapse_{{task.task_id}}">
+                                        <span style="float:left;" class="fa-lg"><i style="margin-top:25%;" class="i-tasks fa fa-bell-o "></i></span>
+                                        <ul style="list-style-type:none;">
+                                            <li>{{ task.msg_subject  }}</li></a><br />
+                                        <li><span class="made-on">{{task.made_on}}</span>&nbsp;&nbsp;
+                                        <small id="text-priority">{% if task.priority == -1 %}[Low Priority]
+                                            {% elif task.priority == 0 %}[Medium Priority]
+                                            {% elif task.priority == 1 %}[High Priority]
+                                            {% else %}[Priority Not Set]{% endif %}</small>&nbsp;
+                                        <div class="btn-group set-priority">
+                                            <span class="fa fa-lg fa-gear dropdown-toggle" data-toggle="dropdown" area-expanded="false" ></span>
+                                            <span class="sr-only">Toggle Priority</span>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li role="presentation" class="dropdown-header">Set Priority Level</li>
+                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 1 %}">High Priority
+                                                    {% if task.priority == 1 %}
+                                                    <span class="fa fa-fw fa-check"></span>
+                                                    {% endif %}</a>
+                                                </li>
+                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 0 %}">Medium Priority
+                                                    {% if task.priority == 0 %}
+                                                    <span class="fa fa-fw fa-check"></span>
+                                                    {% endif %}</a>
+                                                </li>
+                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id -1 %}">Low Priority
+                                                    {% if task.priority == -1 %}
+                                                    <span class="fa fa-fw fa-check"></span>
+                                                    {% endif %}</a>
+                                                </li>
+                                            </ul>
+                                        </div>			
+                                        <div style="float:right;" id="holoid" class="btn-group btn-group-sm" role="group" >
+                                            <a href="{% url 'discard_manual_task' task.task_id %}" class="btn btn_{{task.priority}} btn-default">{% trans 'Discard' %}</a>
+                                        </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div id="collapse_{{task.task_id}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_{{task.task_id}}">
+                                <div class="panel-body">
+                                    <table class="table task-table"><thead></thead>
+                                        <tbody>
+                                        <tr>
+                                            <td style="text-align:left;">{{task.msg_data|linebreaks}}
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div><!-- Task container -->
 
-	<div id="list-container">
-	<div class="row" >
-		<div class="col-xs-12">
-			<ul id="parent-per-list" class="parent-list-nav nav nav-pills nav-justified">
-		 		<li id="both" class="parent-active"><a style="border-radius:0px;" href="javascript:void(0)">Both</a></li>
-				<li id="modr"><a style="border-radius:0px;" href="javascript:void(0)">Moderations</a></li>
-				<li id="subr"><a style="border-radius:0px;" href="javascript:void(0)">Subscriptions</a></li>
-			</ul>	
-		</div>
-	</div>
-	<div id="list-container-well" class="well row" id="list-view">
-		<div class="col-xs-12">
-			{% regroup tasks|dictsort:"list_id" by list_id as listed_tasks %}
-			{%for listed_object in listed_tasks %}
-			{% if listed_object.grouper != "" %}
-			<div class="panel-group" id="accordian" role="tablist" aria-multiselectable="true">
-				<div class="panel-tw panel-default panel_lists">
-					<div class="panel-heading panel-heading-listv" role="tab" id="heading_{{listed_object.grouper}}">
-						<div class="panel-title">
-							<a class="toggle-accordian" data-toggle="collapse" data-parent="#accordion" href="#collapse_{{listed_object.grouper|cut:'.'}}" aria-expanded="true" aria-controls="collapse_{{listed_object.grouper}}">{{ listed_object.grouper|capfirst }}</a>
-							<span style="background-color:#1976D2;float:right;" class="both-badge per-list-badge badge">{{listed_object.list|length}}</span>
-							<span style="background-color:#1976D2;float:right;display:none;" class=" mod-badge per-list-badge badge">
-								{% for each_list in lists%}{% if each_list.list_id == listed_object.grouper %}
-								{{each_list.held|length}}
-							</span>
-							<span style="background-color:#1976D2;float:right;display:none;" class="sub-badge per-list-badge badge">
-								{{each_list.requests|length}}
-							</span>
-						</div>
-					</div>
-					<div id="collapse_{{listed_object.grouper|cut:'.'}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_{{listed_object.grouper}}">
-						<div class="panel-body">
-							<ul id="perlist-switcher-{{listed_object.grouper}}" class="nav nav-pills nav-justified per-list-nav">
-								<li id="list-mod" class="active"><a  style="border-radius:0px;" href="javascript:void(0)">Moderations
-								<span  class="badge">{{each_list.held|length}}</span></a>
-								</li>
-								<li id="list-sub"><a style="border-radius:0px;" href="javascript:void(0)">Subscriptions
-								<span class="badge">{{each_list.requests|length}}</span></a>
-								</li>
-							</ul>
-							<table id="list-moderations" class="table table-hover"> <thead></thead>
-								<tbody>
-								{% if each_list.held|length == 0 %}
-								<tr><td>There are no pending Posts for Moderation at the moment</td></tr>
-								{% else %}
-								{% for each in listed_object.list%}{% if each.task_type == 'moderation' %}
-			 					{% if each.priority == -1 %}<tr style="background-color:#EFFAFE;border:1px solid #00BCD4;">
-							 	{% elif each.priority == 0 %}<tr style="background-color:#DBE7FD;border:1px solid #0097A7;">
-							 	{% elif each.priority == 1 %}<tr style="background-color:#9F84ED;border:1px solid #9C27B0;">
-							 	{% else %}<tr>
-								{% endif %}
-								<td>
-									<span style="float:left">{{each.user_email|capfirst}}<br/ > <small class="text-muted">Subject: {{each.msg_subject}}</span>
-									<div id="holoid" style="float:right;" class="btn-group btn-group-sm" role="group" >
-										<a href="{% url 'handle_mod_task' listed_object.grouper each.task_id 'accept'%}" class="btn btn_{{each.priority}} btn-default">{% trans 'Accept' %}</a>
-										<a href="{% url 'handle_mod_task' listed_object.grouper each.task_id 'defer' %}" class="btn btn_{{each.priority}} btn-default">{% trans 'Defer' %}</a>
-										<a href="{% url 'handle_mod_task' listed_object.grouper each.task_id 'reject' %}" class="btn btn_{{each.priority}} btn-default">{% trans 'Reject' %}</a>
-										<a href="{% url 'handle_mod_task' listed_object.grouper each.task_id 'discard' %}" class="btn btn_{{each.priority}} btn-default">{% trans 'Discard' %}</a>
-									</div>
-								</td>
-								</tr>
-								{% endif %}{% endfor %}
-								{% endif %}
-								</tbody>
-							</table>
-							<table id="list-subscriptions" style="display:none;" class="table table-hover"> <thead></thead>	
-								<tbody>
-								{% if each_list.requests|length == 0 %}
-								<tr><td>There are no pending Subscription Requests at the moment</td></tr>
-								{% else %}
-								{% for each in listed_object.list%}{% if each.task_type == 'subscription' %}
-				 				{% if each.priority == -1 %}<tr style="background-color:#EFFAFE;border:1px solid #00BCD4;">
-							 	{% elif each.priority == 0 %}<tr style="background-color:#DBE7FD;border:1px solid #0097A7;">
-							 	{% elif each.priority == 1 %}<tr style="background-color:#9F84ED;border:1px solid #9C27B0;">
-							 	{% else %}<tr>
-								{% endif %}
-								<td>
-									<span style="float:left">{{each.user_email|capfirst}}</span>
-									<div id="holoid" style="float:right;" class="btn-group btn-group-sm" role="group">
-										<a href="{% url 'handle_sub_task' listed_object.grouper each.task_id 'accept' %}" class="btn btn_{{each.priority}} btn-default">{% trans 'Accept' %}</a>
-										<a href="{% url 'handle_sub_task' listed_object.grouper each.task_id 'reject' %}" class="btn btn_{{each.priority}} btn-default">{% trans 'Reject' %}</a>
-			                				        <a href="{% url 'handle_sub_task' listed_object.grouper each.task_id 'discard' %}" class="btn btn_{{each.priority}} btn-default">{% trans 'Discard' %}</a>
-									</div>
-								</td>
-								</tr>
-								{% endif %}{% endfor %}
-								{% endif %}
-								</tbody>
-							</table>
-							{% endif %}{% endfor %}
-						</div>
-					</div>
-				</div>
-			</div>
-			{% endif %}
-			{% endfor %}
-		</div>
-	</div>
-	</div><!-- list container -->
+                <div id="list-container">
+                    <div class="row" >
+                        <div class="col-xs-12">
+                            <ul id="parent-per-list" class="parent-list-nav nav nav-pills nav-justified">
+                                <li id="both" class="parent-active"><a style="border-radius:0px;" href="javascript:void(0)">Both</a></li>
+                                <li id="modr"><a style="border-radius:0px;" href="javascript:void(0)">Moderations</a></li>
+                                <li id="subr"><a style="border-radius:0px;" href="javascript:void(0)">Subscriptions</a></li>
+                            </ul>	
+                        </div>
+                    </div>
+                    <div id="list-container-well" class="well row" id="list-view">
+                        <div class="col-xs-12">
+                            {% regroup tasks|dictsort:"list_id" by list_id as listed_tasks %}
+                            {%for listed_object in listed_tasks %}
+                            {% if listed_object.grouper != "" %}
+                            <div class="panel-group" id="accordian" role="tablist" aria-multiselectable="true">
+                                <div class="panel-tw panel-default panel_lists">
+                                    <div class="panel-heading panel-heading-listv" role="tab" id="heading_{{listed_object.grouper}}">
+                                        <div class="panel-title">
+                                            <a class="toggle-accordian" data-toggle="collapse" data-parent="#accordion" href="#collapse_{{listed_object.grouper|cut:'.'}}" aria-expanded="true" aria-controls="collapse_{{listed_object.grouper}}">{{ listed_object.grouper|capfirst }}</a>
+                                            <span style="background-color:#1976D2;float:right;" class="both-badge per-list-badge badge">{{listed_object.list|length}}</span>
+                                            <span style="background-color:#1976D2;float:right;display:none;" class=" mod-badge per-list-badge badge">
+                                                {% for each_list in lists%}{% if each_list.list_id == listed_object.grouper %}
+                                                {{each_list.held|length}}
+                                            </span>
+                                            <span style="background-color:#1976D2;float:right;display:none;" class="sub-badge per-list-badge badge">
+                                                {{each_list.requests|length}}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div id="collapse_{{listed_object.grouper|cut:'.'}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_{{listed_object.grouper}}">
+                                        <div class="panel-body">
+                                            <ul id="perlist-switcher-{{listed_object.grouper}}" class="nav nav-pills nav-justified per-list-nav">
+                                                <li id="list-mod" class="active"><a  style="border-radius:0px;" href="javascript:void(0)">Moderations
+                                                    <span  class="badge">{{each_list.held|length}}</span></a>
+                                                </li>
+                                                <li id="list-sub"><a style="border-radius:0px;" href="javascript:void(0)">Subscriptions
+                                                    <span class="badge">{{each_list.requests|length}}</span></a>
+                                                </li>
+                                            </ul>
+                                            <table id="list-moderations" class="table table-hover"> <thead></thead>
+                                                <tbody>
+                                                {% if each_list.held|length == 0 %}
+                                                <tr><td>There are no pending Posts for Moderation at the moment</td></tr>
+                                                {% else %}
+                                                {% for each in listed_object.list%}{% if each.task_type == 'moderation' %}
+                                                {% if each.priority == -1 %}<tr style="background-color:#EFFAFE;border:1px solid #00BCD4;">
+                                                    {% elif each.priority == 0 %}<tr style="background-color:#DBE7FD;border:1px solid #0097A7;">
+                                                        {% elif each.priority == 1 %}<tr style="background-color:#9F84ED;border:1px solid #9C27B0;">
+                                                            {% else %}<tr>
+                                                                {% endif %}
+                                                                <td>
+                                                                    <span style="float:left">{{each.user_email|capfirst}}<br/ > <small class="text-muted">Subject: {{each.msg_subject}}</span>
+                                                                        <div id="holoid" style="float:right;" class="btn-group btn-group-sm" role="group" >
+                                                                            <a href="{% url 'handle_mod_task' listed_object.grouper each.task_id 'accept'%}" class="btn btn_{{each.priority}} btn-default">{% trans 'Accept' %}</a>
+                                                                            <a href="{% url 'handle_mod_task' listed_object.grouper each.task_id 'defer' %}" class="btn btn_{{each.priority}} btn-default">{% trans 'Defer' %}</a>
+                                                                            <a href="{% url 'handle_mod_task' listed_object.grouper each.task_id 'reject' %}" class="btn btn_{{each.priority}} btn-default">{% trans 'Reject' %}</a>
+                                                                            <a href="{% url 'handle_mod_task' listed_object.grouper each.task_id 'discard' %}" class="btn btn_{{each.priority}} btn-default">{% trans 'Discard' %}</a>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                {% endif %}{% endfor %}
+                                                                {% endif %}
+                                                                </tbody>
+                                                            </table>
+                                                            <table id="list-subscriptions" style="display:none;" class="table table-hover"> <thead></thead>	
+                                                                <tbody>
+                                                                {% if each_list.requests|length == 0 %}
+                                                                <tr><td>There are no pending Subscription Requests at the moment</td></tr>
+                                                                {% else %}
+                                                                {% for each in listed_object.list%}{% if each.task_type == 'subscription' %}
+                                                                {% if each.priority == -1 %}<tr style="background-color:#EFFAFE;border:1px solid #00BCD4;">
+                                                                    {% elif each.priority == 0 %}<tr style="background-color:#DBE7FD;border:1px solid #0097A7;">
+                                                                        {% elif each.priority == 1 %}<tr style="background-color:#9F84ED;border:1px solid #9C27B0;">
+                                                                            {% else %}<tr>
+                                                                                {% endif %}
+                                                                                <td>
+                                                                                    <span style="float:left">{{each.user_email|capfirst}}</span>
+                                                                                    <div id="holoid" style="float:right;" class="btn-group btn-group-sm" role="group">
+                                                                                        <a href="{% url 'handle_sub_task' listed_object.grouper each.task_id 'accept' %}" class="btn btn_{{each.priority}} btn-default">{% trans 'Accept' %}</a>
+                                                                                        <a href="{% url 'handle_sub_task' listed_object.grouper each.task_id 'reject' %}" class="btn btn_{{each.priority}} btn-default">{% trans 'Reject' %}</a>
+                                                                                        <a href="{% url 'handle_sub_task' listed_object.grouper each.task_id 'discard' %}" class="btn btn_{{each.priority}} btn-default">{% trans 'Discard' %}</a>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                            {% endif %}{% endfor %}
+                                                                            {% endif %}
+                                                                            </tbody>
+                                                                        </table>
+                                                                        {% endif %}{% endfor %}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {% endif %}
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div><!-- list container -->
 
-	<div id="reorder" class="row" style="position:absolute;right:1em;bottom:0.5em;margin:auto;padding:auto;width:auto;">
-		<div class="btn-group">
-			<span class="fa fa-fw fa-lg fa-bars dropdown-toggle" data-toggle="dropdown" area-expanded="false" ></span>
-			<span class="sr-only">Reorder Tasks</span>
-			<ul class="dropdown-menu" role="menu">
-				<li role="presentation" class="dropdown-header">Reorder By</li>
-				<li role="presentation" ><a class="menuitem" href="{% url 'reorder_tasks_by' 'priority' %}">Priority</a></li>
-				<li role="presentation" ><a class="menuitem" href="{% url 'reorder_tasks_by' 'task_type' %}">Task Type</a></li>
-				<li role="presentation" ><a class="menuitem" href="{% url 'reorder_tasks_by' 'made_on' %}">Date Added</a></li>
-			</ul>
-		</div>			
-	</div>
+                                            <div id="reorder" class="row" style="position:absolute;right:1em;bottom:0.5em;margin:auto;padding:auto;width:auto;">
+                                                <div class="btn-group">
+                                                    <span class="fa fa-fw fa-lg fa-bars dropdown-toggle" data-toggle="dropdown" area-expanded="false" ></span>
+                                                    <span class="sr-only">Reorder Tasks</span>
+                                                    <ul class="dropdown-menu" role="menu">
+                                                        <li role="presentation" class="dropdown-header">Reorder By</li>
+                                                        <li role="presentation" ><a class="menuitem" href="{% url 'reorder_tasks_by' 'priority' %}">Priority</a></li>
+                                                        <li role="presentation" ><a class="menuitem" href="{% url 'reorder_tasks_by' 'task_type' %}">Task Type</a></li>
+                                                        <li role="presentation" ><a class="menuitem" href="{% url 'reorder_tasks_by' 'made_on' %}">Date Added</a></li>
+                                                    </ul>
+                                                </div>			
+                                            </div>
 
-</div>
+                                        </div>
 
-<div id="li-widget-wrapper" class="widget container">
-		<div class="row" style="margin-bottom:1.2em;text-align:center;">
-			<div class="col-xs-6"><h3 style="display:inline-block;">List Index</h3></div>
-			<div style="margin-top:3%;float:right;width:40%;margin-right:5%;" class="col-xs-6 input-group">
-				<form action="{% url 'user_dashboard' %}" method='POST' class="form-inline">{% csrf_token %}
-				<div class="input-group">
-	            		<span class="input-group-btn"><button class="btn btn-default fa fa-search" type="submit"></button></span>
-					{{search_li.search_li}}
-					</div>
-				</form>
-			</div>
-		</div>
-		<div id="listi_container" style="overflow-y:auto;height:40em;">
-		{% if li_res|length_is:"0" %}
-			<p class="text-muted">No Lists Found matching the query</p>
-		{% endif %}
-		{% for list in li_res %}
-			<div class="panel-group" id="accordian" role="tablist" aria-multiselectable="true">
-				<div style="border:0px;padding:auto 0px;"class="panel panel-default panel_listindex">
-					<div style="border-left:solid 3px #1ABC9C;" class="panel-heading bg-color_-2" role="tab" id="heading_{{list.list_id}}">
-						<div class="panel-title row">
-							<a class="toggle-accordian" data-toggle="collapse" data-parent="#accordion" href="#collapse_{{list.list_id|cut:'.'|add:'li'}}" aria-expanded="true" aria-controls="collapse_{{list.list_id}}">
-							<div class="col-xs-6">
-								{{list.display_name}}<br /><small class="text-muted">{{list.list_id}}</small>
-							</div>
-							</a>
-							<div class="col-xs-6">
-								<a id="actions_link" style="white-space:normal;word-break:normal;float:right;" href="{% url 'list_summary' list.list_id %}" class="btn btn-default"><span class="fa fa-wrench fa-fw"></span>{% trans 'Actions' %}</a>
-							</div>
-						</div>
-					</div>
-					{% if user.email in list.owners or user.is_superuser %}
-					<div id="collapse_{{list.list_id|cut:'.'|add:'li'}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_{{list.list_id}}">
-						<div id="members-expand" style="padding:0px;" class="panel-body">
-							<ul style="border-radius:0px;" id="role-switcher-{{list.list_id}}" class="nav nav-justified role-nav">
-								<li style="background-color:#FF5D56;" id="role-owners"><a href="javascript:void(0)">Owners</a></li>	
-								<li style="background-color:#FFF67F" id="role-moderators"><a href="javascript:void(0)">Moderators</a></li>
-								<li id="role-subscribers" class="active"><a href="javascript:void(0)">Subscribers</a></li>
-							</ul>
-							<div style="display:none;" id="list-owners">
-								{% if list.owners|length_is:"0" %}
-								<div class="row"><div class="col-xs-12">The List {{list.display_name}} doesn't have any owner(s)</div></div>
-								{% endif %}
-								{% for each_owner in list.owners %}
-								<div class="row">
-								<div class="col-xs-6">
-									<span style="float:left">{{each_owner|capfirst}}</span>
-								</div>
-								<div class="col-xs-6">
-									<a style="float:right;" data-loading-text="Working..." autocomplete="off" data-toggle="confirm_tooltip" data-placement="left" title="Please Double Click to Confirm" href="{% url 'remove_role_tasks' list.list_id 'owner' each_owner %}" class="btn btn-default remove">{% trans 'Remove' %}</a>
-								</div>
-								</div>
-								{% endfor %}
-							</div>
-							<div style="display:none;" id="list-moderators">
-								{% if list.moderators|length_is:"0" %}
-								<div class="row"><div class="col-xs-12">No Moderators are currently set for {{list.display_name}}</div></div>
-								{% endif %}
-								{% for each_mod in list.moderators %}
-								<div class="row">
-								<div class="col-xs-6">
-									<span style="float:left">{{each_mod|capfirst}}</span>
-								</div>
-								<div class="col-xs-6">
-									<a style="float:right;" data-loading-text="Working..." autocomplete="off" data-toggle="confirm_tooltip" data-placement="left" title="Please Double Click to Confirm" href="{% url 'remove_role_tasks' list.list_id 'moderator' each_mod %}" class="btn btn-default remove">{% trans 'Remove' %}</a>
-								</div>
-								</div>
-								{% endfor %}
-							</div>
-							<div id="list-subscribers">
-								{% if list.members|length_is:"0" %}
-								<div class="row"><div class="col-xs-12">No one has yet subscribed to {{list.display_name}}</div></div>
-								{% endif %}
-								{% for each_member in list.members %}
-									<div class="row">
-									{% if each_member.email in list.owners %}
-									<div class="col-xs-12" style="border:1.5px solid #D32F2F;background-color:#FF5D56;">
-									{% elif each_member.email in list.moderators %}
-									<div class="col-xs-12" style="border:1.5px solid #FFC107;background-color:#FFF67F;">
-									{% else %}
-									<div class="col-xs-12">
-									{% endif %}
-											<span>{{each_member.email|capfirst}}</span>
-											<div style="float:right;" id="holoid" class="btn-group btn-group-sm remove-role" role="group" >
-												<a href="{% url 'list_member_options' list.fqdn_listname each_member.email %}" class="btn btn-default">{% trans 'View' %}</a>
-												<a data-loading-text="Working..." autocomplete="off" data-toggle="confirm_tooltip" data-placement="left" title="Please Double Click to Confirm" href="{% url 'remove_role_tasks' list.list_id 'subscriber' each_member.email %}" class="btn btn-default remove">{% trans 'Remove' %}</a>
-											</div>
-									</div>
-									</div>
-								{% endfor %}
-							</div>
-						</div>
-					</div>
-					{% endif %}
-				</div>
-			</div>
-		{% endfor %}
-{% if user.is_superuser %}
-<a style="position:absolute;bottom:1em;left:auto;"href="{% url 'list_new' %}"><button class="btn btn-default"><span class="fa fa-plus"></span>&nbsp;Create List</button></a>
-{% endif %}
-		</div>
-</div>
+                                        <div id="li-widget-wrapper" class="widget container">
+                                            <div class="row" style="margin-bottom:1.2em;text-align:center;">
+                                                <div class="col-xs-6"><h3 style="display:inline-block;">List Index</h3></div>
+                                                <div style="margin-top:3%;float:right;width:40%;margin-right:5%;" class="col-xs-6 input-group">
+                                                    <form action="{% url 'user_dashboard' %}" method='POST' class="form-inline">{% csrf_token %}
+                                                        <div class="input-group">
+                                                            <span class="input-group-btn"><button class="btn btn-default fa fa-search" type="submit"></button></span>
+                                                            {{search_li.search_li}}
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div id="listi_container" style="overflow-y:auto;height:40em;">
+                                                {% if li_res|length_is:"0" %}
+                                                <p class="text-muted">No Lists Found matching the query</p>
+                                                {% endif %}
+                                                {% for list in li_res %}
+                                                <div class="panel-group" id="accordian" role="tablist" aria-multiselectable="true">
+                                                    <div style="border:0px;padding:auto 0px;"class="panel panel-default panel_listindex">
+                                                        <div style="border-left:solid 3px #1ABC9C;" class="panel-heading bg-color_-2" role="tab" id="heading_{{list.list_id}}">
+                                                            <div class="panel-title row">
+                                                                <a class="toggle-accordian" data-toggle="collapse" data-parent="#accordion" href="#collapse_{{list.list_id|cut:'.'|add:'li'}}" aria-expanded="true" aria-controls="collapse_{{list.list_id}}">
+                                                                    <div class="col-xs-6">
+                                                                        {{list.display_name}}<br /><small class="text-muted">{{list.list_id}}</small>
+                                                                    </div>
+                                                                </a>
+                                                                <div class="col-xs-6">
+                                                                    <a id="actions_link" style="white-space:normal;word-break:normal;float:right;" href="{% url 'list_summary' list.list_id %}" class="btn btn-default"><span class="fa fa-wrench fa-fw"></span>{% trans 'Actions' %}</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {% if user.email in list.owners or user.is_superuser %}
+                                                        <div id="collapse_{{list.list_id|cut:'.'|add:'li'}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_{{list.list_id}}">
+                                                            <div id="members-expand" style="padding:0px;" class="panel-body">
+                                                                <ul style="border-radius:0px;" id="role-switcher-{{list.list_id}}" class="nav nav-justified role-nav">
+                                                                    <li style="background-color:#FF5D56;" id="role-owners"><a href="javascript:void(0)">Owners</a></li>	
+                                                                    <li style="background-color:#FFF67F" id="role-moderators"><a href="javascript:void(0)">Moderators</a></li>
+                                                                    <li id="role-subscribers" class="active"><a href="javascript:void(0)">Subscribers</a></li>
+                                                                </ul>
+                                                                <div style="display:none;" id="list-owners">
+                                                                    {% if list.owners|length_is:"0" %}
+                                                                    <div class="row"><div class="col-xs-12">The List {{list.display_name}} doesn't have any owner(s)</div></div>
+                                                                    {% endif %}
+                                                                    {% for each_owner in list.owners %}
+                                                                    <div class="row">
+                                                                        <div class="col-xs-6">
+                                                                            <span style="float:left">{{each_owner|capfirst}}</span>
+                                                                        </div>
+                                                                        <div class="col-xs-6">
+                                                                            <a style="float:right;" data-loading-text="Working..." autocomplete="off" data-toggle="confirm_tooltip" data-placement="left" title="Please Double Click to Confirm" href="{% url 'remove_role_tasks' list.list_id 'owner' each_owner %}" class="btn btn-default remove">{% trans 'Remove' %}</a>
+                                                                        </div>
+                                                                    </div>
+                                                                    {% endfor %}
+                                                                </div>
+                                                                <div style="display:none;" id="list-moderators">
+                                                                    {% if list.moderators|length_is:"0" %}
+                                                                    <div class="row"><div class="col-xs-12">No Moderators are currently set for {{list.display_name}}</div></div>
+                                                                    {% endif %}
+                                                                    {% for each_mod in list.moderators %}
+                                                                    <div class="row">
+                                                                        <div class="col-xs-6">
+                                                                            <span style="float:left">{{each_mod|capfirst}}</span>
+                                                                        </div>
+                                                                        <div class="col-xs-6">
+                                                                            <a style="float:right;" data-loading-text="Working..." autocomplete="off" data-toggle="confirm_tooltip" data-placement="left" title="Please Double Click to Confirm" href="{% url 'remove_role_tasks' list.list_id 'moderator' each_mod %}" class="btn btn-default remove">{% trans 'Remove' %}</a>
+                                                                        </div>
+                                                                    </div>
+                                                                    {% endfor %}
+                                                                </div>
+                                                                <div id="list-subscribers">
+                                                                    {% if list.members|length_is:"0" %}
+                                                                    <div class="row"><div class="col-xs-12">No one has yet subscribed to {{list.display_name}}</div></div>
+                                                                    {% endif %}
+                                                                    {% for each_member in list.members %}
+                                                                    <div class="row">
+                                                                        {% if each_member.email in list.owners %}
+                                                                        <div class="col-xs-12" style="border:1.5px solid #D32F2F;background-color:#FF5D56;">
+                                                                            {% elif each_member.email in list.moderators %}
+                                                                            <div class="col-xs-12" style="border:1.5px solid #FFC107;background-color:#FFF67F;">
+                                                                                {% else %}
+                                                                                <div class="col-xs-12">
+                                                                                    {% endif %}
+                                                                                    <span>{{each_member.email|capfirst}}</span>
+                                                                                    <div style="float:right;" id="holoid" class="btn-group btn-group-sm remove-role" role="group" >
+                                                                                        <a href="{% url 'list_member_options' list.fqdn_listname each_member.email %}" class="btn btn-default">{% trans 'View' %}</a>
+                                                                                        <a data-loading-text="Working..." autocomplete="off" data-toggle="confirm_tooltip" data-placement="left" title="Please Double Click to Confirm" href="{% url 'remove_role_tasks' list.list_id 'subscriber' each_member.email %}" class="btn btn-default remove">{% trans 'Remove' %}</a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            {% endfor %}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                        {% endfor %}
+                                                        {% if user.is_superuser %}
+                                                        <a style="position:absolute;bottom:1em;left:auto;"href="{% url 'list_new' %}"><button class="btn btn-default"><span class="fa fa-plus"></span>&nbsp;Create List</button></a>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
 
-<div class="container widget" style="vertical-align:bottom;position:relative;height:21%;margin-top:3%;width:100%">
-	<div style="display:inline-block;margin-left:3%;">
-		<select id="select-list" multiple="multiple">
-		{% for each in lists %}
-   		<option value="{{each.list_id}}" selected="selected">{{each.display_name}}{% endfor %}
-		</select>
-	</div>
-	<div style="width:100%;height:100%;" class="ct-chart ct-golden-section">
-	</div>
-</div>
+                                                <div class="container widget" style="vertical-align:bottom;position:relative;height:21%;margin-top:3%;width:100%">
+                                                    <div style="display:inline-block;margin-left:3%;">
+                                                        <select id="select-list" multiple="multiple">
+                                                            {% for each in lists %}
+                                                            <option value="{{each.list_id}}" selected="selected">{{each.display_name}}{% endfor %}
+                                                        </select>
+                                                    </div>
+                                                    <div style="width:100%;height:100%;" class="ct-chart ct-golden-section">
+                                                    </div>
+                                                </div>
 
-</div>
+                                            </div>
 
-<div id="events-widget" class="widget container">
-	<div style="text-align:center;">
-		<h3 style="display:inline-block;">Events Stream</h3><br />
-	</div>
-	<div style="padding-left:0px;overflow-y:auto;height:92%;" class="activities">
-		{% if events|length == 0 %}<hr />
-		No new Recent Stories found
-		{% else %}
-		<table class="table" style="border-left:3px solid #4aa3df;"><thead></thead>
-			<tbody>
-				{% for each_event in events %}
-				<tr>
-					<td><span class="fa fa-shield fa-rotate-270"></td>
-					<td>{{ each_event }}<br /><small class="text-muted" style="float:right;">{{each_event.made_on}}</small></td>
-				</tr>
-				
-				{% endfor %}
-			</tbody>
-		</table>
-		{% endif %}
-	</div>
-</div>
+                                            <div id="events-widget" class="widget container">
+                                                <div style="text-align:center;">
+                                                    <h3 style="display:inline-block;">Events Stream</h3><br />
+                                                </div>
+                                                <div style="padding-left:0px;overflow-y:auto;height:92%;" class="activities">
+                                                    {% if events|length == 0 %}<hr />
+                                                    No new Recent Stories found
+                                                    {% else %}
+                                                    <table class="table" style="border-left:3px solid #4aa3df;"><thead></thead>
+                                                        <tbody>
+                                                        {% for each_event in events %}
+                                                        <tr>
+                                                            <td><span class="fa fa-shield fa-rotate-270"></td>
+                                                                <td>{{ each_event }}<br /><small class="text-muted" style="float:right;">{{each_event.made_on}}</small></td>
+                                                            </tr>
 
-</div>
-<input type="hidden" id="view_bot" />
-<input type="hidden" name="dashboard_url" value="{% url 'user_dashboard' %}" />
-<input type="hidden" name="dates" value="{% for each in stats.mods.keys %}{{ each }},{% endfor %}" />
-<input type="hidden" name="subs_data" value="{% for each in stats.subs.values %}{{ each }},{% endfor %}" />
-<input type="hidden" name="mods_data" value="{% for each in stats.mods.values %}{{ each }},{% endfor %}" />
+                                                            {% endfor %}
+                                                            </tbody>
+                                                        </table>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
 
-</body>
-</html>
-{# endblock main #}
+                                            </div>
+                                            <input type="hidden" id="view_bot" />
+                                            <input type="hidden" name="dashboard_url" value="{% url 'user_dashboard' %}" />
+                                            <input type="hidden" name="dates" value="{% for each in stats.mods.keys %}{{ each }},{% endfor %}" />
+                                            <input type="hidden" name="subs_data" value="{% for each in stats.subs.values %}{{ each }},{% endfor %}" />
+                                            <input type="hidden" name="mods_data" value="{% for each in stats.mods.values %}{{ each }},{% endfor %}" />
+
+                                            </body>
+                                            </html>
