@@ -1011,6 +1011,8 @@ def handle_mod_task(request, list_id, msg_id, action):
         return utils.render_api_error(request)
     except HTTPError, e:
         messages.error(request, e.msg)
+    except TypeError as e:
+        messages.error(request, "Held Message Not Found")
     return redirect('user_dashboard')
 
 @list_moderator_required
@@ -1033,4 +1035,6 @@ def handle_sub_task(request, list_id, sub_id, action):
         return utils.render_api_error(request)
     except HTTPError as e:
         messages.error(request, e.msg)
+    except TypeError as e:
+        messages.error(request, "Subscription Request Not Found")
     return redirect('user_dashboard')
