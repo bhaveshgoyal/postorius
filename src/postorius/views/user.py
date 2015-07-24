@@ -331,7 +331,7 @@ class AdminTasksView(MailmanUserView):
     def get(self, request):
         lists = List.objects.all()
         if not has_control_access(request.user, lists):
-            messages.error(request, "Warning! You are not authorised
+            messages.error(request, "Warning! You are not authorised \
                            to access Control Dashboard")
             return redirect('list_index')
         email = request.user.email
@@ -507,6 +507,7 @@ def create_moderation_tasks(lists):
     try:
         mod_req = get_moderations(lists)
         mod_sync = AdminTasks.objects.get_count('moderation')
+        ret_admin_mods = []
         for mod in mod_req[mod_sync:]:
             admin_task = AdminTasks.objects.create_task(
                 task_id=mod['request_id'],
@@ -523,7 +524,8 @@ def create_moderation_tasks(lists):
             except ObjectDoesNotExist as e:
                 TaskCalender.objects.create_log(on_date=date,
                                                 list_id=admin_task.list_id, log_type='moderation', log_number=1)
-            return admin_task
+            ret_admin_mods.append(admin_task)
+        return ret_admin_mods
     except Exception, e:
         messages.error(request, str(e))
         return redirect('user_dashboard')
@@ -535,6 +537,7 @@ def create_subscription_tasks(lists):
     try:
         sub_req = get_subscription_reqs(lists)
         sub_sync = AdminTasks.objects.get_count('subscription')
+        ret_admin_req = []
         for sub in sub_req[sub_sync:]:
             admin_req = AdminTasks.objects.create_task(
                 task_id=sub['token'],
@@ -551,7 +554,8 @@ def create_subscription_tasks(lists):
             except ObjectDoesNotExist as e:
                 TaskCalender.objects.create_log(on_date=date,
                                                 list_id=admin_req.list_id, log_type='subscription', log_number=1)
-            return admin_req
+            ret_admin_req.append(admin_req)
+        return ret_admin_req
     except Exception, e:
         print str(e)
         messages.error(request, str(e))
