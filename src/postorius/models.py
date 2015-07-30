@@ -26,7 +26,7 @@ import logging
 from datetime import datetime, timedelta
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.db.models.signals import post_save
 from django.core.urlresolvers import reverse
@@ -58,6 +58,26 @@ def create_mailman_user(sender, **kwargs):
                 client.create_user(user.email, None, None)
             except HTTPError:
                 pass
+
+@receiver(post_save, sender=User)
+def update_superuser_permission(sender, **kwargs):
+    if kwargs.get('created'):
+        client = get_client()
+        user = kwargs.get('instance')
+        mm_user = client.get_user(user.email)
+        addresses = list(mm_user.addresses)
+        alt_users = []
+        if len(addresses) > 1:
+            for addr in addresses:
+                try:
+                    alt_users.append(User.objects.get(email=addr))
+                except ObjectDoesNotExist:
+                    pass
+            for u in alt_users:
+                if u.is_superuser:
+                    user.is_superuser = True
+                    user.save()
+
 
 class MailmanApiError(Exception):
     """Raised if the API is not available.
