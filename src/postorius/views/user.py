@@ -244,16 +244,35 @@ class AddressActivationView(TemplateView):
         if form.is_valid():
             profile = AddressConfirmationProfile.objects.create_profile(
                 email=form.cleaned_data['email'], user=request.user)
-            try:
-                profile.send_confirmation_link(request)
-            except SMTPException:
-                messages.error(request, 'The email confirmation message could '
-                               'not be sent. %s' % profile.activation_key)
-            return render_to_response('postorius/user_address_activation_sent.html',
-                                      context_instance=RequestContext(request))
+            # Check if the address belongs to other user.
+            email = form.cleaned_data['email']
+            if self.check_email(email, request.user.email):
+                messages.error(request, 'This email belongs to someone else.'
+                               ' Please choose another email or contact your administrator.')
+            else:
+                try:
+                    profile.send_confirmation_link(request)
+                except SMTPException:
+                    messages.error(request, 'The email confirmation message could '
+                                   'not be sent. %s' % profile.activation_key)
+                    return render_to_response('postorius/user_address_activation_sent.html',
+                                              context_instance=RequestContext(request))
+
+                return render_to_response('postorius/user_address_activation.html',
+                                          {'form':form})
         return render_to_response('postorius/user_address_activation.html',
                                   {'form': form},
                                   context_instance=RequestContext(request))
+
+    def check_email(self, email, current_user):
+        """
+        check if the email belongs to any other person/account.
+        """
+        # First look for User objects in Postorius
+        users = User.objects.filter(email=email)
+        if len(users) > 0:
+            return True
+        return False
 
 
 @user_passes_test(lambda u: u.is_superuser)
