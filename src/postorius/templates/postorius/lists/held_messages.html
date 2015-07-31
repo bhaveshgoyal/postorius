@@ -1,6 +1,7 @@
 {% extends postorius_base_template %}
 {% load url from future %}
 {% load i18n %}
+{% load email_helpers %}
 
 {% block subtitle %}
 {% trans "Held Messages | " as page_title %}{{ page_title|add:list.fqdn_listname}}
@@ -34,7 +35,7 @@
                     <td>{{ msg.hold_date }}</td>
 
                     <td class="mm_action">
-                        <a href="{% url 'accept_held_message' list.fqdn_listname msg.request_id %}" class="btn btn-mini btn-info" data-toggle="modal" data-target="#msg-{{ msg.request_id }}">{% trans 'View' %}</a>
+                        <a href="#" class="btn btn-mini btn-info" data-toggle="modal" data-target="#msg-{{ msg.request_id }}">{% trans 'View' %}</a>
 
                         <a href="{% url 'accept_held_message' list.fqdn_listname msg.request_id %}" class="btn btn-mini btn-success">{% trans 'Accept' %}</a>
                         <a href="{% url 'defer_held_message' list.fqdn_listname msg.request_id %}" class="btn btn-mini btn-warning">{% trans 'Defer' %}</a>
@@ -50,8 +51,28 @@
                               <h4 class="modal-title">Subject: {{ msg.subject }}</h4>
                             </div>
                             <div class="modal-body">
+                              {{ msg.msg | strip_email | linebreaks }}
+                            </div>
+                            <div class="modal-footer">
+                              <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                              <a href="#" class="btn btn-info btn-medium pull-right" data-toggle="modal" data-target="#msg-{{ msg.request_id }}-full">View Full Message</a>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="modal fade held-message-details" id="msg-{{ msg.request_id }}-full" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                              <h4 class="modal-title">Subject: {{ msg.subject }}</h4>
+                            </div>
+                            <div class="modal-body">
                               {{ msg.msg | linebreaks }}
                             </div>
+                            <div class="modal-footer">
+                              <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                              </div>
                           </div>
                         </div>
                     </td>
