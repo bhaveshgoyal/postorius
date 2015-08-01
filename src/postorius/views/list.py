@@ -19,7 +19,7 @@ import logging
 import csv
 
 from django.http import HttpResponse
-
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import (login_required,
                                             user_passes_test)
@@ -474,7 +474,13 @@ def list_index(request, template='postorius/lists/index.html'):
     if request.user.is_superuser:
         only_public = False
     try:
-        lists = List.objects.all(only_public=only_public)
+        filter_vhost = settings.FILTER_VHOST
+    except AttributeError:
+        # Assume it to be false if It is not defined in the settings.py
+        filter_vhost = False
+    try:
+        lists = [mlist for mlist in List.objects.all(only_public=only_public)
+                 if not filter_vhost or utils.show_mlist(mlist, request)]
         logger.debug(lists)
     except MailmanApiError:
         return utils.render_api_error(request)

@@ -49,3 +49,8 @@ def render_api_error(request):
         {'error': "Mailman REST API not available.  "
                   "Please start Mailman core."},
         context_instance=RequestContext(request))
+
+def show_mlist(mlist, request):
+    def get_domain(host):
+        return ".".join(host.split(".")[-2:])
+    return (mlist.mail_host == get_domain(request.get_host()))
