@@ -249,17 +249,19 @@ class AddressActivationView(TemplateView):
             if self.check_email(email, request.user.email):
                 messages.error(request, 'This email belongs to someone else.'
                                ' Please choose another email or contact your administrator.')
+
+                return render_to_response('postorius/user_address_activation.html',
+                                          {'form':form},
+                                          context_instance=RequestContext(request))
             else:
                 try:
                     profile.send_confirmation_link(request)
                 except SMTPException:
                     messages.error(request, 'The email confirmation message could '
                                    'not be sent. %s' % profile.activation_key)
-                    return render_to_response('postorius/user_address_activation_sent.html',
-                                              context_instance=RequestContext(request))
 
-                return render_to_response('postorius/user_address_activation.html',
-                                          {'form':form})
+                return render_to_response('postorius/user_address_activation_sent.html',
+                                          context_instance=RequestContext(request))
         return render_to_response('postorius/user_address_activation.html',
                                   {'form': form},
                                   context_instance=RequestContext(request))

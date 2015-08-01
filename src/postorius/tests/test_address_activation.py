@@ -66,7 +66,7 @@ class TestAddressActivationView(unittest.TestCase):
     def tearDown(self):
         # Log out and delete user.
         self.client.logout()
-        self.user.delete()
+        User.objects.all().delete()
 
     def test_view_is_connected(self):
         # The view should be connected in the url configuration.
@@ -102,6 +102,14 @@ class TestAddressActivationView(unittest.TestCase):
         self.assertTrue('postorius/user_address_activation_sent.html'
                         in [t.name for t in response.templates])
 
+    def test_adding_an_exsting_users_address(self):
+        User.objects.create_user(username='taken',
+                                 email='taken@example.org', password='secret')
+        response = self.client.post(reverse('address_activation'),
+                                    {'email': 'taken@example.org',
+                                     'user_email': self.user.email})
+        self.assertTrue('This email belongs to someone else.'
+                        in response.content)
 
 class TestAddressConfirmationProfile(unittest.TestCase):
     """
