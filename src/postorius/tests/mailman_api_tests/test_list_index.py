@@ -47,6 +47,12 @@ class ListIndexPageTest(SimpleTestCase):
             self.domain = get_client().create_domain('example.com')
         except HTTPError:
             self.domain = get_client().get_domain('example.com')
+
+        try:
+            self.net_domain = get_client().create_domain('example.net')
+        except HTTPError:
+            self.net_domain = get_client().get_domain('example.net')
+
         self.foo_list = self.domain.create_list('foo')
 
     @MM_VCR.use_cassette('test_list_index.yaml')
@@ -62,3 +68,19 @@ class ListIndexPageTest(SimpleTestCase):
         self.assertEqual(len(response.context['lists']), 1)
         self.assertEqual(response.context['lists'][0].fqdn_listname,
                          'foo@example.com')
+
+    @override_settings(FILTER_VHOST=True)
+    @MM_VCR.use_cassette('test_list_index.yaml')
+    def test_filter_lists_by_domain(self):
+        """List Index page should show lists only from the
+        domain the Postorius is being served from.
+        """
+        response = self.client.get(reverse('list_index'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['lists']), 0)
+        boo_list = self.net_domain.create_list('boo')
+        response = self.client.get(reverse('list_index'), HTTP_HOST='www.example.net')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['lists']), 1)
+        self.assertEqual(response.context['lists'][0].fqdn_listname,
+                         'boo@example.net')
