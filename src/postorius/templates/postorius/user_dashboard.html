@@ -65,7 +65,8 @@
                 </li>
                 <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                    <span class="glyphicon glyphicon-user"></span>  Welcome {{user.username}}, You have <span>{{tasks|length}}</span> Task{{ tasks|pluralize }} Remaining
+                    <span class="glyphicon glyphicon-user"></span><span class="fa fa-caret-down fa-lg fa-fw "></span>
+                    Welcome {{user.username}}, You have <span>{{tasks|length}}</span> Task{{ tasks|pluralize }} Remaining
                 </a>
                 <ul class="dropdown-menu" role="menu">
                     <li><a href="{% url 'list_index' %}"><i class="fa fa-envelope-o fa-fw"></i>&nbsp;{% trans "Lists" %}</a></li>
@@ -436,7 +437,6 @@
                                             </div>
 
                                         </div>
-
                                         <div id="li-widget-wrapper" class="widget container">
                                             <div class="row" style="margin-bottom:1.2em;text-align:center;">
                                                 <div class="col-xs-6"><h3 style="display:inline-block;">List Index</h3></div>
