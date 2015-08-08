@@ -219,7 +219,12 @@ html, body {
     margin-right:auto;
     position:relative;
     border-radius:0px;
+}
+#task-container {
     height:72%;
+}
+#list-container-well{
+    height: 33em !important;
 }
 @media (max-width: 1366px){
     #task-container {
@@ -286,6 +291,10 @@ html, body {
 .made-on {
     color:#34373C;
     font-size:0.96em;
+}
+#holoid {
+    padding:auto;
+    margin:auto !important;
 }
 #holoid > a {
     border-radius:0px !important;
