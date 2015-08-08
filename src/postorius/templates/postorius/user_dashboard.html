@@ -374,7 +374,7 @@
                                                         {% elif each.priority == 1 %}<tr style="background-color:#9F84ED;border:1px solid #9C27B0;">
                                                             {% else %}<tr>
                                                                 {% endif %}
-                                                                <td>
+                                                                <td class="row">
                                                                     <span style="float:left">{{each.user_email|capfirst}}<br/ > <small class="text-muted">Subject: {{each.msg_subject}}</span>
                                                                         <div id="holoid" style="float:right;" class="btn-group btn-group-sm" role="group" >
                                                                             <a href="{% url 'handle_mod_task' listed_object.grouper each.task_id 'accept'%}" class="btn btn_{{each.priority}} btn-default">{% trans 'Accept' %}</a>
@@ -388,31 +388,30 @@
                                                                 {% endif %}
                                                                 </tbody>
                                                             </table>
-                                                            <table id="list-subscriptions" style="display:none;" class="table table-hover"> <thead></thead>	
-                                                                <tbody>
+                                                            <div id="list-subscriptions" style="display:none;">
                                                                 {% if each_list.requests|length == 0 %}
-                                                                <tr><td>There are no pending Subscription Requests at the moment</td></tr>
+                                                                <div class="row" style="padding:auto;"><div class="col-xs-12">There are no pending Subscription Requests at the moment</div></div>
                                                                 {% else %}
                                                                 {% for each in listed_object.list%}{% if each.task_type == 'subscription' %}
-                                                                {% if each.priority == -1 %}<tr style="background-color:#EFFAFE;border:1px solid #00BCD4;">
-                                                                    {% elif each.priority == 0 %}<tr style="background-color:#DBE7FD;border:1px solid #0097A7;">
-                                                                        {% elif each.priority == 1 %}<tr style="background-color:#9F84ED;border:1px solid #9C27B0;">
-                                                                            {% else %}<tr>
+                                                                {% if each.priority == -1 %}<div class="row" style="margin:auto;padding:0.5em;background-color:#EFFAFE;border:1px solid #00BCD4;">
+                                                                    {% elif each.priority == 0 %}<div class="row" style="margin:auto;padding:0.5em;background-color:#DBE7FD;border:1px solid #0097A7;">
+                                                                        {% elif each.priority == 1 %}<div class="row" style="margin:auto;padding:0.5em;background-color:#9F84ED;border:1px solid #9C27B0;">
+                                                                            {% else %}<div style="margin:auto;padding:0.5em;" class="row">
                                                                                 {% endif %}
-                                                                                <td>
-                                                                                    <span style="float:left">{{each.user_email|capfirst}}</span>
+                                                                                <div class="col-xs-6">
+                                                                                    <span style="float:left">{{each.user_email|capfirst}}</span></div>
+                                                                                <div class="col-xs-6">
                                                                                     <div id="holoid" style="float:right;" class="btn-group btn-group-sm" role="group">
                                                                                         <a href="{% url 'handle_sub_task' listed_object.grouper each.task_id 'accept' %}" class="btn btn_{{each.priority}} btn-default">{% trans 'Accept' %}</a>
                                                                                         <a href="{% url 'handle_sub_task' listed_object.grouper each.task_id 'reject' %}" class="btn btn_{{each.priority}} btn-default">{% trans 'Reject' %}</a>
                                                                                         <a href="{% url 'handle_sub_task' listed_object.grouper each.task_id 'discard' %}" class="btn btn_{{each.priority}} btn-default">{% trans 'Discard' %}</a>
                                                                                     </div>
-                                                                                </td>
-                                                                            </tr>
+                                                                                </div>
+                                                                            </div>
                                                                             {% endif %}{% endfor %}
                                                                             {% endif %}
-                                                                            </tbody>
-                                                                        </table>
                                                                         {% endif %}{% endfor %}
+                                                                    </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
