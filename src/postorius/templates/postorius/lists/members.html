@@ -14,7 +14,7 @@
 
     {{ owner_form.email.errors }}
     <form action="{% url 'list_members' list.fqdn_listname %}" method="POST" class="form-inline">{% csrf_token %}
-        <label for="id_email">{% trans 'Email Address' %}</label>
+        <label for="id_owner_email">{% trans 'Email Address' %}</label>
         {{ owner_form.owner_email }}
         <button type="submit" class="btn">{% trans 'Add Owner' %}</button>
     </form>
@@ -40,7 +40,7 @@
     <h2>{% trans "Moderators" %}</h2>
     {{ moderator_form.email.errors }}
     <form action="{% url 'list_members' list.fqdn_listname %}" method="POST" class="form-inline">{% csrf_token %}
-        <label for="bla">{% trans 'Email Address' %}</label>
+        <label for="id_moderator_email">{% trans 'Email Address' %}</label>
         {{ moderator_form.moderator_email }}
         <button type="submit" class="btn">{% trans 'Add Moderator' %}</button>
     </form>

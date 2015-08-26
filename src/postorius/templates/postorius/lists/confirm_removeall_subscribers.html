@@ -11,4 +11,5 @@
           {% csrf_token %}
         <button class="btn btn-danger" type="submit" >{% trans "Unsubscribe All " %}</button>
         <a class="btn" href="{% url 'list_members' list_id %}">{% trans "Cancel" %}</a>
+   </form>
 {% endblock main %}

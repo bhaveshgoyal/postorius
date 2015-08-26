@@ -29,13 +29,13 @@ class DomainNew(FieldsetForm):
     """
     mail_host = forms.CharField(
         label=_('Mail Host'),
-        error_messages={'required': _('Please a domain name'),
+        error_messages={'required': _('Please enter a domain name'),
                         'invalid': _('Please enter a valid domain name.')},
         required=True)
     web_host = forms.CharField(
         label=_('Web Host'),
-        error_messages={'required': _('Please a domain name'),
-                        'invalid': _('Please enter a valid domain name.')},
+        error_messages={'required': _('Please enter a host name'),
+                        'invalid': _('Please enter a valid host name.')},
         required=True)
     description = forms.CharField(
         label=_('Description'),

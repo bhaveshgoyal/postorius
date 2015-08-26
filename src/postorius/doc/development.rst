@@ -8,21 +8,21 @@ This is a short guide to help you get started with Postorius development.
 Development Workflow
 ====================
 
-The source code is hosted on Launchpad_, which means that we are using
-Bazaar for version control.
+The source code is hosted on GitLab_, which means that we are using
+Git for version control.
 
-.. _Launchpad: https://launchpad.net/postorius
+.. _GitLab: https://gitlab.com/mailman/postorius
 
-Changes are usually not made directly in the project's trunk branch, but in 
+Changes are not made directly in the project's master branch, but in 
 feature-related personal branches, which get reviewed and then merged into
-the trunk. 
+the master branch. 
 
 An ideal workflow would be like this:
 
 1. File a bug to suggest a new feature or report a bug (or just pick one of 
    the existing bugs).
 2. Create a new branch with your code changes.
-3. Make a "merge proposal" to get your code reviewed and merged. 
+3. Make a "merge request" to get your code reviewed and merged. 
 
 
 Installing and running the tests
@@ -152,4 +152,5 @@ A quick example:
 
 For detailed information how to use mailman.client, check out its documentation_.
 
-.. _documentation: http://bazaar.launchpad.net/~mailman-coders/mailman.client/trunk/view/head:/src/mailmanclient/docs/using.txt
+.. _documentation: https://gitlab.com/mailman/mailmanclient/blob/master/src/mailmanclient/docs/using.rst
+

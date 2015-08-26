@@ -1,0 +1,20 @@
+before_script:
+- pip install tox
+
+django16:
+  script:
+  - tox -e py27-django16
+  tags:
+  - sqlite
+
+django17:
+  script:
+  - tox -e py27-django17
+  tags:
+  - sqlite
+
+django18:
+  script:
+  - tox -e py27-django18
+  tags:
+  - sqlite

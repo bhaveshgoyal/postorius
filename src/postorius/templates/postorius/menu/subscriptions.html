@@ -5,34 +5,34 @@
     {% if fqdn_listname %}
     <a href="{% url 'list_subscriptions' fqdn_listname  %}">{% trans "Subscriptions" %}</a>
     <div><ul class="menu">
-         <li{% if selected == "subscribe" %}id="selected"{% endif %}>
+         <li {% if selected == "subscribe" %}id="selected"{% endif %}>
             <a href="{% url 'list_subscriptions' fqdn_listname  %}">
                 {% trans "Subscribe" %}
             </a>
             <div><ul class="menu">
-                 <li{% if selected == "join_address" %}id="selected"{% endif %}>
+                 <li {% if selected == "join_address" %}id="selected"{% endif %}>
                     <a href="{% comment %}{% url ... %}TODO add List{% endcomment %}">
                         {% trans "Join Address" %} Link:TODO
                     </a>
                 </li>  
-                <li{% if selected == "owner_adress" %}id="selected"{% endif %}>
+                <li {% if selected == "owner_adress" %}id="selected"{% endif %}>
                     <a href="{% comment %}{% url ... %}TODO add List{% endcomment %}">
                         {% trans "Owner Address" %} Link:TODO
                     </a>
                 </li>   
-                <li{% if selected == "mass_subscribe" %}id="selected"{% endif %}>
+                <li {% if selected == "mass_subscribe" %}id="selected"{% endif %}>
                     <a href="{% comment %}{% url 'mass_subscribe' fqdn_listname=fqdn_listname %}TODO add List{% endcomment %}">
                         {% trans "Mass subscribe" %} 
                     </a>
                 </li>                   
             </ul></div>
         </li>  
-        <li{% if selected == "remove" %}id="selected"{% endif %}>
+        <li {% if selected == "remove" %}id="selected"{% endif %}>
             <a href="{% url 'list_subscriptions' fqdn_listname %}">
                 {% trans "Unsubscribe" %}
             </a>
             <div><ul class="menu">
-                 <li{% if selected == "leave_adress" %}id="selected"{% endif %}>
+                 <li {% if selected == "leave_adress" %}id="selected"{% endif %}>
                     <a href="{% comment %}{% url ... %}TODO add List{% endcomment %}">
                         {% trans "Leave Address" %} Link:TODO
                     </a>

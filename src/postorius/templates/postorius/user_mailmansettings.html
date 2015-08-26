@@ -32,7 +32,7 @@
              <td>
                 <p> {% trans "Mail Delivery" %}: </p>
                 </p>
-                [<span class="more_info"><a href="#" target="_blank">{% trans 'More info' %}</a><span>{{ settingsform.delivery_status.help_text }}
+                [<span class="more_info"><a href="#">{% trans 'More info' %}</a><span>{{ settingsform.delivery_status.help_text }}
                 </span></span>] </p>
              </td>
              <td> {{settingsform.delivery_status }} </td>
@@ -41,7 +41,7 @@
              <td>
                 <p> {% trans "Select a Mode of Delivery" %}: </p>
                 </p>
-                [<span class="more_info"><a href="#" target="_blank">{% trans 'More info' %}</a><span>{{ settingsform.delivery_mode.help_text }}
+                [<span class="more_info"><a href="#">{% trans 'More info' %}</a><span>{{ settingsform.delivery_mode.help_text }}
                 </span></span>] </p>
              </td>
              <td> {{settingsform.delivery_mode }} </td>
@@ -50,7 +50,7 @@
              <td>
                 <p> {% trans "Receive your own posts to the list?" %} </p>
                 </p>
-                [<span class="more_info"><a href="#" target="_blank">{% trans 'More info' %}</a><span>{{ settingsform.receive_own_postings.help_text }}
+                [<span class="more_info"><a href="#">{% trans 'More info' %}</a><span>{{ settingsform.receive_own_postings.help_text }}
                 </span></span>] </p>
              </td>
              <td> {{settingsform.receive_own_postings }} </td>
@@ -59,7 +59,7 @@
              <td>
                 <p> {% trans "Receive acknowledgement mails?" %} </p>
                 </p>
-                [<span class="more_info"><a href="#" target="_blank">{% trans 'More info' %}</a><span>{{ settingsform.acknowledge_posts.help_text }}
+                [<span class="more_info"><a href="#">{% trans 'More info' %}</a><span>{{ settingsform.acknowledge_posts.help_text }}
                 </span></span>] </p>
              </td>
              <td> {{settingsform.acknowledge_posts }} </td>
@@ -68,7 +68,7 @@
              <td>
                 <p>{% trans "Conceal yourself from the subscriber list?" %} </p>
                 </p>
-                [<span class="more_info"><a href="#" target="_blank">{% trans 'More info' %}</a><span>{{ settingsform.hide_address.help_text }}
+                [<span class="more_info"><a href="#">{% trans 'More info' %}</a><span>{{ settingsform.hide_address.help_text }}
                 </span></span>] </p>
              </td>
              <td> {{settingsform.hide_address }} </td>
@@ -76,7 +76,8 @@
           <tr>
              <td>
                 <p>{% trans "Avoid duplicate copies of messages?" %}</p>
-                </p>                 [<span class="more_info"><a href="#" target="_blank">{% trans 'More info' %}</a><span>{{ settingsform.receive_list_copy.help_text }}
+                </p>
+                [<span class="more_info"><a href="#">{% trans 'More info' %}</a><span>{{ settingsform.receive_list_copy.help_text }}
                 </span></span>] </p>
              </td>
              <td> {{settingsform.receive_list_copy }} </td>

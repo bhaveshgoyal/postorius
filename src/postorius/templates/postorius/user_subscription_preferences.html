@@ -30,7 +30,7 @@
              <tr>
                 <th> {% trans 'Subscription' %} </th>
                 {% for field in form.visible_fields %}
-                <th>{{field.label}} <p><span class="more_info">[<a href="#" target="_blank">{% trans 'More info' %}</a><span>{{ field.help_text }}
+                <th>{{field.label}} <p><span class="more_info">[<a href="#">{% trans 'More info' %}</a><span>{{ field.help_text }}
                     </span>]</span></p></th>
                 {% endfor %}
              </tr >

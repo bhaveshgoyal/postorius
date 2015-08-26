@@ -4,7 +4,7 @@
 {% block menu_user_options %}
     {% trans "User Options" %}
     <div><ul class="menu">
-         <li{% if selected == "description" %}id="selected"{% endif %}>
+         <li {% if selected == "description" %}id="selected"{% endif %}>
             <a href="{% comment %}{% url ... %}TODO add List{% endcomment %}">
                 {% trans "Description" %} Link:TODO
             </a>

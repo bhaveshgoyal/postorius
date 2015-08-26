@@ -4,15 +4,14 @@ Installation
 
 .. note::
     This installation guide covers Postorius, the web user interface for
-    GNU Mailman 3. To install GNU Mailman follow the instructions in the documentation:
-    http://packages.python.org/mailman/
+    GNU Mailman 3. To install GNU Mailman follow the instructions in the `documentation`_.
 
     If you are looking for an easy way to set up the whole GNU Mailman 3
     suite (GNU Mailman 3, Postorius, Hyperkitty and mailman.client), check
-    out the `mailman-bundler`_ project on launchpad.
+    out the `mailman-bundler`_ project on GitLab.
 
-.. _mailman-bundler: http://launchpad.net/mailman-bundler
-
+.. _mailman-bundler: https://gitlab.com/mailman/mailman-bundler
+.. _documentation: http://mailman.readthedocs.org
 
 Install Postorius
 =================
@@ -39,11 +38,11 @@ Latest dev version
 ------------------
 
 If you want to always be up to date with the latest development version, you
-should install Postorius using bazaar:
+should install Postorius using git:
 
 ::
 
-    $ bzr branch lp:postorius
+    $ git clone https://gitlab.com/mailman/postorius.git
     $ cd postorius
     $ sudo python setup.py develop
 
@@ -54,21 +53,20 @@ Setup your django project
 Since you have now installed the necessary packages to run Postorius, it's
 time to setup your Django site.
 
-First, get the project directory from launchpad:
+First, get the project directory from gitlab:
 
 ::
 
-    $ bzr branch lp:~mailman-coders/postorius/postorius_standalone
+    $ git clone https://gitlab.com/mailman/postorius_standalone.git
 
 Change the database setting in ``postorius_standalone/settings.py`` to
-your preferred database. If you're OK with using sqlite, just change the path
-in line 48 to the correct location.
+your preferred database, if you want something other than SQlite.
 
 .. note::
     Detailed information on how to use different database engines can be found
     in the `Django documentation`_.
 
-.. _Django documentation: https://docs.djangoproject.com/en/1.6/ref/settings/#databases
+.. _Django documentation: https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 Third, prepare the database:
 

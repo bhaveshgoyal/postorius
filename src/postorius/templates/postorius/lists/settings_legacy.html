@@ -20,7 +20,7 @@
             <tr><td>
                 {{ field.errors }}
                 {{ field.label_tag }} <br />
-                [<span class="more_info"><a href="{% url 'more_info_tab'  formid='list_settings' helpid=field.name %}" target="_blank">{% trans "More info" %}</a><span>{{ field.help_text }}
+                [<span class="more_info"><a href="{% url 'more_info_tab'  formid='list_settings' helpid=field.name %}">{% trans "More info" %}</a><span>{{ field.help_text }}
                 </span></span>]
             </td><td>{{ field }}</td></tr>
         {% endfor %}
