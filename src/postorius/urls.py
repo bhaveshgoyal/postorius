@@ -115,7 +115,7 @@ urlpatterns = patterns(
     url(r'^accounts/mailmansettings/$',
         UserMailmanSettingsView.as_view(),
         name='user_mailmansettings'),
-    #/dashboard/
+    # /dashboard/
     url(r'^user_dashboard/$',
         AdminTasksView.as_view(),
         name='user_dashboard'),
@@ -137,7 +137,6 @@ urlpatterns = patterns(
     url(r'^user_dashboard/(?P<task_id>[^/]+)$',
         'discard_manual_task',
         name='discard_manual_task'),
-    
     # /settings/
     url(r'^settings/$', 'site_settings', name="site_settings"),
     url(r'^domains/$', 'domain_index', name='domain_index'),
