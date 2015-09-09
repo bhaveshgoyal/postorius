@@ -91,14 +91,16 @@ class NewModeratorForm(forms.Form):
             'required': _('Please enter an email adddress.'),
             'invalid': _('Please enter a valid email adddress.')})
 
+
 class TaskSearchForm(forms.Form):
 
     """Search For Tasks on Dashboard."""
     search_tasks = forms.CharField(
         label=_('Search Tasks'),
         required=True,
-        widget=forms.TextInput(attrs={'class': "form-control", 'placeholder' : "Filter Tasks"}),
+        widget=forms.TextInput(attrs={'class': "form-control", 'placeholder': "Filter Tasks"}),
         )
+
 
 class ListIndexSearchForm(forms.Form):
 
@@ -106,8 +108,9 @@ class ListIndexSearchForm(forms.Form):
     search_li = forms.CharField(
         label=_('Search Lists'),
         required=True,
-        widget=forms.TextInput(attrs={'class': "form-control", 'placeholder' : "Search"}),
+        widget=forms.TextInput(attrs={'class': "form-control", 'placeholder': "Search"}),
         )
+
 
 class NewManualTaskForm(forms.Form):
 
@@ -115,14 +118,16 @@ class NewManualTaskForm(forms.Form):
     mtask_subject = forms.CharField(
         label=_('Subject Description for Manual Task'),
         required=True,
-        widget=forms.TextInput(attrs={'class': "form-control", 'placeholder' : "Task Heading"}),
+        widget=forms.TextInput(attrs={'class': "form-control", 'placeholder': "Task Heading"}),
         error_messages={
             'required': _('Task Heading can\'t e empty')})
     mtask_description = forms.CharField(
         label=_('Full Description for The User Manual Task'),
         required=True,
-        widget=forms.Textarea(attrs={'class': "form-control", 'placeholder' : "Description", 'rows' : "5"}),
-        )		    
+        widget=forms.Textarea(attrs={'class': "form-control", 'placeholder': "Description", 'rows': "5"}),
+        )
+
+
 class GlobalSearchForm(forms.Form):
 
     """Global Search for Entities on Dashboard."""
@@ -132,7 +137,7 @@ class GlobalSearchForm(forms.Form):
         widget=forms.TextInput(),
         error_messages={
             'invalid': _('Invalid Query')})
-   
+
     check_lists = forms.BooleanField(
         required=False,
         label=_('Search Among Lists'),
@@ -145,6 +150,7 @@ class GlobalSearchForm(forms.Form):
         required=False,
         label=_('Search Among People'),
             )
+
 
 class ListNew(FieldsetForm):
 

@@ -26,34 +26,34 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>                        
             </button>
-            <a class="navbar-brand" href="#">Mailman | Dashboard</a>
+            <a class="navbar-brand" href="{% url 'list_index' %}">{% trans "Mailman | Dashboard" %}</a>
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <form id="global-search-form" class="navbar-form navbar-left" role="search" action="{% url 'user_dashboard' %}" method="POST" class="form-inline">{% csrf_token %}
                 <div class="form-group">
                     {{global_search.query_field}}
                     <datalist id="global-result"></datalist><div class="checkbox-wrapper">
-                        <label class="checkbox-inline">{{global_search.check_lists}}<label class="check-label" for="id_check_lists">Lists</label></label>
+                        <label class="checkbox-inline">{{global_search.check_lists}}<label class="check-label" for="id_check_lists">{% trans "Lists" %}</label></label>
                         {% if user.is_superuser %}
-                        <label class="checkbox-inline">{{global_search.check_domains}}<label class="check-label" for="id_check_domains">Domains</label></label>
+                        <label class="checkbox-inline">{{global_search.check_domains}}<label class="check-label" for="id_check_domains">{% trans "Domains" %}</label></label>
                         {% endif %}
-                        <label class="checkbox-inline">{{global_search.check_people}}<label class="check-label" for="id_check_people">People</label></label></div>
+                        <label class="checkbox-inline">{{global_search.check_people}}<label class="check-label" for="id_check_people">{% trans "People" %}</label></label></div>
                 </div>
             </form>
             <ul class="nav navbar-nav navbar-center">
                 {% regroup tasks|dictsort:"task_type" by task_type as typed_tasks %}
                 {% for each in typed_tasks %}
                 {% if each.grouper == "subscription" %}
-                <li><a href="#"><span class="nav-icon fa fa-lg fa-fw fa-user"></span><sup><span class="badge">{{each.list|length}}</span></sup> Subscription Requests</a></li>
+                <li><a href="#"><span class="nav-icon fa fa-lg fa-fw fa-user"></span><sup><span class="badge">{{each.list|length}}</span></sup>{% trans "Subscription Requests" %}</a></li>
                 {% elif each.grouper == "moderation" %}
-                <li><a href="#"><span class="nav-icon fa fa-lg fa-fw fa-envelope"></span><sup><span class="badge">{{each.list|length}}</span></sup> Held Messages</a></li>
+                <li><a href="#"><span class="nav-icon fa fa-lg fa-fw fa-envelope"></span><sup><span class="badge">{{each.list|length}}</span></sup>{% trans "Held Messages" %}</a></li>
                 {% endif %}
                 {% endfor %}
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown view-chooser">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                    <span class="fa fa-chevron-circle-down fa-lg fa-fw "></span>Change View
+                    <span class="fa fa-chevron-circle-down fa-lg fa-fw "></span>{% trans "Change View" %}
                 </a>
                 <ul class="dropdown-menu widget-chooser-menu" role="menu">
                     <li><a id="view-li" href="javascript:void(0)">{% trans "List Index" %}<span style="display:none;" id="listi-view-check" class="active fa fa-fw fa-check"></span>
@@ -94,14 +94,14 @@
     <div class="primary-widgets-wrapper container" style="min-width:65em;position:relative;display:inline-block;margin-top:8%;height:100%;width:72%;float:right;">
         <div class="container widget tasks-widget" style="min-width:35em;position:relative;width:50%;height:70%;display:inline-block;border:1px solid; box-shadow: 5px 5px 5px #888888;">
             <div class="row">
-                <div class="col-xs-12"><h3 class="text-center">To-Do List</h3></div>
+                <div class="col-xs-12"><h3 class="text-center">{% trans "To-Do List" %}</h3></div>
                 <div class="col-xs-12">
                     <ul class="nav nav-tabs nav-justified" id="switcher" role="tablist">
-                        <li class="active" ><a id="task-view" href="javascript:void(0)">Task Basis</a></li>
+                        <li class="active" ><a id="task-view" href="javascript:void(0)">{% trans "Task Basis" %}</a></li>
                         {% if tasks|length_is:"0" %}
-                        <li><a href="javascript:void(0)">List Basis</a></li>
+                        <li><a href="javascript:void(0)">{% trans "List Basis" %}</a></li>
                         {% else %}
-                        <li><a id="list-view" href="javascript:void(0)">List Basis</a></li>
+                        <li><a id="list-view" href="javascript:void(0)">{% trans "List Basis" %}</a></li>
                         {% endif %}
                     </ul>
                 </div>
@@ -116,14 +116,14 @@
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                        <h4 class="modal-title">Add Self Note</h4>
+                                        <h4 class="modal-title">{% trans "Add Self Note" %}</h4>
                                     </div>
                                     <div class="modal-body">
                                         <form action="{% url 'user_dashboard' %}" method="POST">{% csrf_token %}
                                             {{mtask_form.mtask_subject}}<br />
                                             {{mtask_form.mtask_description}}<hr />
                                             <button type="submit" id="loading_btn" data-loading-text="Processing..." class="btn btn-primary" autocomplete="off">
-                                                Submit
+                                                {% trans "Submit" %}
                                             </button>
                                         </form>
                                     </div>
@@ -144,7 +144,7 @@
                 <div class="col-xs-12">
                     {% if tasks|length_is:"0" %}<h4>
                         There are no Pending Tasks for {{user.username}} matching the criteria</h4>
-                    <a href="."><button id="refresh"><span class="fa fa-lg fa-fw fa-refresh"></span>Refresh</button></a>
+                    <a href="."><button id="refresh"><span class="fa fa-lg fa-fw fa-refresh"></span>{% trans "Refresh" %}</button></a>
                     {% endif %}
                     {% for task in tasks %}
                     <div class="panel-group" id="accordian" role="tablist" aria-multiselectable="true">
@@ -164,18 +164,18 @@
                                             <span class="fa fa-lg fa-gear dropdown-toggle" data-toggle="dropdown" area-expanded="false" ></span>
                                             <span class="sr-only">Toggle Priority</span>
                                             <ul class="dropdown-menu" role="menu">
-                                                <li role="presentation" class="dropdown-header">Task Priority Level</li>
-                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 1 %}">High Priority
+                                                <li role="presentation" class="dropdown-header">{% trans "Task Priority Level" %}</li>
+                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 1 %}">{% trans "High Priority" %}
                                                     {% if task.priority == 1 %}
                                                     <span class="fa fa-fw fa-check"></span>
                                                     {% endif %}</a>
                                                 </li>
-                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 0 %}">Medium Priority
+                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 0 %}">{% trans "Medium Priority" %}
                                                     {% if task.priority == 0 %}
                                                     <span class="fa fa-fw fa-check"></span>
                                                     {% endif %}</a>
                                                 </li>
-                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id -1 %}">Low Priority
+                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id -1 %}">{% trans "Low Priority" %}
                                                     {% if task.priority == -1 %}
                                                     <span class="fa fa-fw fa-check"></span>
                                                     {% endif %}</a></li>
@@ -207,17 +207,17 @@
                                             <span class="sr-only">Toggle Priority</span>
                                             <ul class="dropdown-menu" role="menu">
                                                 <li role="presentation" class="dropdown-header">Set Priority Level</li>
-                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 1 %}">High Priority
+                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 1 %}">{% trans "High Priority" %}
                                                     {% if task.priority == 1 %}
                                                     <span class="fa fa-fw fa-check"></span>
                                                     {% endif %}</a>
                                                 </li>
-                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 0 %}">Medium Priority
+                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 0 %}">{% trans "Medium Priority" %}
                                                     {% if task.priority == 0 %}
                                                     <span class="fa fa-fw fa-check"></span>
                                                     {% endif %}</a>
                                                 </li>
-                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id -1 %}">Low Priority
+                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id -1 %}">{% trans "Low Priority" %}
                                                     {% if task.priority == -1 %}
                                                     <span class="fa fa-fw fa-check"></span>
                                                     {% endif %}</a>
@@ -281,17 +281,17 @@
                                             <span class="sr-only">Toggle Priority</span>
                                             <ul class="dropdown-menu" role="menu">
                                                 <li role="presentation" class="dropdown-header">Set Priority Level</li>
-                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 1 %}">High Priority
+                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 1 %}">{% trans "High Priority" %}
                                                     {% if task.priority == 1 %}
                                                     <span class="fa fa-fw fa-check"></span>
                                                     {% endif %}</a>
                                                 </li>
-                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 0 %}">Medium Priority
+                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id 0 %}">{% trans "Medium Priority" %}
                                                     {% if task.priority == 0 %}
                                                     <span class="fa fa-fw fa-check"></span>
                                                     {% endif %}</a>
                                                 </li>
-                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id -1 %}">Low Priority
+                                                <li role="presentation" ><a class="menuitem" href="{% url 'set_task_priority' task.task_id -1 %}">{% trans "Low Priority" %}
                                                     {% if task.priority == -1 %}
                                                     <span class="fa fa-fw fa-check"></span>
                                                     {% endif %}</a>
@@ -327,9 +327,9 @@
                     <div class="row" >
                         <div class="col-xs-12">
                             <ul id="parent-per-list" class="parent-list-nav nav nav-pills nav-justified">
-                                <li id="both" class="parent-active"><a style="border-radius:0px;" href="javascript:void(0)">Both</a></li>
-                                <li id="modr"><a style="border-radius:0px;" href="javascript:void(0)">Moderations</a></li>
-                                <li id="subr"><a style="border-radius:0px;" href="javascript:void(0)">Subscriptions</a></li>
+                                <li id="both" class="parent-active"><a style="border-radius:0px;" href="javascript:void(0)">{% trans "Both" %}</a></li>
+                                <li id="modr"><a style="border-radius:0px;" href="javascript:void(0)">{% trans "Moderations" %}</a></li>
+                                <li id="subr"><a style="border-radius:0px;" href="javascript:void(0)">{% trans "Subscriptions" %}</a></li>
                             </ul>	
                         </div>
                     </div>
@@ -356,10 +356,10 @@
                                     <div id="collapse_{{listed_object.grouper|cut:'.'}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_{{listed_object.grouper}}">
                                         <div class="panel-body">
                                             <ul id="perlist-switcher-{{listed_object.grouper}}" class="nav nav-pills nav-justified per-list-nav">
-                                                <li id="list-mod" class="active"><a  style="border-radius:0px;" href="javascript:void(0)">Moderations
+                                                <li id="list-mod" class="active"><a  style="border-radius:0px;" href="javascript:void(0)">{% trans "Moderations" %}
                                                     <span  class="badge">{{each_list.held|length}}</span></a>
                                                 </li>
-                                                <li id="list-sub"><a style="border-radius:0px;" href="javascript:void(0)">Subscriptions
+                                                <li id="list-sub"><a style="border-radius:0px;" href="javascript:void(0)">{% trans "Subscriptions" %}
                                                     <span class="badge">{{each_list.requests|length}}</span></a>
                                                 </li>
                                             </ul>
@@ -425,12 +425,12 @@
                                             <div id="reorder" class="row" style="position:absolute;right:1em;bottom:0.5em;margin:auto;padding:auto;width:auto;">
                                                 <div class="btn-group">
                                                     <span class="fa fa-fw fa-lg fa-bars dropdown-toggle" data-toggle="dropdown" area-expanded="false" ></span>
-                                                    <span class="sr-only">Reorder Tasks</span>
+                                                    <span class="sr-only">{% trans "Reorder Tasks" %}</span>
                                                     <ul class="dropdown-menu" role="menu">
                                                         <li role="presentation" class="dropdown-header">Reorder By</li>
-                                                        <li role="presentation" ><a class="menuitem" href="{% url 'reorder_tasks_by' 'priority' %}">Priority</a></li>
-                                                        <li role="presentation" ><a class="menuitem" href="{% url 'reorder_tasks_by' 'task_type' %}">Task Type</a></li>
-                                                        <li role="presentation" ><a class="menuitem" href="{% url 'reorder_tasks_by' 'made_on' %}">Date Added</a></li>
+                                                        <li role="presentation" ><a class="menuitem" href="{% url 'reorder_tasks_by' 'priority' %}">{% trans "Priority" %}</a></li>
+                                                        <li role="presentation" ><a class="menuitem" href="{% url 'reorder_tasks_by' 'task_type' %}">{% trans "Task Type" %}</a></li>
+                                                        <li role="presentation" ><a class="menuitem" href="{% url 'reorder_tasks_by' 'made_on' %}">{% trans "Date Added" %}</a></li>
                                                     </ul>
                                                 </div>			
                                             </div>
@@ -438,7 +438,7 @@
                                         </div>
                                         <div id="li-widget-wrapper" class="widget container">
                                             <div class="row" style="margin-bottom:1.2em;text-align:center;">
-                                                <div class="col-xs-6"><h3 style="display:inline-block;">List Index</h3></div>
+                                                <div class="col-xs-6"><h3 style="display:inline-block;">{% trans "List Index" %}</h3></div>
                                                 <div style="margin-top:3%;float:right;width:40%;margin-right:5%;" class="col-xs-6 input-group">
                                                     <form action="{% url 'user_dashboard' %}" method='POST' class="form-inline">{% csrf_token %}
                                                         <div class="input-group">
@@ -450,7 +450,7 @@
                                             </div>
                                             <div id="listi_container" style="overflow-y:auto;height:40em;">
                                                 {% if li_res|length_is:"0" %}
-                                                <p class="text-muted">No Lists Found matching the query</p>
+                                                <p class="text-muted">{% trans "No Lists Found matching the query" %}</p>
                                                 {% endif %}
                                                 {% for list in li_res %}
                                                 <div class="panel-group" id="accordian" role="tablist" aria-multiselectable="true">
@@ -471,9 +471,9 @@
                                                         <div id="collapse_{{list.list_id|cut:'.'|add:'li'}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_{{list.list_id}}">
                                                             <div id="members-expand" style="padding:0px;" class="panel-body">
                                                                 <ul style="border-radius:0px;" id="role-switcher-{{list.list_id}}" class="nav nav-justified role-nav">
-                                                                    <li style="background-color:#FF5D56;" id="role-owners"><a href="javascript:void(0)">Owners</a></li>	
-                                                                    <li style="background-color:#FFF67F" id="role-moderators"><a href="javascript:void(0)">Moderators</a></li>
-                                                                    <li id="role-subscribers" class="active"><a href="javascript:void(0)">Subscribers</a></li>
+                                                                    <li style="background-color:#FF5D56;" id="role-owners"><a href="javascript:void(0)">{% trans "Owners" %}</a></li>	
+                                                                    <li style="background-color:#FFF67F" id="role-moderators"><a href="javascript:void(0)">{% trans "Moderators" %}</a></li>
+                                                                    <li id="role-subscribers" class="active"><a href="javascript:void(0)">{% trans "Subscribers" %}</a></li>
                                                                 </ul>
                                                                 <div style="display:none;" id="list-owners">
                                                                     {% if list.owners|length_is:"0" %}
@@ -554,11 +554,11 @@
 
                                             <div id="events-widget" class="widget container">
                                                 <div style="text-align:center;">
-                                                    <h3 style="display:inline-block;">Events Stream</h3><br />
+                                                    <h3 style="display:inline-block;">{% trans "Events Stream" %}</h3><br />
                                                 </div>
                                                 <div style="padding-left:0px;overflow-y:auto;height:92%;" class="activities">
                                                     {% if events|length == 0 %}<hr />
-                                                    No new Recent Stories found
+                                                    {% trans "No new Recent Stories found" %}
                                                     {% else %}
                                                     <table class="table" style="border-left:3px solid #4aa3df;"><thead></thead>
                                                         <tbody>

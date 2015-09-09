@@ -315,15 +315,16 @@ class AddressConfirmationProfile(models.Model):
                   sender_address,
                   [self.email])
 
+
 class AdminTasksManager(models.Manager):
     """
     Manager Class for Admin Tasks.
     """
-    
+
     def create_task(self, task_id, task_type, stamp, user_email, list_id):
         if task_type == 'moderation':
             lists = List().objects.all()
-            msg = [ each_msg for each_list in lists for each_msg in each_list.held if each_msg['request_id'] == task_id][0]
+            msg = [each_msg for each_list in lists for each_msg in each_list.held if each_msg['request_id'] == task_id][0]
             msg_subject = msg['subject']
             msg_data = msg['msg']
             task = self.create(task_id=task_id,
@@ -333,7 +334,7 @@ class AdminTasksManager(models.Manager):
                                list_id=list_id,
                                msg_subject=msg_subject,
                                msg_data=msg_data)
-        else:    
+        else:
             task = self.create(task_id=task_id,
                                task_type=task_type,
                                made_on=stamp,
@@ -343,6 +344,7 @@ class AdminTasksManager(models.Manager):
 
     def get_count(self, task_type):
         return len(self.filter(task_type=task_type))
+
 
 class AdminTasks(models.Model):
     """
@@ -359,11 +361,10 @@ class AdminTasks(models.Model):
 
     objects = AdminTasksManager()
 
-
     def __unicode__(self):
-	user_email = self.user_email.split('@')[0].capitalize()
+        user_email = self.user_email.split('@')[0].capitalize()
         list_id = self.list_id.split('.')[0].capitalize()
-        if self.task_type =='subscription':
+        if self.task_type == 'subscription':
             return u'Subscription Request from {0} in {1}'.format(user_email, list_id)
         elif self.task_type == 'moderation':
             return u'Message held for moderation from {0} in {1}'.format(user_email, list_id)
@@ -373,6 +374,7 @@ class AdminTasks(models.Model):
     @property
     def get_date(self):
         return AdminTasks.objects.get(task_id=self.task_id).made_on
+
 
 class EventTrackerManager(models.Manager):
     """
@@ -386,9 +388,10 @@ class EventTrackerManager(models.Manager):
                             list_id=list_id,
                             made_on=made_on,)
         return event
-    
+
     def get_count(self):
         return len(self.all())
+
 
 class EventTracker(models.Model):
     """
@@ -400,30 +403,33 @@ class EventTracker(models.Model):
     list_id = models.CharField(max_length=50)
     made_on = models.DateTimeField()
     objects = EventTrackerManager()
-    
+
     def __unicode__(self):
         user_name = self.user_email.split('@')[0].capitalize()
         event_op = self.event_op.split('@')[0].capitalize()
         list_name = self.list_id.split('.')[0].capitalize()
         if self.event.find('moderation') != -1:
-	    event = self.event.split('-')[1] + 'ed'
+            event = self.event.split('-')[1] + 'ed'
             return u'{0} {1} a post from {2} in {3}'.format(event_op, event, user_name, list_name)
         elif self.event.find('subscription') != -1:
             event = self.event.split('-')[1] + 'ed'
-	    user_name = user_name + '\'s'
+            user_name = user_name + '\'s'
             return u'{0} {1} {2} Subscription request in {3}'.format(event_op, event, user_name, list_name)
+
 
 class TaskCalenderManager(models.Manager):
     """
     Manager Class for Task Calender.
     """
-    
+
     def create_log(self, on_date, list_id, log_type, log_number):
         log = self.create(on_date=on_date,
                           list_id=list_id,
                           log_type=log_type,
                           log_number=log_number)
         return log
+
+
 class TaskCalender(models.Model):
     """
     Model For Collecting Monthly Task Data.
@@ -434,5 +440,6 @@ class TaskCalender(models.Model):
     log_number = models.IntegerField()
 
     objects = TaskCalenderManager()
+
     def __unicode__(self):
         return u'{0} Log dated {1}'.format(self.log_type, self.on_date)
