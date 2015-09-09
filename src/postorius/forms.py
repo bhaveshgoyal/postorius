@@ -19,7 +19,7 @@
 from django import forms
 from django.core.validators import validate_email, URLValidator
 from django.utils.translation import ugettext_lazy as _
-from fieldset_forms import FieldsetForm
+from postorius.fieldset_forms import FieldsetForm
 
 
 class DomainNew(FieldsetForm):
@@ -620,7 +620,7 @@ SUBSCRIPTION_POLICY_CHOICES = (
 class ListSubscriptionPolicyForm(forms.Form):
     """
     List subscription policy settings.
-    """    
+    """
     subscription_policy = forms.ChoiceField(
         label=_('Subscription Policy'),
         choices=SUBSCRIPTION_POLICY_CHOICES,

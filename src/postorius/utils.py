@@ -26,14 +26,6 @@ from mailmanclient import Client
 logger = logging.getLogger(__name__)
 
 
-def get_domain_name(request):
-    """Extracts a domain name from the request object.
-    """
-    if "HTTP_HOST" in request.META.keys():
-        return request.META["HTTP_HOST"].split(":")[0]
-    return None
-
-
 def get_client():
     return Client('{0}/3.0'.format(settings.MAILMAN_API_URL),
                   settings.MAILMAN_USER,

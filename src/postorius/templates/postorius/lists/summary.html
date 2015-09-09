@@ -22,9 +22,10 @@
 
         {% if hyperkitty_url %}
         <h2>{% trans 'Archived messages' %}</h2>
+        {% url 'hk_list_overview' list.fqdn_listname as hyperkitty_list_url %}
         {% blocktrans %}
         To see the prior postings to this list, visit
-        <a href="{{ hyperkitty_url }}">the archives</a>.
+        <a href="{{ hyperkitty_list_url }}">the archives</a>.
         {% endblocktrans %}
         {% endif %}
 

@@ -29,7 +29,7 @@ def basic_auth_login(fn):
     def wrapper(*args, **kwargs):
         request = args[0]
         if request.user.is_authenticated():
-            print 'already logged in'
+            print('already logged in')
         if not request.user.is_authenticated():
             if request.META.has_key('HTTP_AUTHORIZATION'):
                 authmeth, auth = request.META['HTTP_AUTHORIZATION'].split(' ',

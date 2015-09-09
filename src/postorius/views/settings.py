@@ -35,8 +35,10 @@ from django.shortcuts import render_to_response, redirect
 from django.template import Context, loader, RequestContext
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
-from urllib2 import HTTPError
-
+try:
+    from urllib2 import HTTPError
+except ImportError:
+    from urllib.error import HTTPError
 from postorius import utils
 from postorius.models import (Domain, List, Member, MailmanUser,
                               MailmanApiError, Mailman404Error)
@@ -78,7 +80,7 @@ def domain_new(request):
                 domain.save()
             except MailmanApiError:
                 return utils.render_api_error(request)
-            except HTTPError, e:
+            except HTTPError as e:
                 messages.error(request, e)
             else:
                 messages.success(request, _("New Domain registered"))
@@ -101,7 +103,6 @@ def domain_delete(request, domain):
                              _('The domain %s has been deleted.' % domain))
             return redirect("domain_index")
         except HTTPError as e:
-            print e.__dict__
             messages.error(request, _('The domain could not be deleted:'
                                       ' %s' % e.msg))
             return redirect("domain_index")

@@ -30,7 +30,10 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import Client, RequestFactory, TestCase
 from django.test.utils import override_settings
-from urllib2 import HTTPError
+try:
+    from urllib2 import HTTPError
+except ImportError:
+    from urllib.error import HTTPError
 
 from postorius.forms import ListArchiverForm
 from postorius.tests import MM_VCR
@@ -122,7 +125,7 @@ class ArchivalOptions(TestCase):
             archivers = self.m_list.archivers
             # Archiver is enabled by default.
             self.assertTrue(archivers['mail-archive'])
-        
+
         with MM_VCR.use_cassette('test_list_archival_options_disable_archiver.yaml'):
             # Archiver is disabled after it's deactivated in the form.
             response = self.client.post(
@@ -156,7 +159,7 @@ class ArchivalMessagesTest(TestCase):
         self.assertTrue('foo-archiver' in mock_warning.call_args[0][1])
         # messages.success should not have been called.
         self.assertEqual(mock_success.call_count, 0)
-        
+
     @mock.patch('django.contrib.messages.success')
     @mock.patch('django.contrib.messages.warning')
     def test_success_messages(self, mock_warning, mock_success):

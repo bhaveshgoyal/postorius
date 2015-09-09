@@ -20,7 +20,10 @@ import logging
 from django.core.urlresolvers import reverse
 from django.test import Client, SimpleTestCase
 from django.test.utils import override_settings
-from urllib2 import HTTPError
+try:
+    from urllib2 import HTTPError
+except ImportError:
+    from urllib.error import HTTPError
 
 from postorius.utils import get_client
 from postorius.tests import MM_VCR
@@ -48,6 +51,7 @@ class ListIndexPageTest(SimpleTestCase):
         except HTTPError:
             self.domain = get_client().get_domain('example.com')
         self.foo_list = self.domain.create_list('foo')
+        self.bar_list = self.domain.create_list('bar')
 
     @MM_VCR.use_cassette('test_list_index.yaml')
     def tearDown(self):
@@ -55,10 +59,11 @@ class ListIndexPageTest(SimpleTestCase):
             mlist.delete()
 
     @MM_VCR.use_cassette('test_list_index.yaml')
-    def test_list_index_contains_one_list(self):
-        # The list index page should contain the
+    def test_list_index_contains_the_lists(self):
+        # The list index page should contain the lists
         response = self.client.get(reverse('list_index'))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.context['lists']), 1)
-        self.assertEqual(response.context['lists'][0].fqdn_listname,
-                         'foo@example.com')
+        self.assertEqual(len(response.context['lists']), 2)
+        # The lists should be sorted by address
+        self.assertEqual([l.fqdn_listname for l in response.context['lists']],
+                         ['bar@example.com', 'foo@example.com'])

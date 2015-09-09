@@ -4,6 +4,7 @@ from __future__ import (absolute_import, division, print_function,
 
 from datetime import datetime, timedelta
 from django.contrib.auth.models import User
+from django.contrib.messages.storage.fallback import FallbackStorage
 from django.core.urlresolvers import reverse
 from django.core import mail
 from django.test.client import Client, RequestFactory
@@ -122,6 +123,7 @@ class TestAddressConfirmationProfile(unittest.TestCase):
     def tearDown(self):
         self.profile.delete()
         self.user.delete()
+        mail.outbox = []
 
     def test_profile_creation(self):
         # Profile is created and has all necessary properties.
@@ -174,10 +176,14 @@ class TestAddressConfirmationProfile(unittest.TestCase):
         # set the activation key to a fixed string for testing
         self.profile.activation_key = \
             '6323fba0097781fdb887cfc37a1122ee7c8bb0b0'
+        # Simulate a VirtualHost with a different name
+        self.request.META["HTTP_HOST"] = "another-virtualhost"
+        # Now send the email
         self.profile.send_confirmation_link(self.request)
         self.assertEqual(mail.outbox[0].to[0], u'les@example.org')
         self.assertEqual(mail.outbox[0].subject, u'Confirmation needed')
-        self.assertTrue(self.profile.activation_key in mail.outbox[0].body)
+        self.assertIn(self.profile.activation_key, mail.outbox[0].body)
+        self.assertIn("another-virtualhost", mail.outbox[0].body)
 
 
 class TestAddressActivationLinkSuccess(unittest.TestCase):
@@ -189,10 +195,10 @@ class TestAddressActivationLinkSuccess(unittest.TestCase):
     def setUp(self):
         # Set up a profile with a predictable key
         self.user = User.objects.create_user(
-            username='ler', email=u'ler@mailman.mostdesirable.org',
+            username='ler', email=u'ler@example.org',
             password='pwd')
         self.profile = AddressConfirmationProfile.objects.create_profile(
-            u'les@mailman.mostdesirable.org', self.user)
+            u'les@example.org', self.user)
         self.profile.activation_key = \
             u'6323fba0097781fdb887cfc37a1122ee7c8bb0b0'
         self.profile.save()
@@ -208,8 +214,11 @@ class TestAddressActivationLinkSuccess(unittest.TestCase):
         request = RequestFactory().get(reverse(
             'address_activation_link', kwargs={
             'activation_key': '6323fba0097781fdb887cfc37a1122ee7c8bb0b0'}))
+        setattr(request, 'session', 'session')
+        messages = FallbackStorage(request)
+        setattr(request, '_messages', messages)
         address_activation_link(
             request, '6323fba0097781fdb887cfc37a1122ee7c8bb0b0')
-        expected_calls = [call(request, u'ler@mailman.mostdesirable.org',
-                         u'les@mailman.mostdesirable.org')]
+        expected_calls = [call(request, u'ler@example.org',
+                         u'les@example.org')]
         self.assertEqual(_add_address_mock.mock_calls, expected_calls)
