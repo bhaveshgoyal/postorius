@@ -1,0 +1,35 @@
+interactions:
+- request:
+    body: null
+    headers:
+      accept-encoding: ['gzip, deflate']
+    method: !!python/unicode GET
+    uri: http://localhost:9001/3.0/domains
+  response:
+    body: {string: !!python/unicode '{"entries": [{"base_url": "http://example.com",
+        "description": null, "http_etag": "\"e736411818ff1815ca83575e0958c38c5188f0a4\"",
+        "mail_host": "example.com", "self_link": "http://localhost:9001/3.0/domains/example.com",
+        "url_host": "example.com"}], "http_etag": "\"c385b155f8da284bf78dbe075e20f58a30c893ab\"",
+        "start": 0, "total_size": 1}'}
+    headers:
+      content-length: ['338']
+      content-type: [application/json; charset=utf-8]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      accept-encoding: ['gzip, deflate']
+    method: !!python/unicode GET
+    uri: http://localhost:9001/3.0/lists
+  response:
+    body: {string: !!python/unicode '{"entries": [{"display_name": "Foo", "fqdn_listname":
+        "foo@example.com", "http_etag": "\"698a819bbb6b902096a8c5543cc7fac2328960d5\"",
+        "list_id": "foo.example.com", "list_name": "foo", "mail_host": "example.com",
+        "member_count": 0, "self_link": "http://localhost:9001/3.0/lists/foo.example.com",
+        "volume": 1}], "http_etag": "\"0eb6d0b88c89b5c491b7966eab97a79e221096ad\"",
+        "start": 0, "total_size": 1}'}
+    headers:
+      content-length: ['399']
+      content-type: [application/json; charset=utf-8]
+    status: {code: 200, message: OK}
+version: 1
