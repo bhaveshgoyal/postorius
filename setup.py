@@ -26,7 +26,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="postorius",
-    version='1.0.2',
+    version='1.0.3',
     description="A web user interface for GNU Mailman",
     long_description=open('README.rst').read(),
     maintainer="The Mailman GSOC Coders",
