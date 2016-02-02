@@ -39,7 +39,7 @@ setup(
     packages=find_packages('src'),
     package_dir={'': 'src'},
     include_package_data=True,
-    install_requires=['django>=1.6',
+    install_requires=['django>=1.6,<=1.8',
                       'django-browserid',
                       'mailmanclient']
 )
