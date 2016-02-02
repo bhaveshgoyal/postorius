@@ -20,6 +20,13 @@ You should have received a copy of the GNU Lesser General Public License
 along with Postorius. If not, see <http://www.gnu.org/licenses/>.
 
 
+1.0.3
+=====
+(2016-02-02)
+
+* Security fix release
+
+
 1.0.2
 =====
 (2015-11-14)
