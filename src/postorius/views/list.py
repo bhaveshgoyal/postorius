@@ -30,15 +30,11 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
-<<<<<<< HEAD
-from urllib2 import HTTPError
 from datetime import datetime
-=======
 try:
     from urllib2 import HTTPError
 except ImportError:
     from urllib.error import HTTPError
->>>>>>> c41dc4a044328ab6138167390af12ab9af778c35
 from postorius import utils
 from postorius.models import (Domain, List, MailmanApiError, AdminTasks, EventTracker)
 from postorius.forms import *
