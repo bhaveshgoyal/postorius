@@ -33,6 +33,8 @@ from django.template import RequestContext
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from django.views.generic import TemplateView
+from django.http import HttpResponse
+from operator import itemgetter
 try:
     from urllib2 import HTTPError
 except ImportError:
@@ -825,7 +827,6 @@ def address_activation_link(request, activation_key):
             activation_key=activation_key)
         if not profile.is_expired:
             _add_address(request, profile.user.email, profile.email)
-<<<<<<< HEAD
             profile.delete()
             messages.success(request, _('The email address has been activated!'))
         else:
@@ -835,9 +836,3 @@ def address_activation_link(request, activation_key):
     except AddressConfirmationProfile.DoesNotExist:
         messages.error(request, _('The activation link is invalid'))
     return redirect('list_index')
-=======
-    except profile.DoesNotExist:
-        pass
-    return render_to_response('postorius/user_address_activation_link.html',
-                              {}, context_instance=RequestContext(request))
->>>>>>> pep8 fixes for user.py

@@ -30,6 +30,7 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
+from datetime import datetime
 try:
     from urllib2 import HTTPError
 except ImportError:
